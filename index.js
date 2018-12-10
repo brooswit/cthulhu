@@ -22,7 +22,7 @@ class Task {
     }
 }
 
-class Cthulhu {
+module.exports = class Cthulhu {
     constructor() {
         this._tasks = []
         this._events = new EventEmitter()
