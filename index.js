@@ -1,5 +1,8 @@
 const EventEmitter = new require('events')
 
+const TaskManager = require('./src/TaskManager')
+const WebhookIngester = require('./components/WebhookIngester')
+
 class Task {
     constructor(payload) {
         this._payload = payload
@@ -22,40 +25,35 @@ class Task {
     }
 }
 
-module.exports = class Cthulhu {
+class Cthulhu {
     constructor() {
-        this._tasks = []
+        this._tasks = new TaskManager()
         this._events = new EventEmitter()
     }
 
-    async requestTask(name, payload) {
-        let task = this.addTask(name,payload)
-        return await task.untilComplete()
+    async _handleRequest(res, req) {
+        //req.query.token
+        this.triggerEvent(req.query.name, req.body)
+        res.sendStatus(200)
     }
 
-    addTask(name, payload) {
-        let task = new Task(name, payload)
-        this._tasks[name] = this._tasks[name] || new AsyncArray()
-        this._tasks[name].push(new Task(payload))
-        return task
+    addTask(taskName, taskData) {
+        return this._tasks.addTask(taskName, taskData)
     }
 
-    async consumeTask(name, handler) {
-        this._tasks[name] = this._tasks[name] || new AsyncArray()
-        let task = await this._tasks[name].shift()
-        if (await task.handle(handler) === false) {
-            this._tasks[name].unshift()
-        }
-    }
+    consumeTask(taskName) {
+        return await this._tasks.consumeTask(taskNames)
+    }s
 
-    triggerEvent(eventName, payload) {
+    emitEvent(eventName, payload) {
         this._events.emit(eventName, payload)
     }
 
-    async consumeEvent(eventname) {
-        const resolver = new Resolver()
-        this._events.once(eventname, resolver.resolve)
-        result = await resolver
-        return result
+    onEvent(eventName, handler) {
+        this._events.on(eventName, handler)
     }
 }
+
+Cthulhu.WebhookIngester = WebhookIngester
+
+module.exports = Cthulhu

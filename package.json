@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/brooswit/cthulhu.js/issues"
   },
-  "homepage": "https://github.com/brooswit/cthulhu.js#readme"
+  "homepage": "https://github.com/brooswit/cthulhu.js#readme",
+  "dependencies": {
+    "body-parser": "1.18.3"
+  }
 }
