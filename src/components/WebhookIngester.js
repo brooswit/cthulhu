@@ -5,7 +5,8 @@ module.exports = class WebhookIngester {
         this._cthulhu = cthulhu
         this._express = express
         this._operationName = operationName
-        server.post(`/${operationName}`, this._handleRequest)
+
+        this._express.post(`/${operationName}`, this._handleRequest)
     }
 
     async _handleRequest(res, req) {
