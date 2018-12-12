@@ -7,7 +7,7 @@ module.exports = class WebhookIngester {
         this._expressApp = expressApp
         this._operationName = operationName
 
-        this._expressApp.post(`/${operationName}`, this._handleRequest)
+        this._expressApp.post(`/${operationName}`, this._handleRequest.bind(this))
     }
 
     async _handleRequest(req, res) {
