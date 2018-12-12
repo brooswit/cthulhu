@@ -11,7 +11,7 @@ module.exports = class SlackIntegration {
         let operationName = `injest_slack_event/${appName}`
 
         this._webhookIngester = new WebhookIngester(cthulhu, express, operationName)
-        this._cthulhu.operation.register(operationName, this.injestSlackEvent)
+        this._cthulhu.operations.register(operationName, this.injestSlackEvent)
     }
 
     injestSlackEvent(token, challenge, type) {
