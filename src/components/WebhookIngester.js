@@ -10,7 +10,7 @@ module.exports = class WebhookIngester {
         this._expressApp.post(`/${operationName}`, this._handleRequest)
     }
 
-    async _handleRequest(res, req) {
+    async _handleRequest(req, res) {
         console.debug(`WebhookIngester:${operationName}:_handleRequest`)
         let operationData = JSONparseSafe(req.body) || {}
         
