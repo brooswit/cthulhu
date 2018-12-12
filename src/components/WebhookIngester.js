@@ -2,7 +2,7 @@ const {JSONparseSafe} = require('brooswit-common')
 
 module.exports = class WebhookIngester {
     constructor(cthulhuInstance, expressApp, operationName) {
-        console.debug(`new WebhookIngester ${operationName}`)
+        console.debug(`new WebhookIngester ${`/${operationName}`}`)
         this._cthulhuInstance = cthulhuInstance
         this._expressApp = expressApp
         this._operationName = operationName
