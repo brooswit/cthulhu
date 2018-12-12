@@ -1,16 +1,18 @@
 const WebhookIngester = require('./WebhookIngester')
 
 module.exports = class SlackIntegration {
-    constructor(cthulhu, express, token, appName) {
+    constructor(cthulhu, expressApp, token, appName) {
+        console.debug(`new SlackIntegration ${appName}`)
+
         this._cthulhu = cthulhu
-        this._express = express
+        this._expressApp = expressApp
 
         this._token = token
         this._appName = appName
         
         let operationName = `injest_slack_event/${appName}`
 
-        this._webhookIngester = new WebhookIngester(cthulhu, express, operationName)
+        this._webhookIngester = new WebhookIngester(cthulhu, expressApp, operationName)
         this._cthulhu.operations.register(operationName, this.injestSlackEvent)
     }
 

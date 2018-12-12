@@ -8,6 +8,7 @@ class Cthulhu {
         this.events = new EventEmitter()
         this.operations = new MethodRegistry()
         this.tasks = new TaskManager()
+        console.warn("...Cthulhu is ready...")
     }
 }
 
