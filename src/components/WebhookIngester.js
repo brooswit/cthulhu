@@ -10,10 +10,11 @@ module.exports = class WebhookIngester {
         this._expressApp.post(`/${operationName}`, this._handleRequest)
     }
 
-    async _handleRequest(res, req) {
+    _handleRequest(res, req) {
         console.debug(`WebhookIngester:${operationName}:_handleRequest`)
         let operationData = JSONparseSafe(req.body) || {}
-        await this._cthulhuInstance.operations.execute(this._operationName, operationData)
+
+        // await this._cthulhuInstance.operations.execute(this._operationName, operationData)
         res.send(200)
     }
 }
