@@ -17,7 +17,7 @@ module.exports = class SlackIntegration {
     }
 
     injestSlackEvent(token, challenge, type) {
-        console.debug(`SlackIntegration:${appName}:injestSlackEvent(${token}, ${challenge}, ${type})`)
+        console.debug(`SlackIntegration:${this._appName}:injestSlackEvent(${token}, ${challenge}, ${type})`)
         if (challenge) return challenge
         if (this._token !== token) return false
     }
