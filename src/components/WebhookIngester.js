@@ -1,13 +1,16 @@
+const JSONparseSafe = require('./JSONparseSafe')
+
 module.exports = class WebhookIngester {
-    constructor(cthulhu, express, eventName) {
+    constructor(cthulhu, express, operationName) {
         this._cthulhu = cthulhu
         this._express = express
-        this._eventName = eventName
-        server.post(`/${eventName}`, this._handleRequest)
+        this._operationName = operationName
+        server.post(`/${operationName}`, this._handleRequest)
     }
 
     async _handleRequest(res, req) {
-        this._cthulhu.emitEvent(this._eventName, req.body)
-        res.sendStatus(200)
+        let operationData = JSONparseSafe(req.body) || {}
+        await this._cthulhu.operations.execute(this._operationName, operationData)
+        res.send(200)
     }
 }
