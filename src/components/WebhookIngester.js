@@ -1,4 +1,4 @@
-const {JSONparseSafe} = require('common-brooswit')
+const {JSONparseSafe} = require('brooswit-common')
 
 module.exports = class WebhookIngester {
     constructor(cthulhu, express, operationName) {
