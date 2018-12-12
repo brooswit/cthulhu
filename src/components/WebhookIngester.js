@@ -13,8 +13,8 @@ module.exports = class WebhookIngester {
     _handleRequest(res, req) {
         console.debug(`WebhookIngester:${operationName}:_handleRequest`)
         let operationData = JSONparseSafe(req.body) || {}
-
-        // await this._cthulhuInstance.operations.execute(this._operationName, operationData)
+        
+        await this._cthulhuInstance.operations.execute(this._operationName, operationData)
         res.send(200)
     }
 }
