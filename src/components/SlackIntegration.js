@@ -1,6 +1,6 @@
 const WebhookIngester = require('./WebhookIngester')
 
-module.exports = class SlackIntergration {
+module.exports = class SlackIntegration {
     constructor(cthulhu, express, token, appName) {
         this._cthulhu = cthulhu
         this._express = express
