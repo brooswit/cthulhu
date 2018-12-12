@@ -12,6 +12,7 @@ module.exports = class WebhookIngester {
 
     async _handleRequest(req, res) {
         console.debug(`WebhookIngester:${this._operationName}:_handleRequest`)
+        console.log(typeof req.body)
         let operationData = req.body || {};
         await this._cthulhuInstance.operations.execute(this._operationName, operationData)
         res.send(200)
