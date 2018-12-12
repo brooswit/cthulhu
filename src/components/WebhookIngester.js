@@ -1,7 +1,7 @@
 module.exports = class WebhookIngester {
-    constructor(eventName, express, cthulhu) {
-        this._express = express
+    constructor(cthulhu, express, eventName) {
         this._cthulhu = cthulhu
+        this._express = express
         this._eventName = eventName
         server.post(`/${eventName}`, this._handleRequest)
     }

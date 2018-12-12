@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/brooswit/cthulhu.js#readme",
   "dependencies": {
-    "body-parser": "1.18.3"
+    "body-parser": "1.18.3",
+    "brooswit-common": "git+https://github.com/brooswit/js-common.git"
   }
 }
