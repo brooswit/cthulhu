@@ -2,7 +2,7 @@ const {JSONparseSafe} = require('brooswit-common')
 
 module.exports = class WebhookIngester {
     constructor(expressApp, path, handler) {
-        console.debug(`new WebhookIngester ${`/${eventName}`}`)
+        console.debug(`new WebhookIngester ${`/${path}`}`)
         expressApp.post(`/${path}`, async (req, res) => {
             let operationData = req.body || {};
             let result = await handler(operationData)
