@@ -2,6 +2,7 @@ const EventEmitter = require('events')
 const {TaskManager, MethodRegistry} = require('brooswit-common')
 const WebhookIngester = require('./src/components/WebhookIngester')
 const SlackIntegration = require('./src/components/SlackIntegration')
+const SalesforceIntegration = require('./src/components/SalesforceIntegration')
 
 class Cthulhu {
     constructor() {
@@ -14,5 +15,6 @@ class Cthulhu {
 
 Cthulhu.WebhookIngester = WebhookIngester
 Cthulhu.SlackIntegration = SlackIntegration
+Cthulhu.SalesforceIntegration = SalesforceIntegration
 
 module.exports = Cthulhu
