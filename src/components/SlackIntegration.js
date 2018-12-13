@@ -6,11 +6,10 @@ module.exports = class SlackIntegration {
         const webhookIngester = new WebhookIngester(
             expressApp,  `/injest_slack_event/${appName}`, 
             (payload) => {
-                const {token, challenge, type} = payload
+                const {token, challenge, type, event} = payload
                 if (token !== accessToken) return false
                 if (challenge) return challenge
-                console.log(payload)
-                cthulhu.events.emit(`slack:${appName}:${type}`, payload)
+                cthulhu.events.emit(`slack:${appName}:${event.type}`, payload)
             }
         )
     }
