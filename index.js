@@ -1,6 +1,6 @@
 const EventEmitter = require('events')
 const {TaskManager, MethodRegistry} = require('brooswit-common')
-const WebhookEventIngester = require('./src/components/WebhookEventIngester')
+const WebhookIngester = require('./src/components/WebhookIngester')
 const SlackIntegration = require('./src/components/SlackIntegration')
 
 class Cthulhu {
@@ -12,7 +12,7 @@ class Cthulhu {
     }
 }
 
-Cthulhu.WebhookEventIngester = WebhookEventIngester
+Cthulhu.WebhookIngester = WebhookIngester
 Cthulhu.SlackIntegration = SlackIntegration
 
 module.exports = Cthulhu
