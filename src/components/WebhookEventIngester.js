@@ -1,6 +1,6 @@
 const {JSONparseSafe} = require('brooswit-common')
 
-module.exports = class WebhookIngester {
+module.exports = class WebhookEventIngester {
     constructor(cthulhuInstance, expressApp, eventName) {
         console.debug(`new WebhookIngester ${`/${eventName}`}`)
         expressApp.post(`/${eventName}`, async (req, res) => {
