@@ -6,6 +6,7 @@ const SlackIntegration = require('./src/components/SlackIntegration')
 class Cthulhu {
     constructor() {
         this.events = new EventEmitter()
+        this.operations = new MethodRegistry()
         this.tasks = new TaskManager()
         console.warn("...Cthulhu is ready...")
     }

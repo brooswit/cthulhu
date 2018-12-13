@@ -1,14 +1,13 @@
 const {JSONparseSafe} = require('brooswit-common')
 
-module.exports = class WebhookEventIngester {
-    constructor(cthulhuInstance, expressApp, eventName) {
+module.exports = class WebhookIngester {
+    constructor(expressApp, path, handler) {
         console.debug(`new WebhookIngester ${`/${eventName}`}`)
-        expressApp.post(`/${eventName}`, async (req, res) => {
-            console.debug(`WebhookIngester:${eventName}:handled`)
-            console.log(req.body)
+        expressApp.post(`/${path}`, async (req, res) => {
             let operationData = req.body || {};
-            await cthulhuInstance.events.emit(eventName, operationData)
-            res.send(200)
+            let result = await handler(operationData)
+            if(result === false) res.status(404).end();
+            else res.send(result)
         })
     }
 }
