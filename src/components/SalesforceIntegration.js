@@ -6,7 +6,6 @@ module.exports = class SalesforceIntegration {
         const webhookIngester = new WebhookIngester(
             expressApp,  `/injest_salesforce_event/${accountName}/enterprise_deal_close`, 
             (payload) => {
-                console.log(payload)
                 if (payload.token !== token) return false
                 if (payload.challenge) return payload.challenge
                 cthulhu.events.emit(`salesforce_event:${accountName}`, payload)
