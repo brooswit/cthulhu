@@ -3,7 +3,7 @@ const {TaskManager, MethodRegistry} = require('brooswit-common')
 const WebhookIngester = require('./src/components/WebhookIngester')
 const SlackIntegration = require('./src/components/SlackIntegration')
 const SalesforceIntegration = require('./src/components/SalesforceIntegration')
-const fetchInternalApiHandler = require('./src/taskConsumer/fetchInternalApiHandler')
+const consumeFetchInternalApiTasks = require('./src/taskConsumer/consumeFetchInternalApiTasks')
 
 class Cthulhu {
     constructor() {
@@ -17,6 +17,6 @@ class Cthulhu {
 Cthulhu.WebhookIngester = WebhookIngester
 Cthulhu.SlackIntegration = SlackIntegration
 Cthulhu.SalesforceIntegration = SalesforceIntegration
-Cthulhu.fetchInternalApiHandler = fetchInternalApiHandler
+Cthulhu.consumeFetchInternalApiTasks = consumeFetchInternalApiTasks
 
 module.exports = Cthulhu
