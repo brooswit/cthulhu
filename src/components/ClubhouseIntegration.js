@@ -8,7 +8,7 @@ module.exports = class ClubhouseIntegration {
             (payload) => {
                 console.log(JSON.stringify())
                 for (let actionIndex in payload.actions) {
-                    let action = payload.actions[action]
+                    let action = payload.actions[actionIndex]
 
                     cthulhu.events.emit(`clubhouse_event:${appName}`, action)
                     cthulhu.events.emit(`clubhouse_event:${appName}:${action['entity_type']}`, action)
