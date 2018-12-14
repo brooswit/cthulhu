@@ -6,7 +6,6 @@ module.exports = class ClubhouseIntegration {
         const webhookIngester = new WebhookIngester(
             expressApp,  `/ingest_clubhouse_event/${appName}`, 
             (payload) => {
-                console.log(JSON.stringify())
                 for (let actionIndex in payload.actions) {
                     let action = payload.actions[actionIndex]
 
