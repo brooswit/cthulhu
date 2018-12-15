@@ -1,9 +1,8 @@
 const zendeskClientFactory = require('node-zendesk')
-console.log({zendeskClientFactory})
 module.exports = class ZendeskIntegration {
     constructor(cthulhu, secret, appName) {
         console.debug(`new ZendeskIntegration ${appName}`)
-        zendeskClient = zendeskClientFactory.createClient({
+        let zendeskClient = zendeskClientFactory.createClient({
             username:  'jwinstead@launchdarkly.com',
             token:     'NS422LzY5HilrF0HAagtyyHq7Hdkge6Mkee4IeH4',
             remoteUri: 'https://launchdarklysupport.zendesk.com/api/v2'
