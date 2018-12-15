@@ -1,5 +1,5 @@
 const zendeskClientFactory = require('node-zendesk')
-
+console.log({zendeskClientFactory})
 module.exports = class ZendeskIntegration {
     constructor(cthulhu, secret, appName) {
         console.debug(`new ZendeskIntegration ${appName}`)
@@ -8,7 +8,8 @@ module.exports = class ZendeskIntegration {
             token:     'NS422LzY5HilrF0HAagtyyHq7Hdkge6Mkee4IeH4',
             remoteUri: 'https://launchdarklysupport.zendesk.com/api/v2'
         })
-        (async() => {
+
+        (async () => {
             while(true) {
                 let orgs = await new Promise((resolve, reject) => {
                     zendeskClient.organizations.list( (err, req, response) => {
