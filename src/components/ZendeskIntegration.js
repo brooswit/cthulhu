@@ -7,7 +7,7 @@ module.exports = class ZendeskIntegration {
         this._zdToken = zdToken
         this._appName = appName
 
-        this._zendeskClient = zendesk.createClient({
+        this.client = zendesk.createClient({
             username:  zdUsername,
             token:     zdToken,
             remoteUri: `https://${appName}.zendesk.com/api/v2`
@@ -22,12 +22,11 @@ module.exports = class ZendeskIntegration {
                 setTimeout(resolve, 1000 * 60 * 15)
             })
             let orgs = await new Promise((resolve, reject) => {
-                this._zendeskClient.organizations.list( (err, req, response) => {
+                this.client.organizations.list( (err, req, response) => {
                     if(err) reject(err)
                     else resolve(response)
                 })
             })
-            console.log('zendesk stuff scraped')
             for (let orgIndex in orgs) {
                 let org = orgs[orgIndex]
                 this._cthulhu.events.emit(`zendesk_event:${this._appName}:organization:scraped`, org)
