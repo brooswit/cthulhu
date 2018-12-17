@@ -28,7 +28,7 @@ module.exports = class ZendeskIntegration {
                 })
             })
             console.log('zendesk stuff scraped')
-            for (orgIndex in orgs) {
+            for (let orgIndex in orgs) {
                 let org = orgs[orgIndex]
                 this._cthulhu.events.emit(`zendesk_event:${this._appName}:organization:scraped`, org)
             }
