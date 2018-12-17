@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/brooswit/cthulhu.js#readme",
   "dependencies": {
-    "brooswit-common": "git+https://github.com/brooswit/js-common.git"
+    "brooswit-common": "git+https://github.com/brooswit/js-common.git",
+    "node-zendesk": "1.4.0"
   }
 }
