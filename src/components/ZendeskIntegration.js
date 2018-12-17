@@ -1,5 +1,9 @@
 const zendesk = require('node-zendesk')
 
+async function delay (time) {
+    return new Promise((resolve) => { setTimeout(resolve, time) })
+}
+
 module.exports = class ZendeskIntegration {
     constructor(cthulhu, zdUsername, zdToken, appName) {
         this._cthulhu = cthulhu
@@ -18,9 +22,7 @@ module.exports = class ZendeskIntegration {
     }
     async _main() {
         while(true) {
-            let nextCyclePromise = new Promise((resolve, reject) => {
-                setTimeout(resolve, 1000 * 60 * 15)
-            })
+            let nextCyclePromise = delay(1000 * 60 * 15)
             let fetchOrgsPromise = new Promise((resolve, reject) => {
                 this.client.organizations.list( (err, req, response) => {
                     if(err) reject(err)
@@ -60,27 +62,27 @@ module.exports = class ZendeskIntegration {
             for (let orgIndex in orgs) {
                 let org = orgs[orgIndex]
                 this._cthulhu.events.emit(`zendesk_event:${this._appName}:organization:scraped`, org)
-                await new Promise((resolve, reject) => { setTimeout(resolve) })
+                await delay(1)
             }
             for (let satIndex in sats) {
                 let sat = sats[satIndex]
                 this._cthulhu.events.emit(`zendesk_event:${this._appName}:satisfaction:scraped`, sat)
-                await new Promise((resolve, reject) => { setTimeout(resolve) })
+                await delay(1)
             }
             for (let ticsIndex in tics) {
                 let tics = tics[ticsIndex]
                 this._cthulhu.events.emit(`zendesk_event:${this._appName}:ticket:scraped`, tics)
-                await new Promise((resolve, reject) => { setTimeout(resolve) })
+                await delay(1)
             }
             for (let usrsIndex in usrs) {
                 let usrs = usrss[usrsIndex]
                 this._cthulhu.events.emit(`zendesk_event:${this._appName}:ticket:scraped`, usrs)
-                await new Promise((resolve, reject) => { setTimeout(resolve) })
+                await delay(1)
             }
             for (let tagsIndex in tags) {
                 let tags = tagss[tagsIndex]
                 this._cthulhu.events.emit(`zendesk_event:${this._appName}:ticket:scraped`, tags)
-                await new Promise((resolve, reject) => { setTimeout(resolve) })
+                await delay(1)
             }
             await nextCyclePromise
         }
