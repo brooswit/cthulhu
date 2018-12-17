@@ -13,7 +13,7 @@ module.exports = class ZendeskIntegration {
     async _main() {
         while(true) {
             let nextCyclePromise = new Promise((resolve, reject) => {
-                setTimeout(1000 * 60 * 15, resolve)
+                setTimeout(resolve, 1000 * 60 * 15)
             })
             let orgs = await new Promise((resolve, reject) => {
                 zendeskClient.organizations.list( (err, req, response) => {
