@@ -1,13 +1,14 @@
 const zendesk = require('node-zendesk')
+
+let zendeskClient = zendesk.createClient({
+    username:  zdUsername,
+    token:     zdToken,
+    remoteUri: `https://${appName}.zendesk.com/api/v2`
+})
+
 module.exports = class ZendeskIntegration {
     constructor(cthulhu, zdUsername, zdToken, appName) {
         console.debug(`new ZendeskIntegration ${appName}`)
-        let zendeskClient = zendesk.createClient({
-            username:  zdUsername,
-            token:     zdToken,
-            remoteUri: `https://${appName}.zendesk.com/api/v2`
-        })
-        
         this._main()
     }
     async _main() {
