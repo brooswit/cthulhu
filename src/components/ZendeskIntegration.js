@@ -1,15 +1,22 @@
 const zendeskClientFactory = require('node-zendesk')
 module.exports = class ZendeskIntegration {
-    constructor(cthulhu, secret, appName) {
+    constructor(cthulhu, zdUsername, zdToken, appName) {
         console.debug(`new ZendeskIntegration ${appName}`)
         let zendeskClient = zendeskClientFactory.createClient({
-            username:  'jwinstead@launchdarkly.com',
-            token:     'NS422LzY5HilrF0HAagtyyHq7Hdkge6Mkee4IeH4',
-            remoteUri: 'https://launchdarklysupport.zendesk.com/api/v2'
+            username:  zdUsername,
+            token:     zdToken,
+            remoteUri: `https://${appName}.zendesk.com/api/v2`
         })
 
         (async () => {
             while(true) {
+                let nextCyclePromise = new Promise((resolve, reject) => {
+                    setTimeout(1000 * 60 * 15)
+                    zendeskClient.organizations.list( (err, req, response) => {
+                        if(err) reject(err)
+                        else resolve(response)
+                    })
+                })
                 let orgs = await new Promise((resolve, reject) => {
                     zendeskClient.organizations.list( (err, req, response) => {
                         if(err) reject(err)
@@ -21,6 +28,7 @@ module.exports = class ZendeskIntegration {
                     let org = orgs[orgIndex]
                     cthulhu.events.emit(`zendesk_event:${appName}:organization:scraped`, org)
                 }
+                await nextCyclePromise
             }
         })()
     }
