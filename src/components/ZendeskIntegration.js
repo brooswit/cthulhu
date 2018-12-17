@@ -69,19 +69,19 @@ module.exports = class ZendeskIntegration {
                 this._cthulhu.events.emit(`zendesk_event:${this._appName}:satisfaction:scraped`, sat)
                 await delay(1)
             }
-            for (let ticsIndex in tics) {
-                let tics = tics[ticsIndex]
-                this._cthulhu.events.emit(`zendesk_event:${this._appName}:ticket:scraped`, tics)
+            for (let ticIndex in tics) {
+                let tic = tics[ticIndex]
+                this._cthulhu.events.emit(`zendesk_event:${this._appName}:ticket:scraped`, tic)
                 await delay(1)
             }
-            for (let usrsIndex in usrs) {
-                let usrs = usrss[usrsIndex]
-                this._cthulhu.events.emit(`zendesk_event:${this._appName}:ticket:scraped`, usrs)
+            for (let usrIndex in usrs) {
+                let usr = usrs[usrIndex]
+                this._cthulhu.events.emit(`zendesk_event:${this._appName}:user:scraped`, usr)
                 await delay(1)
             }
-            for (let tagsIndex in tags) {
-                let tags = tagss[tagsIndex]
-                this._cthulhu.events.emit(`zendesk_event:${this._appName}:ticket:scraped`, tags)
+            for (let tagIndex in tags) {
+                let tag = tags[tagIndex]
+                this._cthulhu.events.emit(`zendesk_event:${this._appName}:tag:scraped`, tag)
                 await delay(1)
             }
             await nextCyclePromise
