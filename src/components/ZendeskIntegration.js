@@ -60,22 +60,27 @@ module.exports = class ZendeskIntegration {
             for (let orgIndex in orgs) {
                 let org = orgs[orgIndex]
                 this._cthulhu.events.emit(`zendesk_event:${this._appName}:organization:scraped`, org)
+                await new Promise((resolve, reject) => { setTimeout(resolve) })
             }
             for (let satIndex in sats) {
                 let sat = sats[satIndex]
                 this._cthulhu.events.emit(`zendesk_event:${this._appName}:satisfaction:scraped`, sat)
+                await new Promise((resolve, reject) => { setTimeout(resolve) })
             }
-            for (let ticsIndex in ticss) {
-                let tics = ticss[ticsIndex]
+            for (let ticsIndex in tics) {
+                let tics = tics[ticsIndex]
                 this._cthulhu.events.emit(`zendesk_event:${this._appName}:ticket:scraped`, tics)
+                await new Promise((resolve, reject) => { setTimeout(resolve) })
             }
-            for (let usrsIndex in usrss) {
+            for (let usrsIndex in usrs) {
                 let usrs = usrss[usrsIndex]
                 this._cthulhu.events.emit(`zendesk_event:${this._appName}:ticket:scraped`, usrs)
+                await new Promise((resolve, reject) => { setTimeout(resolve) })
             }
-            for (let tagsIndex in tagss) {
+            for (let tagsIndex in tags) {
                 let tags = tagss[tagsIndex]
                 this._cthulhu.events.emit(`zendesk_event:${this._appName}:ticket:scraped`, tags)
+                await new Promise((resolve, reject) => { setTimeout(resolve) })
             }
             await nextCyclePromise
         }
