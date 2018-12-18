@@ -148,14 +148,14 @@ class Minion {
     async _request(resourceType, action, resourceName, value) {
         await this.untilReady()
         const reqRefId = this._nextReqRefId ++
-        this._ws.send({ resourceType, action, value, reqRefId })
+        this._ws.send(JSON.stringify({ reqRefId, resourceType, action, resourceName, value}))
         return await new Promise((resolve) => { this._responseEvents.once(reqRefId, resolve) })
     }
 
     async _listen(resourceType, action, resourceName, value, callback) {
         await this.untilReady()
         const reqRefId = this._nextReqRefId ++
-        this._ws.send(JSON.stringify({ resourceType, action, value, reqRefId }))
+        this._ws.send(JSON.stringify({ reqRefId, resourceType, action, resourceName, value}))
         const resRefId = await new Promise((resolve) => {this._responseEvents.once(reqRefId, resolve) })
         this._responseEvents.on(reqRefId, callback)
         return resRefId
