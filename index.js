@@ -86,9 +86,9 @@ class WebSocketBridge {
 
     async _handleMessage(str) {
         console.warn('_handleMessage')
-        const {rerRefId, resourceType, action, resourceName, value} = JSONparseSafe(str, {})
-        console.warn({rerRefId, resourceType, action, resourceName, value})
-        let respond = (value) => { this._ws.send.call(this._ws, JSON.stringify({rerRefId, value})) }
+        const {reqRefId, resourceType, action, resourceName, value} = JSONparseSafe(str, {})
+        console.warn({reqRefId, resourceType, action, resourceName, value})
+        let respond = (value) => { this._ws.send.call(this._ws, JSON.stringify({reqRefId, value})) }
         let result
 
         switch(resourceType) {
@@ -117,7 +117,7 @@ class WebSocketBridge {
                 }
                 break
         }
-        return {rerRefId, value: result}
+        return {reqRefId, value: result}
     }
 
     destroy() {
