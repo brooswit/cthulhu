@@ -77,6 +77,7 @@ class CthulhuTasks {
 
 class WebSocketBridge {
     constructor(cthulhu, ws) {
+        console.warn('new client')
         this._cthulhu = cthulhu
         this._ws = ws
         this._ws.on('message', this._handleMessage.bind(this))
@@ -84,6 +85,7 @@ class WebSocketBridge {
     }
 
     async _handleMessage(str) {
+        console.warn('_handleMessage')
         const {rerRefId, resourceType, action, resourceName, value} = JSONparseSafe(str, {})
         let respond = (value) => { this._ws.send.call(this._ws, JSON.stringify({rerRefId, value})) }
         let result
@@ -124,6 +126,7 @@ class WebSocketBridge {
 
 class Minion {
     constructor (url) {
+        console.warn('Starting Minion...')
         this._ws = new WebSocket(`ws://${url}/stream`);
         this._ws.on('message', this._handleMessage)
         this._nextReqRefId = 0
@@ -135,6 +138,10 @@ class Minion {
         this.events = new MinionEvents(this)
         this.operations = new MinionOperations(this)
         this.tasks = new MinionTasks(this)
+
+        this._openPromise.once('open', ()=>{
+            console.warn('... Minion is ready ...')
+        })
     }
 
     async _request(resourceType, action, value) {
