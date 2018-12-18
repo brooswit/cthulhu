@@ -191,11 +191,11 @@ class MinionOperations {
     constructor(minion) {
         this._minion = minion
     }
-    async execute(eventName, value) {
-        return await this._minion._request('operations', 'execute', value, callback)
+    async execute(operationName, value) {
+        return await this._minion._request('operations', 'execute', operationName, value, callback)
     }
-    async register(eventName, callback) {
-        return await this._minion._listen('operations', 'register', eventName, callback)
+    async register(operationName, callback) {
+        return await this._minion._listen('operations', 'register', operationName, null, callback)
     }
 }
 
