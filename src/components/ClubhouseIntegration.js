@@ -1,10 +1,10 @@
 const WebhookIngester = require('./WebhookIngester')
 
 module.exports = class ClubhouseIntegration {
-    constructor(cthulhu, expressApp, secret, appName) {
+    constructor(cthulhu, secret, appName) {
         console.debug(`new ClubhouseIntegration ${appName}`)
         const webhookIngester = new WebhookIngester(
-            expressApp,  `/ingest_clubhouse_event/${appName}`, 
+            cthulhu.express,  `/ingest_clubhouse_event/${appName}`, 
             (payload) => {
                 for (let actionIndex in payload.actions) {
                     let action = payload.actions[actionIndex]
