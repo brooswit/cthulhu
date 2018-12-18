@@ -71,10 +71,10 @@ class CthulhuTasks {
         this._tasks = new TaskManager()
     }
     async add(taskName, value) {
-        return this._tasks.execute(taskName, value)
+        return this._tasks.add(taskName, value)
     }
     async consumer(taskName, callback) {
-        return this._tasks.register(taskName, callback)
+        return this._tasks.consumer(taskName, callback)
     }
 }
 
