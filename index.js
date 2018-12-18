@@ -7,7 +7,6 @@ const ClubhouseIntegration = require('./src/components/ClubhouseIntegration')
 const ZendeskIntegration = require('./src/components/ZendeskIntegration')
 const express = require('express')
 const bodyParser = require('body-parser')
-const Cthulhu = require('Cthulhu')
 
 class Cthulhu {
     constructor() {
