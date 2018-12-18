@@ -203,11 +203,11 @@ class MinionTasks {
     constructor(minion) {
         this._minion = minion
     }
-    async add(eventName, value) {
-        return await this._minion._request('tasks', 'add', value, callback)
+    async add(taskName, value) {
+        return await this._minion._request('tasks', 'add', taskName, value, callback)
     }
-    async consumer(eventName, callback) {
-        return await this._minion._listen('tasks', 'consumer', eventName, callback)
+    async consumer(taskName, callback) {
+        return await this._minion._listen('tasks', 'consumer', taskName, null, callback)
     }
 }
 
