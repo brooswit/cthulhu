@@ -1,4 +1,4 @@
-const {JSONsafeParse, TaskManager, MethodRegistry} = require('brooswit-common')
+const {JSONparseSafe, TaskManager, MethodRegistry} = require('brooswit-common')
 
 const EventEmitter = require('events')
 
@@ -89,7 +89,7 @@ class WebSocketBridge {
     }
 
     async _handleMessage(str) {
-        const {rerRefId, resourceType, action, resourceName, value} = JSONsafeParse(str, {})
+        const {rerRefId, resourceType, action, resourceName, value} = JSONparseSafe(str, {})
         let respond = (value) => { this._ws.send.call(this._ws, JSON.stringify({rerRefId, value})) }
         let result
 
@@ -163,7 +163,7 @@ class Minion {
     }
 
     _handleMessage(str) {
-        const message = JSONsafeParse(str, {})
+        const message = JSONparseSafe(str, {})
         const {reqRefId, value} = message
         this._responseEvents.emit(reqRefId, value)
     }
