@@ -139,7 +139,7 @@ class Minion {
         this.operations = new MinionOperations(this)
         this.tasks = new MinionTasks(this)
 
-        this._openPromise.once('open', ()=>{
+        this._ws.on('open', ()=>{
             console.warn('... Minion is ready ...')
         })
     }
