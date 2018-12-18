@@ -180,10 +180,10 @@ class MinionEvents {
         this._minion = minion
     }
     async emit(eventName, value) {
-        return await this._minion._request('events', 'emit', value, callback)
+        return await this._minion._request('events', 'emit', eventName, value, callback)
     }
     async on(eventName, callback) {
-        return await this._minion._listen('events', 'on', eventName, callback)
+        return await this._minion._listen('events', 'on', eventName, null, callback)
     }
 }
 
