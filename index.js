@@ -132,6 +132,7 @@ class Minion {
         this._ws = new WebSocket(`ws://${url}/stream`);
         this._ws.on('message', this._handleMessage)
         this._nextReqRefId = 0
+        this._responseEvents = new EventEmitter()
         this._openPromise = new Promise((resolve) => {
             this._ws.on('open', resolve)
         })
