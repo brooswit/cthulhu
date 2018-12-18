@@ -158,7 +158,7 @@ class Minion {
     }
 
     async untilReady() {
-        await this._readyPromise
+        await this._openPromise
     }
 
     _handleMessage(str) {
