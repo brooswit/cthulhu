@@ -17,7 +17,13 @@
   },
   "homepage": "https://github.com/brooswit/cthulhu.js#readme",
   "dependencies": {
+    "axios": "0.18.0",
+    "body-parser": "1.18.3",
     "brooswit-common": "git+https://github.com/brooswit/js-common.git",
-    "node-zendesk": "1.4.0"
+    "clubhouse-lib": "0.3.1",
+    "express": "4.16.4",
+    "express-ws": "4.0.0",
+    "node-zendesk": "1.4.0",
+    "ws": "6.1.2"
   }
 }
