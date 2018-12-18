@@ -90,7 +90,7 @@ class WebSocketBridge {
 
     async _handleMessage(str) {
         const {rerRefId, resourceType, action, resourceName, value} = JSONsafeParse(str, {})
-        let respond = (value) => { this._ws.send.call({rerRefId, value}) }
+        let respond = (value) => { this._ws.send.call(this._ws, JSON.stringify({rerRefId, value})) }
         let result
 
         switch(resourceType) {
@@ -151,7 +151,7 @@ class Minion {
     async _listen(resourceType, action, value, callback) {
         await this.untilReady()
         const reqRefId = this._nextReqRefId ++
-        this._ws.send({ resourceType, action, value, reqRefId })
+        this._ws.send(JSON.stringify({ resourceType, action, value, reqRefId }))
         const resRefId = await new Promise((resolve) => {this._responseEvents.once(reqRefId, resolve) })
         this._responseEvents.on(reqRefId, callback)
         return resRefId
