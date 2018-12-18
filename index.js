@@ -167,6 +167,8 @@ class Minion {
         this._responseEvents.emit(reqRefId, value)
     }
 
+    ready() {}
+
 }
 
 class MinionEvents {
