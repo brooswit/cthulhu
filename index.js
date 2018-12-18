@@ -16,7 +16,7 @@ class Cthulhu {
         this.tasks = new CthulhuTasks()
 
         this.express = express()
-            .use(bodyParser.json())
+        this.express.use(bodyParser.json())
             .ws('/stream', this._handleStream)
 
         enableWs(this.express)
