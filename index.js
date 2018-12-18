@@ -84,8 +84,8 @@ class WebSocketBridge {
     constructor(cthulhu, ws) {
         this._cthulhu = cthulhu
         this._ws = ws
-        this._ws.on('message', this._handleMessage)
-        this._ws.on('close', this.destroy)
+        this._ws.on('message', this._handleMessage, this)
+        this._ws.on('close', this.destroy, this)
     }
 
     async _handleMessage(str) {
