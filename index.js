@@ -145,14 +145,14 @@ class Minion {
         })
     }
 
-    async _request(resourceType, action, value) {
+    async _request(resourceType, action, resourceName, value) {
         await this.untilReady()
         const reqRefId = this._nextReqRefId ++
         this._ws.send({ resourceType, action, value, reqRefId })
         return await new Promise((resolve) => { this._responseEvents.once(reqRefId, resolve) })
     }
 
-    async _listen(resourceType, action, value, callback) {
+    async _listen(resourceType, action, resourceName, value, callback) {
         await this.untilReady()
         const reqRefId = this._nextReqRefId ++
         this._ws.send(JSON.stringify({ resourceType, action, value, reqRefId }))
