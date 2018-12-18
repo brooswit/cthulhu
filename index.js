@@ -24,12 +24,7 @@ class Cthulhu {
         this.express = express()
         enableWs(this.express)
         this.express.use(bodyParser.json())
-            .ws('/stream', this._handleStream)
-
-    }
-
-    _handleStream(ws) {
-        const webSocketBridge = new WebSocketBridge(this, ws)
+            .ws('/stream', (ws) => { new WebSocketBridge(this, ws) })
     }
 
     ready() {
@@ -47,8 +42,8 @@ class CthulhuEvents {
     async emit(eventName, value) {
         return this._events.emit(eventName, value)
     }
-    async on(eventName, callback) {
-        return this._events.on(eventName, callback)
+    async on(eventName, callback, context) {
+        return this._events.on(eventName, callback, context)
     }
 }
 
