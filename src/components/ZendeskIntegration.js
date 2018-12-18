@@ -20,6 +20,7 @@ module.exports = class ZendeskIntegration {
         console.debug(`new ZendeskIntegration ${appName}`)
         this._main()
     }
+
     async _main() {
         while(true) {
             let nextCyclePromise = delay(1000 * 60 * 15)
