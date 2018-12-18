@@ -1,12 +1,16 @@
-const EventEmitter = require('events')
 const {JSONsafeParse, TaskManager, MethodRegistry} = require('brooswit-common')
+
+const EventEmitter = require('events')
+
+const express = require('express')
+const bodyParser = require('body-parser')
+const enableWs = require('express-ws')
+
 const WebhookIngester = require('./src/components/WebhookIngester')
 const SlackIntegration = require('./src/components/SlackIntegration')
 const SalesforceIntegration = require('./src/components/SalesforceIntegration')
 const ClubhouseIntegration = require('./src/components/ClubhouseIntegration')
 const ZendeskIntegration = require('./src/components/ZendeskIntegration')
-const express = require('express')
-const bodyParser = require('body-parser')
 
 class Cthulhu {
     constructor() {
