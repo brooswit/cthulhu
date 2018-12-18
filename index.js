@@ -86,8 +86,8 @@ class WebSocketBridge {
 
     async _handleMessage(str) {
         console.warn('_handleMessage')
-        console.warn({rerRefId, resourceType, action, resourceName, value})
         const {rerRefId, resourceType, action, resourceName, value} = JSONparseSafe(str, {})
+        console.warn({rerRefId, resourceType, action, resourceName, value})
         let respond = (value) => { this._ws.send.call(this._ws, JSON.stringify({rerRefId, value})) }
         let result
 
