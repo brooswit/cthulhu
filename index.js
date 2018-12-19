@@ -77,18 +77,18 @@ class WebSocketBridge {
         switch(resourceType) {
             case 'events':
                 switch(action) {
-                    case 'on':
-                        result = this._cthulhu.events.on(resourceName, respond); break
-                    case 'emit':
-                        result = this._cthulhu.events.emit(resourceName); break
+                    case 'trigger':
+                        result = this._cthulhu.events.trigger(resourceName); break
+                        case 'hook':
+                            result = this._cthulhu.events.hook(resourceName, respond); break
                 }
                 break
             case 'tasks':
                 switch(action) {
-                    case 'consumer':
-                        result = this._cthulhu.tasks.consumer(resourceName, respond); break
                     case 'add':
                         result = await this._cthulhu.tasks.add(resourceName, value); break
+                    case 'consume':
+                        result = this._cthulhu.tasks.consume(resourceName, respond); break
                 }
                 break
         }
