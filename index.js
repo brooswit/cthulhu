@@ -172,7 +172,6 @@ class Minion {
     }
 
     ready() {}
-
 }
 
 class MinionEvents {
