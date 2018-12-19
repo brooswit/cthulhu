@@ -71,7 +71,9 @@ class WebSocketBridge {
         console.warn('_handleMessage')
         const {reqRefId, resourceType, action, resourceName, value} = JSONparseSafe(str, {})
         console.warn({reqRefId, resourceType, action, resourceName, value})
-        let respond = (value) => { this._ws.send.call(this._ws, JSON.stringify({reqRefId, value})) }
+        let respond = async (value) => {
+            this._ws.send(JSON.stringify({reqRefId, value})
+        }
         let result
 
         switch(resourceType) {
@@ -79,8 +81,8 @@ class WebSocketBridge {
                 switch(action) {
                     case 'trigger':
                         result = this._cthulhu.events.trigger(resourceName); break
-                        case 'hook':
-                            result = this._cthulhu.events.hook(resourceName, respond); break
+                    case 'hook':
+                        result = this._cthulhu.events.hook(resourceName, respond); break
                 }
                 break
             case 'tasks':
