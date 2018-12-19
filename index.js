@@ -1,7 +1,5 @@
 const {MethodManager, HookManager, JSONparseSafe, TaskManager, MethodRegistry} = require('brooswit-common')
 
-const EventEmitter = require('events')
-
 const WebSocket = require('ws')
 
 const express = require('express')
@@ -36,13 +34,13 @@ class CthulhuEvents {
     constructor(cthulhu) {
         this._cthulhu = cthulhu
 
-        this._events = new EventEmitter()
+        this._methodManager = new MethodManager()
     }
     async trigger(eventName, value) {
-        return this._events.emit(eventName, value)
+        return this._methodManager.emit(eventName, value)
     }
     async listen(eventName, callback, context) {
-        return this._events.on(eventName, callback, context)
+        return this._methodManager.on(eventName, callback, context)
     }
 }
 
