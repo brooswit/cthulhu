@@ -39,8 +39,8 @@ class CthulhuEvents {
     async trigger(eventName, value) {
         return this._methodManager.trigger(eventName, value)
     }
-    async listen(eventName, callback, context) {
-        return this._methodManager.on(eventName, callback, context)
+    async hook(eventName, callback, context) {
+        return this._methodManager.hook(eventName, callback, context)
     }
 }
 
@@ -152,11 +152,11 @@ class MinionEvents {
     constructor(minion) {
         this._minion = minion
     }
-    async emit(eventName, value) {
-        return await this._minion._request('events', 'emit', eventName, value, callback)
+    async trigger(eventName, value) {
+        return await this._minion._request('events', 'trigger', eventName, value, callback)
     }
-    async on(eventName, callback) {
-        return await this._minion._listen('events', 'on', eventName, null, callback)
+    async hook(eventName, callback) {
+        return await this._minion._listen('events', 'hook', eventName, null, callback)
     }
 }
 
@@ -167,8 +167,8 @@ class MinionTasks {
     async add(taskName, value) {
         return await this._minion._request('tasks', 'add', taskName, value, callback)
     }
-    async consumer(taskName, callback) {
-        return await this._minion._listen('tasks', 'consumer', taskName, null, callback)
+    async consume(taskName, callback) {
+        return await this._minion._listen('tasks', 'consume', taskName, null, callback)
     }
 }
 
