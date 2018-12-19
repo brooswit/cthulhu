@@ -37,7 +37,7 @@ class CthulhuEvents {
         this._methodManager = new MethodManager()
     }
     async trigger(eventName, value) {
-        return this._methodManager.emit(eventName, value)
+        return this._methodManager.trigger(eventName, value)
     }
     async listen(eventName, callback, context) {
         return this._methodManager.on(eventName, callback, context)
