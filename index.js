@@ -1,4 +1,4 @@
-const {JSONparseSafe, TaskManager, MethodRegistry} = require('brooswit-common')
+const {MethodManager, HookManager, JSONparseSafe, TaskManager, MethodRegistry} = require('brooswit-common')
 
 const EventEmitter = require('events')
 
