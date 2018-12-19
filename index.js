@@ -18,7 +18,6 @@ class Cthulhu {
     constructor() {
 
         this.events = new CthulhuEvents()
-        this.operations = new CthulhuOperations()
         this.tasks = new CthulhuTasks()
 
         this.express = express()
@@ -47,20 +46,6 @@ class CthulhuEvents {
     }
 }
 
-class CthulhuOperations {
-    constructor(cthulhu) {
-        this._cthulhu = cthulhu
-
-        this._methods = new MethodRegistry()
-    }
-    async execute(operationName, value) {
-        return this._methods.execute(operationName, value)
-    }
-    async register(operationName, callback) {
-        return this._methods.register(operationName, callback)
-    }
-}
-
 class CthulhuTasks {
     constructor(cthulhu) {
         this._cthulhu = cthulhu
@@ -70,7 +55,7 @@ class CthulhuTasks {
     async add(taskName, value) {
         return this._tasks.add(taskName, value)
     }
-    async consumer(taskName, callback) {
+    async consume(taskName, callback) {
         return this._tasks.consumer(taskName, callback)
     }
 }
@@ -98,14 +83,6 @@ class WebSocketBridge {
                         result = this._cthulhu.events.on(resourceName, respond); break
                     case 'emit':
                         result = this._cthulhu.events.emit(resourceName); break
-                }
-                break
-            case 'operations':
-                switch(action) {
-                    case 'register':
-                        result = this._cthulhu.operations.register(resourceName, respond); break
-                    case 'execute':
-                        result = await this._cthulhu.operations.execute(resourceName, value); break
                 }
                 break
             case 'tasks':
@@ -137,7 +114,6 @@ class Minion {
         })
 
         this.events = new MinionEvents(this)
-        this.operations = new MinionOperations(this)
         this.tasks = new MinionTasks(this)
 
         this._ws.on('open', ()=>{
@@ -183,18 +159,6 @@ class MinionEvents {
     }
     async on(eventName, callback) {
         return await this._minion._listen('events', 'on', eventName, null, callback)
-    }
-}
-
-class MinionOperations {
-    constructor(minion) {
-        this._minion = minion
-    }
-    async execute(operationName, value) {
-        return await this._minion._request('operations', 'execute', operationName, value, callback)
-    }
-    async register(operationName, callback) {
-        return await this._minion._listen('operations', 'register', operationName, null, callback)
     }
 }
 
