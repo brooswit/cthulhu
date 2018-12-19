@@ -39,10 +39,10 @@ class CthulhuEvents {
 
         this._events = new EventEmitter()
     }
-    async emit(eventName, value) {
+    async trigger(eventName, value) {
         return this._events.emit(eventName, value)
     }
-    async on(eventName, callback, context) {
+    async listen(eventName, callback, context) {
         return this._events.on(eventName, callback, context)
     }
 }
