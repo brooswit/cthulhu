@@ -83,7 +83,7 @@ class WebSocketBridge {
         let result
 
         if (action === 'ack') {
-            this._eventEmitter.emit(`ack:${value}`)
+            this._eventEmitter.emit(`ack:${value}`, value)
         }
         switch(resourceType) {
             case 'events':
