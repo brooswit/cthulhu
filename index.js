@@ -80,30 +80,30 @@ class WebSocketBridge {
                 this._eventEmitter.once(`ack:${ackId}`, resolve)
             })
         }
-        let result
 
         if (action === 'ack') {
             this._eventEmitter.emit(`ack:${ackId}`, value)
+        } else {
+            switch(resourceType) {
+                case 'events':
+                    switch(action) {
+                        case 'trigger':
+                            result = this._cthulhu.events.trigger(resourceName, value); break
+                        case 'hook':
+                            result = this._cthulhu.events.hook(resourceName, respond); break
+                    }
+                    break
+                case 'tasks':
+                    switch(action) {
+                        case 'add':
+                            result = await this._cthulhu.tasks.add(resourceName, value); break
+                        case 'consume':
+                            result = this._cthulhu.tasks.consume(resourceName, respond); break
+                    }
+                    break
+            }
+            respond(result)
         }
-        switch(resourceType) {
-            case 'events':
-                switch(action) {
-                    case 'trigger':
-                        result = this._cthulhu.events.trigger(resourceName, value); break
-                    case 'hook':
-                        result = this._cthulhu.events.hook(resourceName, respond); break
-                }
-                break
-            case 'tasks':
-                switch(action) {
-                    case 'add':
-                        result = await this._cthulhu.tasks.add(resourceName, value); break
-                    case 'consume':
-                        result = this._cthulhu.tasks.consume(resourceName, respond); break
-                }
-                break
-        }
-        return await respond(value)
     }
 
     destroy() {
