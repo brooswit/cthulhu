@@ -63,6 +63,8 @@ class WebSocketBridge {
         console.warn('new client')
         this._cthulhu = cthulhu
         this._ws = ws
+        this._eventEmitter = new EventEmitter()
+
         this._ws.on('message', this._handleMessage.bind(this))
         this._ws.on('close', this.destroy.bind(this))
     }
@@ -74,6 +76,7 @@ class WebSocketBridge {
         let respond = async (value) => {
             const runRefId = nextRunRefId++
             this._ws.send(JSON.stringify({runRefId, reqRefId, value}))
+
         }
         let result
 
