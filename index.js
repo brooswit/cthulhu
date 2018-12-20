@@ -77,12 +77,12 @@ class WebSocketBridge {
             const ackId = nextAckId++
             this._ws.send(JSON.stringify({ackId, reqRefId, value}))
             return await new Promise((resolve) => {
-                this._eventEmitter.once(`ack:${ackId}`, resolve)
+                this._eventEmitter.once(ackId, resolve)
             })
         }
 
         if (action === 'ack') {
-            this._eventEmitter.emit(`ack:${ackId}`, value)
+            this._eventEmitter.emit(ackId, value)
         } else {
             switch(resourceType) {
                 case 'events':
