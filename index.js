@@ -154,8 +154,8 @@ class Minion {
 
     _handleMessage(str) {
         const message = JSONparseSafe(str, {})
-        const {reqRefId, value} = message
-        this._responseEvents.emit(reqRefId, value)
+        const {reqRefId, ackId, value} = message
+        this._responseEvents.emit(reqRefId, {ackId, value})
     }
 
     ready() {}
