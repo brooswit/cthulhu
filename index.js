@@ -104,9 +104,9 @@ class WebSocketBridge {
                         case 'trigger':
                             result = await this._cthulhu.events.trigger(resourceName, value); break
                         case 'hook':
-                            result = await this._cthulhu.events.hook(resourceName, request);
+                            let hookId = await this._cthulhu.events.hook(resourceName, request);
                             this._ws.on('close', ()=>{
-                                this._cthulhu.
+                                this._cthulhu.events.unhook(hookId)
                             })
                             break;
                     }
