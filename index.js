@@ -71,7 +71,7 @@ class WebSocketBridge {
 
     async _handleMessage(str) {
         console.warn('_handleMessage')
-        const {reqRefId, resourceType, action, resourceName, value} = JSONparseSafe(str, {})
+        const {ackId, reqRefId, resourceType, action, resourceName, value} = JSONparseSafe(str, {})
         console.warn({reqRefId, resourceType, action, resourceName, value})
         let respond = async (value) => {
             const ackId = nextAckId++
@@ -83,7 +83,7 @@ class WebSocketBridge {
         let result
 
         if (action === 'ack') {
-            this._eventEmitter.emit(`ack:${value}`, value)
+            this._eventEmitter.emit(`ack:${ackId}`, value)
         }
         switch(resourceType) {
             case 'events':
