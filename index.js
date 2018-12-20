@@ -74,10 +74,11 @@ class WebSocketBridge {
         const {reqRefId, resourceType, action, resourceName, value} = JSONparseSafe(str, {})
         console.warn({reqRefId, resourceType, action, resourceName, value})
         let respond = async (value) => {
-            const runRefId = nextAckId++
-
-            this._ws.send(JSON.stringify({runRefId, reqRefId, value}))
-
+            const ackId = nextAckId++
+            this._ws.send(JSON.stringify({ackId, reqRefId, value}))
+            await new Promise((resolve)=>{
+                this._eventEmitter.once(`ack:${ackId}`)
+            })
         }
         let result
 
