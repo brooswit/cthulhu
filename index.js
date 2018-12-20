@@ -146,7 +146,7 @@ class Minion {
         await this.untilReady()
         const reqRefId = this._nextReqRefId ++
         this._ws.send(JSON.stringify({ reqRefId, resourceType, action, resourceName, value}))
-        const resRefId = await new Promise((resolve) => {this._responseEvents.once(reqRefId, resolve) })
+        const {ackId, resRefId=value} = await new Promise((resolve) => {this._responseEvents.once(reqRefId, resolve) })
         this._responseEvents.on(reqRefId, function(value) {
             this._ws.send(JSON.stringify({ runRefId, resourceType, action: 'ack'}))
             callback(value)
