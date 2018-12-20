@@ -57,7 +57,7 @@ class CthulhuTasks {
         return this._tasks.consumer(taskName, callback)
     }
 }
-
+let nextRunRefId = 0
 class WebSocketBridge {
     constructor(cthulhu, ws) {
         console.warn('new client')
@@ -72,7 +72,8 @@ class WebSocketBridge {
         const {reqRefId, resourceType, action, resourceName, value} = JSONparseSafe(str, {})
         console.warn({reqRefId, resourceType, action, resourceName, value})
         let respond = async (value) => {
-            this._ws.send(JSON.stringify({reqRefId, value}))
+            const runRefId = nextRunRefId++
+            this._ws.send(JSON.stringify({runRefId, reqRefId, value}))
         }
         let result
 
