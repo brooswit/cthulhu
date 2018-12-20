@@ -141,7 +141,7 @@ class Minion {
         this._responseEvents.on(reqRefId, function(value) {
             this._ws.send(JSON.stringify({ reqRefId, resourceType, action, resourceName, value}))
             callback(value)
-        }
+        })
         return resRefId
     }
 
