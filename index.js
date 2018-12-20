@@ -103,6 +103,7 @@ class WebSocketBridge {
                 }
                 break
         }
+        return await respond(value)
     }
 
     destroy() {
