@@ -95,11 +95,11 @@ class WebSocketBridge {
                     case 'consume':
                         result = this._cthulhu.tasks.consume(resourceName, respond); break
                     case 'ack':
+                        result = this._cthulhu.tasks.respond(resourceName, value); break
                         break
                 }
                 break
         }
-        return {reqRefId, value: result}
     }
 
     destroy() {
@@ -138,7 +138,10 @@ class Minion {
         const reqRefId = this._nextReqRefId ++
         this._ws.send(JSON.stringify({ reqRefId, resourceType, action, resourceName, value}))
         const resRefId = await new Promise((resolve) => {this._responseEvents.once(reqRefId, resolve) })
-        this._responseEvents.on(reqRefId, callback)
+        this._responseEvents.on(reqRefId, function(value) {
+            this._ws.send(JSON.stringify({ reqRefId, resourceType, action, resourceName, value}))
+            callback(value)
+        }
         return resRefId
     }
 
