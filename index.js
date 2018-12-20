@@ -88,7 +88,9 @@ class WebSocketBridge {
                 this._eventEmitter.once(ackId, resolve)
                 this._ws.on('close', resolve)
             })
+            this._eventEmitter.off(ackId, resolution)
             this._ws.off('close', resolution)
+            return result
 
         }
 
