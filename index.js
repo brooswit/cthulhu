@@ -84,6 +84,8 @@ class WebSocketBridge {
             this._ws.send(JSON.stringify({ackId, reqRefId, value}))
             return await new Promise((resolve) => {
                 this._eventEmitter.once(ackId, resolve)
+                this._ws.on('close', resolve)
+
             })
         }
 
