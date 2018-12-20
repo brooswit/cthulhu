@@ -80,10 +80,11 @@ class WebSocketBridge {
             case 'events':
                 switch(action) {
                     case 'trigger':
-                        result = this._cthulhu.events.trigger(resourceName); break
+                        result = this._cthulhu.events.trigger(resourceName, value); break
                     case 'hook':
                         result = this._cthulhu.events.hook(resourceName, respond); break
                     case 'respond':
+                        result = this._cthulhu.events.respond(resourceName, value); break
                         break
                 }
                 break
