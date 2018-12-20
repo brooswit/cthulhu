@@ -63,7 +63,9 @@ class WebSocketBridge {
         console.warn('new client')
         this._cthulhu = cthulhu
         this._ws = ws
+
         this._eventEmitter = new EventEmitter()
+        this._hookManager = new HookManager()
 
         this._ws.on('message', this._handleMessage.bind(this))
         this._ws.on('close', this.destroy.bind(this))
@@ -95,7 +97,7 @@ class WebSocketBridge {
                         case 'trigger':
                             result = await this._cthulhu.events.trigger(resourceName, value); break
                         case 'hook':
-                            result = await this._cthulhu.events.hook(resourceName, request); break
+                            result = await this._hookManager.hook(this._cthulhu.events, resourceName, request); break
                     }
                     break
                 case 'tasks':
