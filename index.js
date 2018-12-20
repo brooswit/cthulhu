@@ -65,7 +65,6 @@ class WebSocketBridge {
         this._ws = ws
 
         this._eventEmitter = new EventEmitter()
-        this._hookManager = new HookManager()
 
         this._ws.on('message', this._handleMessage.bind(this))
         this._ws.on('close', this.destroy.bind(this))
