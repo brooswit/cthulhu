@@ -92,9 +92,6 @@ class WebSocketBridge {
                         result = this._cthulhu.events.trigger(resourceName, value); break
                     case 'hook':
                         result = this._cthulhu.events.hook(resourceName, respond); break
-                    case 'respond':
-                        result = this._cthulhu.events.respond(resourceName, value); break
-                        break
                 }
                 break
             case 'tasks':
@@ -103,9 +100,6 @@ class WebSocketBridge {
                         result = await this._cthulhu.tasks.add(resourceName, value); break
                     case 'consume':
                         result = this._cthulhu.tasks.consume(resourceName, respond); break
-                    case 'ack':
-                        result = this._cthulhu.tasks.respond(resourceName, value); break
-                        break
                 }
                 break
         }
