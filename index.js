@@ -82,11 +82,14 @@ class WebSocketBridge {
         let request = async (value) => {
             const ackId = nextAckId++
             this._ws.send(JSON.stringify({ackId, reqRefId, value}))
+            let resolution
             return await new Promise((resolve) => {
+                resolution = resolve
                 this._eventEmitter.once(ackId, resolve)
                 this._ws.on('close', resolve)
-
             })
+            this._ws.off('close', resolve)
+
         }
 
         let result = null
