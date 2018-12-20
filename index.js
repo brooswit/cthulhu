@@ -57,6 +57,7 @@ class CthulhuTasks {
         return this._tasks.consumer(taskName, callback)
     }
 }
+
 let nextAckId = 0
 class WebSocketBridge {
     constructor(cthulhu, ws) {
