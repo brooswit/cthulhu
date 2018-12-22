@@ -12,10 +12,11 @@ const SalesforceIntegration = require('./src/components/SalesforceIntegration')
 const ClubhouseIntegration = require('./src/components/ClubhouseIntegration')
 const ZendeskIntegration = require('./src/components/ZendeskIntegration')
 
-async function promiseToEmit(emitter, resolveEventName, optionalCallback) {
-    let resolver
+async function onEmit(emitter, resolveEventName, rejectEventName) {
+    let resolver = new Resolver()
     let callback = optionalCallback || (resolver = new Resolver()).resolve
     emitter.once(resolveEventName, callback)
+    emitter.once(rejectEventName, callback)
     return resolver
 }
 class Cthulhu {
@@ -29,7 +30,7 @@ class Cthulhu {
         this.express.use(bodyParser.json())
             .ws('/stream', (ws) => { new WebSocketBridge(this, ws) })
         
-        this.readyPromise = promiseToEmit(this.events, 'ready')
+        this.readyPromise = onEmit(this.events, 'ready')
     }
 
     start() {
