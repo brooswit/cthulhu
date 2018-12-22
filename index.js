@@ -39,9 +39,11 @@ class Cthulhu {
 
     async start() {
         if(this._state != Cthulhu.STATE.READY) return await this.onReady()
-        await (async()=>{
-            this.express.listen(process.env.PORT || 8888, this._ready)
-        })()
+        this.events.emit('starting')
+        await new Promise((resolve) => {
+            this.express.listen(process.env.PORT || 8888, resolve)
+        })
+        this.events.emit('started')
     }
 
     async onReady() {
