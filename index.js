@@ -65,7 +65,7 @@ class WebSocketBridge {
         this._cthulhu = cthulhu
         this._ws = ws
 
-        this._eventEmitter = new EventEmitter()
+        this._ackEmitter = new EventEmitter()
 
         this._ws.on('message', this._handleMessage.bind(this))
         this._ws.on('close', this.destroy.bind(this))
@@ -85,10 +85,10 @@ class WebSocketBridge {
             let resolution
             let result = await new Promise((resolve) => {
                 resolution = resolve
-                this._eventEmitter.once(ackId, resolve)
+                this._ackEmitter.once(ackId, resolve)
                 this._ws.on('close', resolve)
             })
-            this._eventEmitter.off(ackId, resolution)
+            this._ackEmitter.off(ackId, resolution)
             this._ws.off('close', resolution)
             return result
 
@@ -96,7 +96,7 @@ class WebSocketBridge {
 
         let result = null
         if (action === 'ack') {
-            this._eventEmitter.emit(ackId, value)
+            this._ackEmitter.emit(ackId, value)
         } else {
             switch(resourceType) {
                 case 'events':
