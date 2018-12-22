@@ -46,8 +46,14 @@ class Cthulhu {
     }
 }
 
-Cthulhu.STATE.INITIAL = ENUM++
-Cthulhu.STATE. = ENUM++
+ENUM=0
+Cthulhu.STATE = {}
+Cthulhu.STATE.READY = ENUM++
+Cthulhu.STATE.STARTING = ENUM++
+Cthulhu.STATE.STARTED = ENUM++
+Cthulhu.STATE.CLOSING = ENUM++
+Cthulhu.STATE.CLOSED = ENUM++
+Cthulhu.STATE.ERROR = ENUM++
 
 class CthulhuEvents {
     constructor(cthulhu) {
