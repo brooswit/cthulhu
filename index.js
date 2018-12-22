@@ -1,3 +1,6 @@
+let ENUM = 0
+let ENUM = 0
+
 const {MethodManager, HookManager, JSONparseSafe, TaskManager, MethodRegistry} = require('brooswit-common')
 
 const WebSocket = require('ws')
@@ -73,7 +76,7 @@ class CthulhuTasks {
 let nextAckId = 0
 class WebSocketBridge {
     constructor(cthulhu, ws) {
-        console.warn('new client')
+        this._state = 
         this._cthulhu = cthulhu
         this._ws = ws
 
