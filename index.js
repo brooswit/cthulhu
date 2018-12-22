@@ -33,12 +33,12 @@ class Cthulhu {
         this.express.use(bodyParser.json())
             .ws('/stream', (ws) => { new WebSocketBridge(this, ws) })
         
-        this._readyPromise = onEmit(this.events, 'ready')
+        this._startPromise = onEmit(this.events, 'started')
         this._errorPromise = onEmit(this.events, 'error')
     }
 
     async start() {
-        if(this._state != Cthulhu.STATE.READY) return await this.onReady()
+        if(this._state != Cthulhu.STATE.READY) return await this.onStarted()
         this.events.emit('starting')
         await new Promise((resolve) => {
             this.express.listen(process.env.PORT || 8888, resolve)
@@ -46,8 +46,8 @@ class Cthulhu {
         this.events.emit('started')
     }
 
-    async onReady() {
-        return this._readyPromise
+    async onStarted() {
+        return this._startPromise
     }
 
     async onError() {
