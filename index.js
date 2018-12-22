@@ -84,10 +84,8 @@ class WebSocketBridge {
             this._ws.send(JSON.stringify({ackId, reqRefId, value}))
             let resolution, rejection
             let result = await new Promise((resolve, reject) => {
-                resolution = resolve
-                rejection = reject
-                this._ackEmitter.once(ackId, resolution)
-                this._ws.on('close', rejection)
+                this._ackEmitter.once(ackId, resolution = resolve)
+                this._ws.on('close', rejection = reject)
             })
             this._ackEmitter.off(ackId, resolution)
             this._ws.off('close', rejection)
