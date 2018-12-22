@@ -1,6 +1,3 @@
-let ENUM = 0
-let ENUM = 0
-
 const {MethodManager, HookManager, JSONparseSafe, TaskManager, MethodRegistry} = require('brooswit-common')
 
 const WebSocket = require('ws')
@@ -15,13 +12,6 @@ const SalesforceIntegration = require('./src/components/SalesforceIntegration')
 const ClubhouseIntegration = require('./src/components/ClubhouseIntegration')
 const ZendeskIntegration = require('./src/components/ZendeskIntegration')
 
-async function onEmit(emitter, resolveEventName, rejectEventName) {
-    let resolver = new Resolver()
-    emitter.once(resolveEventName, resolver.resolve)
-    emitter.once(rejectEventName, resolver.reject)
-    return resolver
-}
-
 class Cthulhu {
     constructor() {
         this._state = Cthulhu.STATE.READY
@@ -32,51 +22,14 @@ class Cthulhu {
         enableWs(this.express)
         this.express.use(bodyParser.json())
             .ws('/stream', (ws) => { new WebSocketBridge(this, ws) })
-        
-        this._startedPromise = onEmit(this.events, 'started')
-        this._errorPromise = onEmit(this.events, 'error')
-        this._closePromise = onEmit(this.events, 'close')
-    }
-
-    async _lifecycle() {
-        try {
-            this._state = Cthulhu.STATE.STARTING
-            this.events.emit('starting')
-            await new Promise((resolve) => {
-                this.express.listen(process.env.PORT || 8888, resolve)
-            })
-            this._state = Cthulhu.STATE.STARTED
-            this.events.emit('started')
-            await this.onClose()
-        } catch(err) {
-            this.events.emit('error', err)
-        }
     }
 
     async start() {
-        if(this._state === Cthulhu.STATE.READY) {
-            this._lifecycle()
-        }
-        return await this.onStarted()
-    }
-
-    async onStarted() {
-        return this._startedPromise
-    }
-
-    async onError() {
-        return this._errorPromise
+        return await new Promise((resolve) => {
+            this.express.listen(process.env.PORT || 8888, resolve)
+        })
     }
 }
-
-ENUM=0
-Cthulhu.STATE = {}
-Cthulhu.STATE.READY = ENUM++
-Cthulhu.STATE.STARTING = ENUM++
-Cthulhu.STATE.STARTED = ENUM++
-Cthulhu.STATE.CLOSING = ENUM++
-Cthulhu.STATE.CLOSED = ENUM++
-Cthulhu.STATE.ERROR = ENUM++
 
 class CthulhuEvents {
     constructor(cthulhu) {
