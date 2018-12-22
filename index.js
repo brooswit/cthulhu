@@ -37,7 +37,7 @@ class Cthulhu {
         this._errorPromise = onEmit(this.events, 'error')
     }
 
-    start() {
+    async start() {
         if(this._state != Cthulhu.STATE.READY) return await this.onReady()
         this.express.listen(process.env.PORT || 8888, this._ready)
     }
