@@ -14,7 +14,7 @@ const ZendeskIntegration = require('./src/components/ZendeskIntegration')
 
 async function promiseToEmit(emitter, resolveEventName, optionalCallback) {
     let resolver
-    let callback = optionalResolver || resolver = new Resolver()
+    let callback = optionalCallback || (resolver = new Resolver()).resolve
     emitter.once(resolveEventName, resolve)
 
     return new Resolver((resolve, reject)=>{
