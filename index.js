@@ -14,9 +14,8 @@ const ZendeskIntegration = require('./src/components/ZendeskIntegration')
 
 async function onEmit(emitter, resolveEventName, rejectEventName) {
     let resolver = new Resolver()
-    let callback = optionalCallback || (resolver = new Resolver()).resolve
-    emitter.once(resolveEventName, callback)
-    emitter.once(rejectEventName, callback)
+    emitter.once(resolveEventName, resolver.resolve)
+    emitter.once(rejectEventName, resolver.reject)
     return resolver
 }
 class Cthulhu {
@@ -30,7 +29,7 @@ class Cthulhu {
         this.express.use(bodyParser.json())
             .ws('/stream', (ws) => { new WebSocketBridge(this, ws) })
         
-        this.readyPromise = onEmit(this.events, 'ready')
+        this._readyPromise = onEmit(this.events, 'ready', 'error')
     }
 
     start() {
@@ -38,8 +37,8 @@ class Cthulhu {
         this.express.listen(process.env.PORT || 8888, this._ready)
     }
 
-    async onReady(cb) {
-        return 
+    async onReady() {
+        return this._readyPromise
     }
 }
 
