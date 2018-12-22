@@ -33,12 +33,12 @@ class Cthulhu {
         this.express.use(bodyParser.json())
             .ws('/stream', (ws) => { new WebSocketBridge(this, ws) })
         
-        this._readyPromise = onEmit(this.events, 'ready', 'error')
+        this._readyPromise = onEmit(this.events, 'ready')
         this._errorPromise = onEmit(this.events, 'error')
     }
 
     start() {
-        if(this._started) return await this.onReady()
+        if(this._state != Cthulhu.STATE.READY) return await this.onReady()
         this.express.listen(process.env.PORT || 8888, this._ready)
     }
 
