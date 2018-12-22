@@ -12,8 +12,10 @@ const SalesforceIntegration = require('./src/components/SalesforceIntegration')
 const ClubhouseIntegration = require('./src/components/ClubhouseIntegration')
 const ZendeskIntegration = require('./src/components/ZendeskIntegration')
 
-function wrapEvent(emitter, event, optionalCallback) {
-
+async function wrapEvent(emitter, event, optionalCallback) {
+    return new Promise((resolve, reject)=>{
+        emitter.on
+    })
 }
 class Cthulhu {
     constructor() {
@@ -33,7 +35,7 @@ class Cthulhu {
     }
 
     async onReady(cb) {
-        return wrapEvent(this.events, 'ready', cb)
+        return this._readyPromise
     }
 }
 
