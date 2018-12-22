@@ -21,6 +21,7 @@ async function onEmit(emitter, resolveEventName, rejectEventName) {
     emitter.once(rejectEventName, resolver.reject)
     return resolver
 }
+
 class Cthulhu {
     constructor() {
         this._started = false
@@ -44,6 +45,9 @@ class Cthulhu {
         return this._readyPromise
     }
 }
+
+Cthulhu.STATE.INITIAL = ENUM++
+Cthulhu.STATE. = ENUM++
 
 class CthulhuEvents {
     constructor(cthulhu) {
