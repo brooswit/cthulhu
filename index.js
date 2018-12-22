@@ -92,7 +92,6 @@ class WebSocketBridge {
             this._ackEmitter.off(ackId, resolution)
             this._ws.off('close', rejection)
             return result
-
         }
 
         let result = null
@@ -126,7 +125,7 @@ class WebSocketBridge {
     }
 
     destroy() {
-        // TODO //
+        this._ws.close()
     }
 }
 
