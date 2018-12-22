@@ -44,6 +44,10 @@ class Cthulhu {
     async onReady() {
         return this._readyPromise
     }
+
+    async onError() {
+        return this._errorPromise
+    }
 }
 
 ENUM=0
