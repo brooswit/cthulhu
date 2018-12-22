@@ -24,8 +24,8 @@ class Cthulhu {
             .ws('/stream', (ws) => { new WebSocketBridge(this, ws) })
     }
 
-    ready() {
-        this.express.listen(process.env.PORT || 8888)
+    start() {
+        this.express.listen(process.env.PORT || 8888, )
         console.warn("...Cthulhu is ready...")
     }
 }
