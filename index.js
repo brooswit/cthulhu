@@ -37,12 +37,20 @@ class Cthulhu {
         this._errorPromise = onEmit(this.events, 'error')
     }
 
+    async _lifecycle() {
+        this._state = Cthulhu.STATE.STARTING
+        this.events.emit('starting')
+        await new Promise((resolve) => {
+            this.express.listen(process.env.PORT || 8888, resolve)
+        })
+        this.events.emit('started')
+    }
+
     async start() {
         if(this._state === Cthulhu.STATE.READY) {
             this._lifecycle()
         }
         return await this.onStarted()
-
     }
 
     async onStarted() {
