@@ -33,8 +33,9 @@ class Cthulhu {
         this.express.use(bodyParser.json())
             .ws('/stream', (ws) => { new WebSocketBridge(this, ws) })
         
-        this._startPromise = onEmit(this.events, 'started')
+        this._startedPromise = onEmit(this.events, 'started')
         this._errorPromise = onEmit(this.events, 'error')
+        this._closePromise = onEmit(this.events, 'close')
     }
 
     async _lifecycle() {
@@ -46,6 +47,7 @@ class Cthulhu {
             })
             this._state = Cthulhu.STATE.STARTED
             this.events.emit('started')
+            await this.onClose()
         } catch(err) {
             this.events.emit('error', err)
         }
@@ -59,7 +61,7 @@ class Cthulhu {
     }
 
     async onStarted() {
-        return this._startPromise
+        return this._startedPromise
     }
 
     async onError() {
