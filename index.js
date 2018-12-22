@@ -12,9 +12,12 @@ const SalesforceIntegration = require('./src/components/SalesforceIntegration')
 const ClubhouseIntegration = require('./src/components/ClubhouseIntegration')
 const ZendeskIntegration = require('./src/components/ZendeskIntegration')
 
+function wrapEvent(emitter, event, optionalCallback) {
+
+}
 class Cthulhu {
     constructor() {
-
+        this._started = false
         this.events = new CthulhuEvents()
         this.tasks = new CthulhuTasks()
 
@@ -25,8 +28,12 @@ class Cthulhu {
     }
 
     start() {
-        this.express.listen(process.env.PORT || 8888, )
-        console.warn("...Cthulhu is ready...")
+        if(this._started) return await this.onReady()
+        this.express.listen(process.env.PORT || 8888, this._ready)
+    }
+
+    async onReady(cb) {
+        return wrapEvent(this.events, 'ready', cb)
     }
 }
 
