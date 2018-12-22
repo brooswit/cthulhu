@@ -15,11 +15,8 @@ const ZendeskIntegration = require('./src/components/ZendeskIntegration')
 async function promiseToEmit(emitter, resolveEventName, optionalCallback) {
     let resolver
     let callback = optionalCallback || (resolver = new Resolver()).resolve
-    emitter.once(resolveEventName, resolve)
-
-    return new Resolver((resolve, reject)=>{
-    })
-
+    emitter.once(resolveEventName, callback)
+    return resolver
 }
 class Cthulhu {
     constructor() {
