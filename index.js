@@ -12,10 +12,14 @@ const SalesforceIntegration = require('./src/components/SalesforceIntegration')
 const ClubhouseIntegration = require('./src/components/ClubhouseIntegration')
 const ZendeskIntegration = require('./src/components/ZendeskIntegration')
 
-async function wrapEvent(emitter, event, optionalCallback) {
-    return new Promise((resolve, reject)=>{
-        emitter.on
+async function promiseToEmit(emitter, resolveEventName, optionalCallback) {
+    let resolver
+    let callback = optionalResolver || resolver = new Resolver()
+    emitter.once(resolveEventName, resolve)
+
+    return new Resolver((resolve, reject)=>{
     })
+
 }
 class Cthulhu {
     constructor() {
@@ -27,6 +31,8 @@ class Cthulhu {
         enableWs(this.express)
         this.express.use(bodyParser.json())
             .ws('/stream', (ws) => { new WebSocketBridge(this, ws) })
+        
+        this.readyPromise = promiseToEmit(this.events, 'ready')
     }
 
     start() {
@@ -35,7 +41,7 @@ class Cthulhu {
     }
 
     async onReady(cb) {
-        return this._readyPromise
+        return 
     }
 }
 
