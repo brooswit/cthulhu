@@ -24,7 +24,7 @@ async function onEmit(emitter, resolveEventName, rejectEventName) {
 
 class Cthulhu {
     constructor() {
-        this._started = false
+        this._state = Cthulhu.STATE.READY
         this.events = new CthulhuEvents()
         this.tasks = new CthulhuTasks()
 
