@@ -34,6 +34,7 @@ class Cthulhu {
             .ws('/stream', (ws) => { new WebSocketBridge(this, ws) })
         
         this._readyPromise = onEmit(this.events, 'ready', 'error')
+        this._errorPromise = onEmit(this.events, 'error')
     }
 
     start() {
