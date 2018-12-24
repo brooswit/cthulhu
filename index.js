@@ -84,10 +84,10 @@ class CthulhuClientHandler {
     async _request (reqRefId, value) {
         const ackId = nextAckId++
         let resolution, rejection
-        
+
         this._ws.send(JSON.stringify({ackId, reqRefId, value}))
         let result = await new Promise((resolve, reject) => {
-            this._ackEmitter.once(ackId, resolution = resolve)
+            this._ackEmitter.on(ackId, resolution = resolve)
             this._ws.on('close', rejection = reject)
         })
         this._ackEmitter.off(ackId, resolution)
@@ -114,22 +114,13 @@ class CthulhuClientHandler {
                     })
                 }
             }
-            switch(resourceType) {
-                case 'events':
-                    switch(action) {
-                        case 'trigger':
-                        case 'hook':
-                            break;
-                    }
-                    break
-                case 'tasks':
-                    switch(action) {
-                        case 'add':
-                            result = await this._cthulhu.tasks.add(resourceName, value); break
-                        case 'consume':
-                            result = await this._cthulhu.tasks.consume(resourceName, this._request); break
-                    }
-                    break
+            if (resourceType === 'tasks') {
+                if (action === 'add') {
+                    result = await this._cthulhu.tasks.add(resourceName, value); break
+                }
+                if (action === 'consume') {
+                    result = await this._cthulhu.tasks.consume(resourceName, this._request); break
+                }
             }
             this._respond(reqRefId, result)
         }
