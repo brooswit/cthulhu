@@ -155,6 +155,8 @@ class Minion {
         })
     }
 
+    async _send(resourceType, action, resourceName, value) {
+
     async _request(resourceType, action, resourceName, value) {
         await this.untilReady()
         const reqRefId = this._nextReqRefId ++
