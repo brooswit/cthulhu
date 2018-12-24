@@ -71,8 +71,10 @@ class WebSocketBridge {
 
         this._ackEmitter = new EventEmitter()
 
-        this._ws.on('message', this._handleMessage.bind(this))
+        this._cthulhu.internalEvents.on()
         this._ws.on('close', this.destroy.bind(this))
+
+        this._ws.on('message', this._handleMessage.bind(this))
     }
 
     async _handleMessage(str) {
