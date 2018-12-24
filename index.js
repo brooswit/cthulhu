@@ -83,8 +83,9 @@ class CthulhuClientHandler {
 
     async _request (reqRefId, value) {
         const ackId = nextAckId++
-        this._ws.send(JSON.stringify({ackId, reqRefId, value}))
         let resolution, rejection
+        
+        this._ws.send(JSON.stringify({ackId, reqRefId, value}))
         let result = await new Promise((resolve, reject) => {
             this._ackEmitter.once(ackId, resolution = resolve)
             this._ws.on('close', rejection = reject)
