@@ -118,8 +118,11 @@ class CthulhuClientHandler {
                 if (action === 'add') {
                     result = await this._cthulhu.tasks.add(resourceName, value); break
                 }
-                if (action === 'consume') {
-                    result = await this._cthulhu.tasks.consume(resourceName, this._request); break
+                if (action === 'subscribe') {
+                    result = await this._cthulhu.tasks.subscribe(resourceName, this._request); break
+                    this._ws.on('close', ()=>{
+                        this._cthulhu.tasks.stop(hookId)
+                    })
                 }
             }
             this._respond(reqRefId, result)
