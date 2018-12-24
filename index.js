@@ -77,12 +77,13 @@ class WebSocketBridge {
         this._ws.on('message', this._handleMessage.bind(this))
     }
 
+    async respond (reqRefId, value) {
+        this._ws.send(JSON.stringify({reqRefId, value}))
+    }
+
     async _handleMessage(str) {
         const {ackId, reqRefId, resourceType, action, resourceName, value} = JSONparseSafe(str, {})
 
-        async function respond (value) {
-            this._ws.send(JSON.stringify({reqRefId, value}))
-        }
 
         async function request (value) {
             const ackId = nextAckId++
@@ -129,7 +130,7 @@ class WebSocketBridge {
                     }
                     break
             }
-            respond(result)
+            respond(reqRefId, result)
         }
     }
 
