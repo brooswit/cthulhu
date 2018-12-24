@@ -97,8 +97,6 @@ class CthulhuClientHandler {
 
     async _handleMessage(str) {
         const {ackId, reqRefId, resourceType, action, resourceName, value} = JSONparseSafe(str, {})
-
-
         let result = null
         if (action === 'ack') {
             this._ackEmitter.emit(ackId, value)
