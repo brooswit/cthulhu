@@ -22,7 +22,7 @@ class Cthulhu {
         this.express = express()
         enableWs(this.express)
         this.express.use(bodyParser.json())
-            .ws('/stream', (ws) => { new WebSocketBridge(this, ws) })
+            .ws('/stream', (ws) => { new CthulhuClientHandler(this, ws) })
     }
 
     async start() {
@@ -63,7 +63,7 @@ class CthulhuTasks {
 }
 
 let nextAckId = 0
-class WebSocketBridge {
+class CthulhuClientHandler {
     constructor(cthulhu, ws) {
         this._boundClose = this.close.bind(this)
         this._cthulhu = cthulhu
