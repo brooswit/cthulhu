@@ -121,7 +121,7 @@ class CthulhuClientHandler {
                 if (action === 'subscribe') {
                     let subId = await this._cthulhu.tasks.subscribe(resourceName, this._request); break
                     this._ws.on('close', ()=>{
-                        this._cthulhu.tasks.stop(subId)
+                        this._cthulhu.tasks.unsubscribe(subId)
                     })
                 }
             }
