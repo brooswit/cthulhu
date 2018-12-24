@@ -65,13 +65,14 @@ class CthulhuTasks {
 let nextAckId = 0
 class WebSocketBridge {
     constructor(cthulhu, ws) {
+        this._boundClose = this.close.bind(this)
         this._cthulhu = cthulhu
         this._ws = ws
 
         this._ackEmitter = new EventEmitter()
 
-        this._cthulhu.internalEvents.on('close', this.close.bind(this))
-        this._ws.on('close', this.close.bind(this))
+        this._cthulhu.internalEvents.on('close', this._boundClose)
+        this._ws.on('close', this._boundClose)
 
         this._ws.on('message', this._handleMessage.bind(this))
     }
@@ -133,6 +134,7 @@ class WebSocketBridge {
     }
 
     close() {
+        this._cthulhu.internalEvents.off('close', this._boundClose)        
         this._ws.close()
     }
 }
