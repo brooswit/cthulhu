@@ -81,7 +81,7 @@ class WebSocketBridge {
         this._ws.send(JSON.stringify({reqRefId, value}))
     }
 
-    async request (reqRefId, value) {
+    async _request (reqRefId, value) {
         const ackId = nextAckId++
         this._ws.send(JSON.stringify({ackId, reqRefId, value}))
         let resolution, rejection
@@ -107,7 +107,7 @@ class WebSocketBridge {
                     result = await this._cthulhu.events.trigger(resourceName, value)
                 }
                 if (action === 'hook') {
-                    let hookId = await this._cthulhu.events.hook(resourceName, request);
+                    let hookId = await this._cthulhu.events.hook(resourceName, this._request);
                     this._ws.on('close', ()=>{
                         this._cthulhu.events.stop(hookId)
                     })
@@ -126,7 +126,7 @@ class WebSocketBridge {
                         case 'add':
                             result = await this._cthulhu.tasks.add(resourceName, value); break
                         case 'consume':
-                            result = await this._cthulhu.tasks.consume(resourceName, request); break
+                            result = await this._cthulhu.tasks.consume(resourceName, this._request); break
                     }
                     break
             }
