@@ -65,7 +65,6 @@ class CthulhuTasks {
 let nextAckId = 0
 class WebSocketBridge {
     constructor(cthulhu, ws) {
-        this._state = 
         this._cthulhu = cthulhu
         this._ws = ws
 
@@ -128,7 +127,7 @@ class WebSocketBridge {
         }
     }
 
-    destroy() {
+    close() {
         this._ws.close()
     }
 }
