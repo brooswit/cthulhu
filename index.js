@@ -15,6 +15,7 @@ const ZendeskIntegration = require('./src/components/ZendeskIntegration')
 class Cthulhu {
     constructor() {
         this._state = Cthulhu.STATE.READY
+        this.internalEvents = new EventEmitter()
         this.events = new CthulhuEvents()
         this.tasks = new CthulhuTasks()
 
@@ -29,6 +30,8 @@ class Cthulhu {
             this.express.listen(process.env.PORT || 8888, resolve)
         })
     }
+
+    close() {}
 }
 
 class CthulhuEvents {
