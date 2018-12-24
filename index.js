@@ -83,7 +83,7 @@ class WebSocketBridge {
             this._ws.send(JSON.stringify({reqRefId, value}))
         }
 
-        let request = async (value) => {
+        async function request (value) {
             const ackId = nextAckId++
             this._ws.send(JSON.stringify({ackId, reqRefId, value}))
             let resolution, rejection
