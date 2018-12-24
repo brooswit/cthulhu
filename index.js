@@ -86,21 +86,24 @@ class CthulhuClientHandler {
         let resolution, rejection
 
         this._ws.send(JSON.stringify({ackId, reqRefId, value}))
+
         let result = await new Promise((resolve, reject) => {
             this._ackEmitter.on(ackId, resolution = resolve)
             this._ws.on('close', rejection = reject)
         })
+
         this._ackEmitter.off(ackId, resolution)
         this._ws.off('close', rejection)
+
         return result
     }
 
     async _handleMessage(str) {
         const {ackId, reqRefId, resourceType, action, resourceName, value} = JSONparseSafe(str, {})
-        let result = null
         if (action === 'ack') {
             this._ackEmitter.emit(ackId, value)
         } else {
+            let result = null
             if (resourceType === 'events') {
                 if (action === 'trigger') {
                     result = await this._cthulhu.events.trigger(resourceName, value)
