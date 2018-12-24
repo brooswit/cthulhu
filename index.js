@@ -77,26 +77,26 @@ class WebSocketBridge {
         this._ws.on('message', this._handleMessage.bind(this))
     }
 
-    async respond (reqRefId, value) {
+    async _respond (reqRefId, value) {
         this._ws.send(JSON.stringify({reqRefId, value}))
+    }
+
+    async request (reqRefId, value) {
+        const ackId = nextAckId++
+        this._ws.send(JSON.stringify({ackId, reqRefId, value}))
+        let resolution, rejection
+        let result = await new Promise((resolve, reject) => {
+            this._ackEmitter.once(ackId, resolution = resolve)
+            this._ws.on('close', rejection = reject)
+        })
+        this._ackEmitter.off(ackId, resolution)
+        this._ws.off('close', rejection)
+        return result
     }
 
     async _handleMessage(str) {
         const {ackId, reqRefId, resourceType, action, resourceName, value} = JSONparseSafe(str, {})
 
-
-        async function request (value) {
-            const ackId = nextAckId++
-            this._ws.send(JSON.stringify({ackId, reqRefId, value}))
-            let resolution, rejection
-            let result = await new Promise((resolve, reject) => {
-                this._ackEmitter.once(ackId, resolution = resolve)
-                this._ws.on('close', rejection = reject)
-            })
-            this._ackEmitter.off(ackId, resolution)
-            this._ws.off('close', rejection)
-            return result
-        }
 
         let result = null
         if (action === 'ack') {
@@ -130,7 +130,7 @@ class WebSocketBridge {
                     }
                     break
             }
-            respond(reqRefId, result)
+            this._respond(reqRefId, result)
         }
     }
 
