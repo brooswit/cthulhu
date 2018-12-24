@@ -1,4 +1,4 @@
-const {MethodManager, HookManager, JSONparseSafe, TaskManager, MethodRegistry} = require('brooswit-common')
+const {JSONparseSafe, MethodManager, TaskManager} = require('brooswit-common')
 
 const WebSocket = require('ws')
 
