@@ -220,6 +220,11 @@ class Minion {
     }
 
     // Tasks
+    feedTask(taskName, payload) {
+    // feedTask(taskName, payload) {
+        return this._send('feedTask', taskName, payload)
+    }
+
     requestTask(taskName, payload, responseHandler, context) {
     // requestTask(taskName, payload) {
         return this._fetch('requestTask', taskName, payload)
