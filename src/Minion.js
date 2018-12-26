@@ -85,7 +85,7 @@ module.exports = class Minion {
     return new Process(async (process) => {
       this._fetch(methodName, methodCatagory, ({responseId, payload})=>{
         payload = await requestHandler.call(context, payload)
-        this._send('respond', {responseId, payload})
+        this._send('respond', '', {responseId, payload})
       })
     })
   }
