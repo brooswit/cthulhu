@@ -1,5 +1,5 @@
 const WebhookIngester = require('./WebhookIngester')
-
+// TODO: REFACTOR TO NEW PATTERNS
 module.exports = class ClubhouseIntegration {
     constructor(cthulhu, secret, appName) {
         console.debug(`new ClubhouseIntegration ${appName}`)

@@ -1,5 +1,5 @@
 const WebhookIngester = require('./WebhookIngester')
-
+// TODO: REFACTOR TO NEW PATTERNS
 module.exports = class SlackIntegration {
     constructor(cthulhu, token, appName) {
         console.debug(`new SlackIntegration ${appName}`)

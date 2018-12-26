@@ -1,5 +1,5 @@
 const zendesk = require('node-zendesk')
-
+// TODO: REFACTOR TO NEW PATTERNS
 async function delay (time) {
     return new Promise((resolve) => { setTimeout(resolve, time) })
 }

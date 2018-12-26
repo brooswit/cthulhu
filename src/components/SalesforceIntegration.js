@@ -1,5 +1,5 @@
 const WebhookIngester = require('./WebhookIngester')
-
+// TODO: REFACTOR TO NEW PATTERNS
 module.exports = class SalesforceIntegration {
     constructor(cthulhu, token, accountName) {
         console.debug(`new SalesforceIntegration ${accountName}`)

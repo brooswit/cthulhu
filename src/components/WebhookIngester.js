@@ -1,5 +1,5 @@
 const {JSONparseSafe} = require('brooswit-common')
-
+// TODO: REFACTOR TO NEW PATTERNS
 module.exports = class WebhookIngester {
     constructor(express, path, handler) {
         console.debug(`new WebhookIngester ${path}`)
