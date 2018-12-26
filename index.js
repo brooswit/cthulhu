@@ -258,15 +258,10 @@ class Minion {
 
     async _request(methodName, methodCatagory, requestHandler, context) {
         return new Process(async (process) => {
-            // TODO: REFACTOR TO NEW PATTERNS
             this._fetch(methodName, methodCatagory, ({responseId, payload})=>{
                 payload = await requestHandler.call(context, payload)
                 this.send('respond', {responseId, payload})
             })
-            // let {responseId, payload} = await this._fetch(methodName, methodCatagory)
-            // payload = await requestHandler.call(context, payload)
-            // this._send('respond', '', {responseId, payload})
-            // return resRefId
         })
     }
 
