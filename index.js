@@ -22,6 +22,7 @@ class EventManager {
 
     }
 }
+
 class Cthulhu extends CthulhuCore {
     constructor() {
         super()
