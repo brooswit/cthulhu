@@ -83,6 +83,7 @@ module.exports = class Minion {
       
       const requestId = this._nextRequestId ++
       this._ws.send(JSON.stringify({}, data, { requestId, methodName, methodCatagory}))
+      if (!fetchHandler) releaseEvents.close
       this._internalEvents.on(`response:${requestId}`, fetchHandler, fetchContext)
     })
   }
@@ -97,6 +98,6 @@ module.exports = class Minion {
   }
 
   async _subscribe(methodName, methodCatagory, subscriptionHandler, subscriptionContext) {
-    return this._fetch(methodName, methodCatagory, data, subscriptionHandler, subscriptionContext)
+    return this._fetch(methodName, methodCatagory, {}, subscriptionHandler, subscriptionContext)
   }
 }
