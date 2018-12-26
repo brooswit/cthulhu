@@ -82,13 +82,12 @@ class CthulhuClientHandler {
     constructor(cthulhu, ws) {
         this._cthulhu = cthulhu
         this._ws = ws
-
         this._internalEvents = new EventEmitter()
+
         this._nextResponseId = 0
 
         this._cthulhu._internalEvents.once('close', close, this)
         this._ws.once('close', this._boundClose)
-
         this._ws.on('message', this._handleMessage.bind(this))
     }
 
