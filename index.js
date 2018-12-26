@@ -240,7 +240,7 @@ class Minion {
         return this._subscribe('subscribeTask', taskName, callback, context)
     }
 
-    _fetch(methodName, methodCatagory, payload) {
+    _fetch(methodName, methodCatagory, payload, callback, context) {
         return new Process(async (process) => {
             await this.promiseToStart
             if (this._isClosed) return process.close()
