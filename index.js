@@ -124,7 +124,9 @@ class CthulhuClientHandler {
                     requestProcess.close()
                 })
             } else if (methodName === 'consumeTask') {
-
+                let requestProcess = this._cthulhu.requestTask(taskName, payload, (payload) => {
+                    return await this._request({requestId, payload})
+                })
             } else if (methodName === 'subscribeTask') {
 
             }
