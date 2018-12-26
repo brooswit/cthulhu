@@ -1,3 +1,5 @@
+const WebSocket = require('ws')
+
 module.exports = class Minion {
     constructor (url) {
         this._internalEvents = new EventEmitter()
