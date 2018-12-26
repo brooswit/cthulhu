@@ -268,7 +268,7 @@ class Minion {
 
     async _subscribe(methodName, methodCatagory, subscriptionHandler, context) {
         return new Process(async (process) => {
-            // OLD
+            // TODO: REFACTOR TO NEW PATTERNS
             // let {requestId, responseId, payload} = await this._fetch(methodName, methodCatagory)
             // this._internalEvents.on(`response:${requestId}`, subscriptionHandler, context)
         })
@@ -280,7 +280,7 @@ class Minion {
         this._internalEvents.emit(requestId, {ackId, value})
     }
 
-    // OLD
+    // TODO: REMOVE OLD CODE WHEN NO LONGER BEING REFERENCED
     // _ack(ackId, value) {
     //     return new Process(async (process) => {
     //         this._ws.send(JSON.stringify({ ackId, action: 'ack', value}))
