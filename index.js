@@ -213,7 +213,7 @@ class Minion {
 
     // Events
     triggerEvent(eventName, value) {
-        this._send('triggerEvent', eventName, value)
+        return this._send('triggerEvent', eventName, value)
     }
 
     hookEvent(eventName, callback, context) {
@@ -221,23 +221,23 @@ class Minion {
     }
 
     // Tasks
-    async requestTask(taskName, payload) {
+    requestTask(taskName, payload) {
         return this._fetch('requestTask', taskName, payload)
     }
 
-    async feedTask(taskName, payload) {
-        this._send('feedTask', taskName, payload)
+    feedTask(taskName, payload) {
+        return this._send('feedTask', taskName, payload)
     }
 
-    async consumeTask(taskName, taskHandler) {
+    consumeTask(taskName, taskHandler) {
         return this._request('consumeTask', taskName, taskHandler)
     }
 
-    async subscribeTask(taskName, callback, context) {
+    subscribeTask(taskName, callback, context) {
         return this._subscribe('subscribeTask', taskName, callback, context)
     }
 
-    async _fetch(methodName, methodCatagory, payload) {
+    _fetch(methodName, methodCatagory, payload) {
         if (this._isClosed) return
         await this.promiseToStart
         
