@@ -120,7 +120,7 @@ class CthulhuClientHandler {
                     return await this._request({requestId, payload})
                 })
 
-                this._ws.on('close', ()=>{
+                this._ws.on('close', () => {
                     requestProcess.close()
                 })
             } else if (methodName === 'consumeTask') {
