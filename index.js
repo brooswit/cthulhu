@@ -124,8 +124,6 @@ class CthulhuClientHandler {
                     requestProcess.close()
                 })
 
-                let responsePayload = await new PromiseToEmit(this._internalEvents, `response:${responseId}`)
-
             } else if (methodName === 'consumeTask') {
 
             } else if (methodName === 'subscribeTask') {
