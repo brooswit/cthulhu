@@ -22,10 +22,11 @@ class EventManager {
 
     }
 }
+class CthulhuServer {
 
+}
 class Cthulhu {
     constructor() {
-        this._state = Cthulhu.STATE.READY
         this._internalEvents = new EventEmitter()
 
         this._taskManager = new TaskManager()
@@ -40,9 +41,7 @@ class Cthulhu {
     }
 
     start(callback) {
-        return await new Promise((resolve) => {
-            this.express.listen(process.env.PORT || 8888, callback)
-        })
+        this.express.listen(process.env.PORT || 8888, callback)
     }
         
     close() {
