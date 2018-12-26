@@ -83,7 +83,7 @@ module.exports = class Minion {
       
       const requestId = this._nextRequestId ++
       this._ws.send(JSON.stringify({}, data, { requestId, methodName, methodCatagory}))
-      this._internalEvents.once(`response:${requestId}`, context)
+      this._internalEvents.on(`response:${requestId}`, callback, context)
     })
   }
 
@@ -98,6 +98,7 @@ module.exports = class Minion {
 
   async _subscribe(methodName, methodCatagory, subscriptionHandler, context) {
     return new Process(async (process) => {
+      this._fetch
       // TODO: REFACTOR TO NEW PATTERNS
       // let {requestId, responseId, payload} = await this._fetch(methodName, methodCatagory)
       // this._internalEvents.on(`response:${requestId}`, subscriptionHandler, context)
