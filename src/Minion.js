@@ -31,6 +31,12 @@ module.exports = class Minion {
     this._lifecycle()
   }
 
+  _handleMessage(str) {
+    const message = JSONparseSafe(str, {})
+    const {requestId, ackId, value} = message
+    this._internalEvents.emit(`response:${requestId}`, {ackId, value})
+  }
+
   close() {
     if (this._isClosed) return
     await this.promiseToStart
