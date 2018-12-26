@@ -107,7 +107,7 @@ class CthulhuClientHandler {
                     this._respond(requestId, payload)
                 })
 
-                this._ws.on('close', ()=>{
+                this._ws.once('close', ()=>{
                     hookProcess.close()
                 })
             } else if (methodName === 'feedTask') {
@@ -117,7 +117,7 @@ class CthulhuClientHandler {
                     return await this._request(requestId, payload)
                 })
 
-                this._ws.on('close', () => {
+                this._ws.once('close', () => {
                     requestProcess.close()
                 })
             } else if (methodName === 'consumeTask') {
@@ -125,7 +125,7 @@ class CthulhuClientHandler {
                     return await this._request(requestId, payload)
                 })
 
-                this._ws.on('close', () => {
+                this._ws.once('close', () => {
                     consumeProcess.close()
                 })
             } else if (methodName === 'subscribeTask') {
@@ -133,7 +133,7 @@ class CthulhuClientHandler {
                     return await this._request(requestId, payload)
                 })
 
-                this._ws.on('close', () => {
+                this._ws.once('close', () => {
                     subscriptionProcess.close()
                 })
             }
