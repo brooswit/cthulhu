@@ -258,17 +258,17 @@ class Minion {
 
     async _request(methodName, methodCatagory, requestHandler, context) {
         return new Process(async (process) => {
-            let {responseId, payload} = await this._fetch(methodName, methodCatagory)
-            payload = await requestHandler.call(context, payload)
-            this._send('respond', '', {responseId, payload})
-            return resRefId
+            // let {responseId, payload} = await this._fetch(methodName, methodCatagory)
+            // payload = await requestHandler.call(context, payload)
+            // this._send('respond', '', {responseId, payload})
+            // return resRefId
         })
     }
 
     async _subscribe(methodName, methodCatagory, subscriptionHandler, context) {
         return new Process(async (process) => {
-            let {requestId, responseId, payload} = await this._fetch(methodName, methodCatagory)
-            this._internalEvents.on(`response:${requestId}`, subscriptionHandler, context)
+            // let {requestId, responseId, payload} = await this._fetch(methodName, methodCatagory)
+            // this._internalEvents.on(`response:${requestId}`, subscriptionHandler, context)
         })
     }
 
@@ -277,6 +277,8 @@ class Minion {
         const {requestId, ackId, value} = message
         this._internalEvents.emit(requestId, {ackId, value})
     }
+
+    // OLD
 
     // _ack(ackId, value) {
     //     return new Process(async (process) => {
