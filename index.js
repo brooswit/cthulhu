@@ -1,11 +1,3 @@
-const {JSONparseSafe, MethodManager, TaskManager} = require('brooswit-common')
-
-const WebSocket = require('ws')
-
-const express = require('express')
-const bodyParser = require('body-parser')
-const enableWs = require('express-ws')
-
 const WebhookIngester = require('./src/components/WebhookIngester')
 const SlackIntegration = require('./src/components/SlackIntegration')
 const SalesforceIntegration = require('./src/components/SalesforceIntegration')

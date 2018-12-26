@@ -1,10 +1,7 @@
-module.exports = 
-class Minion {
+module.exports = class Minion {
     constructor (url) {
         this._internalEvents = new EventEmitter()
-
         this._nextRequestId = 0
-
         this._isStarting = false
         this._isClosed = false
 

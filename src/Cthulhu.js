@@ -1,3 +1,11 @@
+const {JSONparseSafe, MethodManager, TaskManager} = require('brooswit-common')
+
+const WebSocket = require('ws')
+
+const express = require('express')
+const bodyParser = require('body-parser')
+const enableWs = require('express-ws')
+
 class CthulhuCore {
   constructor() {
       this._taskManager = new TaskManager()
