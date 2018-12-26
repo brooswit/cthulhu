@@ -220,7 +220,8 @@ class Minion {
     }
 
     // Tasks
-    requestTask(taskName, payload) {
+    requestTask(taskName, payload, responseHandler, context) {
+    // requestTask(taskName, payload) {
         return this._fetch('requestTask', taskName, payload)
     }
 
@@ -238,8 +239,8 @@ class Minion {
 
     _fetch(methodName, methodCatagory, payload) {
         return new Process(async (process) => {
-            if (this._isClosed) return process.close()
             await this.promiseToStart
+            if (this._isClosed) return process.close()
         
             const requestId = this._nextRequestId ++
             this._ws.send(JSON.stringify({ requestId, methodName, methodCatagory, payload}))
