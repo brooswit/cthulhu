@@ -237,14 +237,17 @@ class Minion {
     }
 
     _fetch(methodName, methodCatagory, payload) {
-        if (this._isClosed) return new Process(async ()=>{
+        return new Process(async () => {
+            if (this._isClosed) {
+                
+            }
             await this.promiseToStart
-
-        })
         
-        const requestId = this._nextRequestId ++
-        this._ws.send(JSON.stringify({ requestId, methodName, methodCatagory, payload}))
-        return await new PromiseToEmit(this._internalEvents, `response:${requestId}`)
+            const requestId = this._nextRequestId ++
+            this._ws.send(JSON.stringify({ requestId, methodName, methodCatagory, payload}))
+            return await new PromiseToEmit(this._internalEvents, `response:${requestId}`)
+        })
+
     }
 
     async _send(methodName, methodCatagory, payload) {
