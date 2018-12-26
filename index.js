@@ -89,7 +89,7 @@ class CthulhuClientHandler {
         this._cthulhu = cthulhu
         this._ws = ws
 
-        this._ackEmitter = new EventEmitter()
+        this._internalEvents = new EventEmitter()
 
         this._cthulhu._internalEvents.on('close', this._boundClose)
         this._ws.on('close', this._boundClose)
@@ -159,11 +159,11 @@ class CthulhuClientHandler {
         this._ws.send(JSON.stringify({responseId, requestId, payload}))
 
         let result = await new Promise((resolve, reject) => {
-            this._ackEmitter.on(ackId, resolution = resolve)
+            this._internalEvents.on(ackId, resolution = resolve)
             this._ws.on('close', rejection = reject)
         })
 
-        this._ackEmitter.off(ackId, resolution)
+        this._internalEvents.off(ackId, resolution)
         this._ws.off('close', rejection)
 
         return result
