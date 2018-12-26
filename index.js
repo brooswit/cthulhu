@@ -51,7 +51,7 @@ class Cthulhu {
 
     // Events
     triggerEvent(eventName, payload) {
-        this._eventManager.trigger(eventName, payload)
+        return this._eventManager.trigger(eventName, payload)
     }
 
     hookEvent(eventName, eventHandler, context) {
@@ -60,7 +60,7 @@ class Cthulhu {
 
     // Tasks
     feedTask(taskName, payload) {
-        this._taskManager.feed(taskName, payload)
+        return this._taskManager.feed(taskName, payload)
     }
 
     requestTask(taskName, payload, responseHandler, context) {
