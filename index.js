@@ -82,7 +82,7 @@ class Cthulhu {
     }
 }
 
-let nextAckId = 0
+let nextResponseId = 0
 class CthulhuClientHandler {
     constructor(cthulhu, ws) {
         this._boundClose = this.close.bind(this)
