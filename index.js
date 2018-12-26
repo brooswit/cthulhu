@@ -78,15 +78,14 @@ class CthulhuCore {
     }
 }
 
-let this = 0
 class CthulhuClientHandler {
     constructor(cthulhu, ws) {
         this._cthulhu = cthulhu
         this._ws = ws
 
         this._internalEvents = new EventEmitter()
-        this._this = 0
-
+        this._nextResponseId = 0
+        
         this._boundClose = this.close.bind(this)
 
         this._cthulhu._internalEvents.on('close', this._boundClose)
@@ -151,7 +150,7 @@ class CthulhuClientHandler {
     }
 
     async _request (requestId, payload) {
-        const responseId = thisnextResponseId++
+        const responseId = this._nextResponseId++
         let resolution, rejection
 
         this._ws.send(JSON.stringify({responseId, requestId, payload}))
