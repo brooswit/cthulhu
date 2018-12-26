@@ -66,8 +66,8 @@ module.exports = class Minion {
     return this._subscribe('subscribeTask', taskName, subscriptionHandler, context)
   }
 
-  _send(methodName, methodCatagory, payload) {
-    return this._fetch(methodName, methodCatagory, {payload})
+  _send(methodName, methodCatagory, data) {
+    return this._fetch(methodName, methodCatagory, data)
   }
 
   _fetch(methodName, methodCatagory, payload, callback, context) {
