@@ -70,13 +70,13 @@ module.exports = class Minion {
     return this._fetch(methodName, methodCatagory, data)
   }
 
-  _fetch(methodName, methodCatagory, payload, callback, context) {
+  _fetch(methodName, methodCatagory, data, callback, context) {
     return new Process(async (process) => {
       await this.promiseToStart
       if (this._isClosed) return process.close()
       
       const requestId = this._nextRequestId ++
-      this._ws.send(JSON.stringify({ requestId, methodName, methodCatagory, payload}))
+      this._ws.send(JSON.stringify({}, data, { requestId, methodName, methodCatagory}))
       this._internalEvents.once(callback, context)
     })
   }
