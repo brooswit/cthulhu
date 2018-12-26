@@ -40,68 +40,67 @@ module.exports = class Minion {
     this._ws.close()
   }
 
-    // Events
-    triggerEvent(eventName, value) {
-        return this._send('triggerEvent', eventName, value)
-    }
+  // Events
+  triggerEvent(eventName, value) {
+      return this._send('triggerEvent', eventName, value)
+  }
 
-    hookEvent(eventName, callback, context) {
-        return this._subscribe('hookEvent', eventName, callback, context)
-    }
+  hookEvent(eventName, callback, context) {
+      return this._subscribe('hookEvent', eventName, callback, context)
+  }
 
-    // Tasks
-    feedTask(taskName, payload) {
-        return this._send('feedTask', taskName, payload)
-    }
+  // Tasks
+  feedTask(taskName, payload) {
+      return this._send('feedTask', taskName, payload)
+  }
 
-    requestTask(taskName, payload, responseHandler, context) {
-        return this._fetch('requestTask', taskName, payload, responseHandler, context)
-    }
+  requestTask(taskName, payload, responseHandler, context) {
+      return this._fetch('requestTask', taskName, payload, responseHandler, context)
+  }
 
-    consumeTask(taskName, taskHandler, context) {
-        return this._request('consumeTask', taskName, taskHandler, context)
-    }
+  consumeTask(taskName, taskHandler, context) {
+      return this._request('consumeTask', taskName, taskHandler, context)
+  }
 
-    subscribeTask(taskName, subscriptionHandler, context) {
-        return this._subscribe('subscribeTask', taskName, subscriptionHandler, context)
-    }
+  subscribeTask(taskName, subscriptionHandler, context) {
+      return this._subscribe('subscribeTask', taskName, subscriptionHandler, context)
+  }
 
-    _send(methodName, methodCatagory, payload) {
-        return this._fetch(methodName, methodCatagory, payload)
-    }
+  _send(methodName, methodCatagory, payload) {
+      return this._fetch(methodName, methodCatagory, payload)
+  }
 
-    _fetch(methodName, methodCatagory, payload, callback, context) {
-        return new Process(async (process) => {
-            await this.promiseToStart
-            if (this._isClosed) return process.close()
-        
-            const requestId = this._nextRequestId ++
-            this._ws.send(JSON.stringify({ requestId, methodName, methodCatagory, payload}))
-            this._internalEvents.once(callback, context)
-        })
+  _fetch(methodName, methodCatagory, payload, callback, context) {
+      return new Process(async (process) => {
+        await this.promiseToStart
+        if (this._isClosed) return process.close()
+      
+        const requestId = this._nextRequestId ++
+        this._ws.send(JSON.stringify({ requestId, methodName, methodCatagory, payload}))
+        this._internalEvents.once(callback, context)
+    })
+  }
 
-    }
+  async _request(methodName, methodCatagory, requestHandler, context) {
+    return new Process(async (process) => {
+      this._fetch(methodName, methodCatagory, ({responseId, payload})=>{
+        payload = await requestHandler.call(context, payload)
+        this.send('respond', {responseId, payload})
+      })
+    })
+  }
 
-    async _request(methodName, methodCatagory, requestHandler, context) {
-        return new Process(async (process) => {
-            this._fetch(methodName, methodCatagory, ({responseId, payload})=>{
-                payload = await requestHandler.call(context, payload)
-                this.send('respond', {responseId, payload})
-            })
-        })
-    }
+  async _subscribe(methodName, methodCatagory, subscriptionHandler, context) {
+    return new Process(async (process) => {
+      // TODO: REFACTOR TO NEW PATTERNS
+      // let {requestId, responseId, payload} = await this._fetch(methodName, methodCatagory)
+      // this._internalEvents.on(`response:${requestId}`, subscriptionHandler, context)
+    })
+  }
 
-    async _subscribe(methodName, methodCatagory, subscriptionHandler, context) {
-        return new Process(async (process) => {
-            // TODO: REFACTOR TO NEW PATTERNS
-            // let {requestId, responseId, payload} = await this._fetch(methodName, methodCatagory)
-            // this._internalEvents.on(`response:${requestId}`, subscriptionHandler, context)
-        })
-    }
-
-    _handleMessage(str) {
-        const message = JSONparseSafe(str, {})
-        const {requestId, ackId, value} = message
-        this._internalEvents.emit(requestId, {ackId, value})
-    }
+  _handleMessage(str) {
+    const message = JSONparseSafe(str, {})
+    const {requestId, ackId, value} = message
+    this._internalEvents.emit(requestId, {ackId, value})
+  }
 }
