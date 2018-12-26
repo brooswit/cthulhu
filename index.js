@@ -153,17 +153,17 @@ class CthulhuClientHandler {
     }
 
     async _request (requestId, payload) {
-        const responseId = nextresponseId++
+        const responseId = nextResponseId++
         let resolution, rejection
 
         this._ws.send(JSON.stringify({responseId, requestId, payload}))
 
         let result = await new Promise((resolve, reject) => {
-            this._internalEvents.on(ackId, resolution = resolve)
+            this._internalEvents.on(`response:${responseId}`, resolution = resolve)
             this._ws.on('close', rejection = reject)
         })
 
-        this._internalEvents.off(ackId, resolution)
+        this._internalEvents.off(`response:${responseId}`, resolution)
         this._ws.off('close', rejection)
 
         return result
