@@ -231,13 +231,11 @@ class Minion {
     }
 
     consumeTask(taskName, taskHandler, context) {
-    // consumeTask(taskName, taskHandler) {
-        return this._request('consumeTask', taskName, taskHandler)
+        return this._request('consumeTask', taskName, taskHandler, context)
     }
 
     subscribeTask(taskName, subscriptionHandler, context) {
-    // subscribeTask(taskName, callback, context) {
-        return this._subscribe('subscribeTask', taskName, callback, context)
+        return this._subscribe('subscribeTask', taskName, subscriptionHandler, context)
     }
 
     _send(methodName, methodCatagory, payload) {
