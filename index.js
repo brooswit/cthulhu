@@ -1,4 +1,4 @@
-const {MethodManager, HookManager, JSONparseSafe, TaskManager, MethodRegistry} = require('brooswit-common')
+const {JSONparseSafe, MethodManager, TaskManager} = require('brooswit-common')
 
 const WebSocket = require('ws')
 
@@ -15,13 +15,14 @@ const ZendeskIntegration = require('./src/components/ZendeskIntegration')
 class Cthulhu {
     constructor() {
         this._state = Cthulhu.STATE.READY
+        this.internalEvents = new EventEmitter()
         this.events = new CthulhuEvents()
         this.tasks = new CthulhuTasks()
 
         this.express = express()
         enableWs(this.express)
         this.express.use(bodyParser.json())
-            .ws('/stream', (ws) => { new WebSocketBridge(this, ws) })
+            .ws('/stream', (ws) => { new CthulhuClientHandler(this, ws) })
     }
 
     async start() {
@@ -29,6 +30,8 @@ class Cthulhu {
             this.express.listen(process.env.PORT || 8888, resolve)
         })
     }
+
+    close() {}
 }
 
 class CthulhuEvents {
@@ -60,70 +63,75 @@ class CthulhuTasks {
 }
 
 let nextAckId = 0
-class WebSocketBridge {
+class CthulhuClientHandler {
     constructor(cthulhu, ws) {
-        this._state = 
+        this._boundClose = this.close.bind(this)
         this._cthulhu = cthulhu
         this._ws = ws
 
         this._ackEmitter = new EventEmitter()
 
+        this._cthulhu.internalEvents.on('close', this._boundClose)
+        this._ws.on('close', this._boundClose)
+
         this._ws.on('message', this._handleMessage.bind(this))
-        this._ws.on('close', this.destroy.bind(this))
+    }
+
+    async _respond (reqRefId, value) {
+        this._ws.send(JSON.stringify({reqRefId, value}))
+    }
+
+    async _request (reqRefId, value) {
+        const ackId = nextAckId++
+        let resolution, rejection
+
+        this._ws.send(JSON.stringify({ackId, reqRefId, value}))
+
+        let result = await new Promise((resolve, reject) => {
+            this._ackEmitter.on(ackId, resolution = resolve)
+            this._ws.on('close', rejection = reject)
+        })
+
+        this._ackEmitter.off(ackId, resolution)
+        this._ws.off('close', rejection)
+
+        return result
     }
 
     async _handleMessage(str) {
-        console.warn('_handleMessage')
         const {ackId, reqRefId, resourceType, action, resourceName, value} = JSONparseSafe(str, {})
-        console.warn({ackId, reqRefId, resourceType, action, resourceName, value})
-        let respond = async (value) => {
-            this._ws.send(JSON.stringify({reqRefId, value}))
-        }
-
-        let request = async (value) => {
-            const ackId = nextAckId++
-            this._ws.send(JSON.stringify({ackId, reqRefId, value}))
-            let resolution, rejection
-            let result = await new Promise((resolve, reject) => {
-                this._ackEmitter.once(ackId, resolution = resolve)
-                this._ws.on('close', rejection = reject)
-            })
-            this._ackEmitter.off(ackId, resolution)
-            this._ws.off('close', rejection)
-            return result
-        }
-
-        let result = null
         if (action === 'ack') {
             this._ackEmitter.emit(ackId, value)
         } else {
-            switch(resourceType) {
-                case 'events':
-                    switch(action) {
-                        case 'trigger':
-                            result = await this._cthulhu.events.trigger(resourceName, value); break
-                        case 'hook':
-                            let hookId = await this._cthulhu.events.hook(resourceName, request);
-                            this._ws.on('close', ()=>{
-                                this._cthulhu.events.stop(hookId)
-                            })
-                            break;
-                    }
-                    break
-                case 'tasks':
-                    switch(action) {
-                        case 'add':
-                            result = await this._cthulhu.tasks.add(resourceName, value); break
-                        case 'consume':
-                            result = await this._cthulhu.tasks.consume(resourceName, request); break
-                    }
-                    break
+            let result = null
+            if (resourceType === 'events') {
+                if (action === 'trigger') {
+                    result = await this._cthulhu.events.trigger(resourceName, value)
+                }
+                if (action === 'hook') {
+                    let hookId = await this._cthulhu.events.hook(resourceName, this._request);
+                    this._ws.on('close', ()=>{
+                        this._cthulhu.events.stop(hookId)
+                    })
+                }
             }
-            respond(result)
+            if (resourceType === 'tasks') {
+                if (action === 'add') {
+                    result = await this._cthulhu.tasks.add(resourceName, value); break
+                }
+                if (action === 'subscribe') {
+                    let subId = await this._cthulhu.tasks.subscribe(resourceName, this._request); break
+                    this._ws.on('close', ()=>{
+                        this._cthulhu.tasks.unsubscribe(subId)
+                    })
+                }
+            }
+            this._respond(reqRefId, result)
         }
     }
 
-    destroy() {
+    close() {
+        this._cthulhu.internalEvents.off('close', this._boundClose)        
         this._ws.close()
     }
 }
@@ -146,6 +154,8 @@ class Minion {
             console.warn('... Minion is ready ...')
         })
     }
+
+    async _send(resourceType, action, resourceName, value) {
 
     async _request(resourceType, action, resourceName, value) {
         await this.untilReady()
