@@ -83,10 +83,8 @@ class CthulhuClientHandler {
         this._cthulhu = cthulhu
         this._ws = ws
         this._internalEvents = new EventEmitter()
-
         this._nextResponseId = 0
 
-        this.initialize
         this._cthulhu._internalEvents.once('close', close, this)
         this._ws.once('close', this._boundClose)
         this._ws.on('message', this._handleMessage.bind(this))
@@ -99,7 +97,6 @@ class CthulhuClientHandler {
 
     async _handleMessage(str) {
         const { requestId, responseId, methodName, methodCatagory, payload} = JSONparseSafe(str, {})
-        // const {ackId, requestId, resourceType, action, resourceName, value} = JSONparseSafe(str, {})
         if (methodName === 'response') {
             this._internalEvents.emit(`response:${responseId}`, payload)
         } else {
@@ -272,32 +269,6 @@ class Minion {
         const {requestId, ackId, value} = message
         this._internalEvents.emit(requestId, {ackId, value})
     }
-
-    // TODO: REMOVE OLD CODE WHEN NO LONGER BEING REFERENCED
-    // _ack(ackId, value) {
-    //     return new Process(async (process) => {
-    //         this._ws.send(JSON.stringify({ ackId, action: 'ack', value}))
-    //     })
-    // }
-
-    // async _request(resourceType, action, resourceName, value) {
-    //     await this.promiseToStart()
-    //     const requestId = this._nextRequestId ++
-    //     this._ws.send(JSON.stringify({ requestId, resourceType, action, resourceName, value}))
-    //     return await new Promise((resolve) => { this._internalEvents.once(requestId, resolve) })
-    // }
-
-    // async _listen(resourceType, action, resourceName, value, callback) {
-    //     await this._request(resourceType, action, resourceName, value) 
-    //     const resRefId = value
-    //     this._internalEvents.on(requestId, function({ackId, value}) {
-    //         this._ack(ackId, value)
-    //         callback(value)
-    //     })
-    //     return resRefId
-    // }
-
-    // ready() {}
 }
 
 Cthulhu.Minion = Minion
