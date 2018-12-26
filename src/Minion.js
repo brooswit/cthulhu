@@ -19,15 +19,6 @@ module.exports = class Minion {
         this._lifecycle()
     }
 
-    close() {
-        if (this._isClosed) return
-        await this.promiseToStart
-
-        this._isClosed = true
-        this._internalEvents.emit('close')
-        this._ws.close()
-    }
-
     async _lifecycle() {
         if (this._isClosed) return
         this._ws = new WebSocket(`ws://${url}/stream`);
@@ -38,6 +29,15 @@ module.exports = class Minion {
         await new PromiseToEmit(this._ws, 'close')
         this.promiseToStart = new PromiseToEmit(this._internalEvents, 'ready')
         this._lifecycle()
+    }
+
+    close() {
+        if (this._isClosed) return
+        await this.promiseToStart
+
+        this._isClosed = true
+        this._internalEvents.emit('close')
+        this._ws.close()
     }
 
     // Events

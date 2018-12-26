@@ -18,7 +18,9 @@ module.exports = class Cthulhu extends CthulhuCore {
   }
 
   start(callback) {
-      this.express.listen(process.env.PORT || 8888, callback)
+    if (this._isStarting) return
+    if (this._isClosed) return
+    this.express.listen(process.env.PORT || 8888, callback)
   }
       
   close() {
