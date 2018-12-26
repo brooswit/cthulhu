@@ -81,11 +81,13 @@ class CthulhuCore {
 let nextResponseId = 0
 class CthulhuClientHandler {
     constructor(cthulhu, ws) {
-        this._boundClose = this.close.bind(this)
         this._cthulhu = cthulhu
         this._ws = ws
 
         this._internalEvents = new EventEmitter()
+        this._nextResponseId = 0
+        
+        this._boundClose = this.close.bind(this)
 
         this._cthulhu._internalEvents.on('close', this._boundClose)
         this._ws.on('close', this._boundClose)
