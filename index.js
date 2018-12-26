@@ -14,6 +14,11 @@ const ZendeskIntegration = require('./src/components/ZendeskIntegration')
 
 
 class EventManager {
+    constructor() {
+        super()
+        this._internalEvents = new EventEmitter()
+
+    }
     trigger(eventName, payload) {
 
     }
@@ -27,17 +32,8 @@ class CthulhuServer {
 }
 class Cthulhu {
     constructor() {
-        this._internalEvents = new EventEmitter()
-
         this._taskManager = new TaskManager()
         this._eventManager = new EventManager()
-
-        this.express = express()
-        enableWs(this.express)
-        this.express.use(bodyParser.json())
-            .ws('/stream', (ws) => { new CthulhuClientHandler(this, ws) })
-
-        this.promiseToStart = new PromiseToEmit(this._internalEvents, 'started')
     }
 
     start(callback) {
