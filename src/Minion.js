@@ -1,44 +1,44 @@
 const WebSocket = require('ws')
 
 module.exports = class Minion {
-    constructor (url) {
-        this._internalEvents = new EventEmitter()
-        this._nextRequestId = 0
-        this._isStarting = false
-        this._isClosed = false
+  constructor (url) {
+    this._internalEvents = new EventEmitter()
+    this._nextRequestId = 0
+    this._isStarting = false
+    this._isClosed = false
 
-        this.promiseToStart = new PromiseToEmit(this._internalEvents, 'ready')
-        this.promiseToClose = new PromiseToEmit(this._internalEvents, 'close')
-    }
+    this.promiseToStart = new PromiseToEmit(this._internalEvents, 'ready')
+    this.promiseToClose = new PromiseToEmit(this._internalEvents, 'close')
+  }
 
-    start() {
-        if (this._isStarting) return
-        if (this._isClosed) return
-        this._isStarting = true
-        console.warn('Starting Minion...')
-        this._lifecycle()
-    }
+  start() {
+    if (this._isStarting) return
+    if (this._isClosed) return
+    this._isStarting = true
+    console.warn('Starting Minion...')
+    this._lifecycle()
+  }
 
-    async _lifecycle() {
-        if (this._isClosed) return
-        this._ws = new WebSocket(`ws://${url}/stream`);
-        await new PromiseToEmit(this._ws, 'open')
-        this._ws.on('message', this._handleMessage.bind(this))
-        console.warn('... Minion is ready ...')
-        this._internalEvents.emit('started')
-        await new PromiseToEmit(this._ws, 'close')
-        this.promiseToStart = new PromiseToEmit(this._internalEvents, 'ready')
-        this._lifecycle()
-    }
+  async _lifecycle() {
+    if (this._isClosed) return
+    this._ws = new WebSocket(`ws://${url}/stream`);
+    await new PromiseToEmit(this._ws, 'open')
+    this._ws.on('message', this._handleMessage.bind(this))
+    console.warn('... Minion is ready ...')
+    this._internalEvents.emit('started')
+    await new PromiseToEmit(this._ws, 'close')
+    this.promiseToStart = new PromiseToEmit(this._internalEvents, 'ready')
+    this._lifecycle()
+  }
 
-    close() {
-        if (this._isClosed) return
-        await this.promiseToStart
+  close() {
+    if (this._isClosed) return
+    await this.promiseToStart
 
-        this._isClosed = true
-        this._internalEvents.emit('close')
-        this._ws.close()
-    }
+    this._isClosed = true
+    this._internalEvents.emit('close')
+    this._ws.close()
+  }
 
     // Events
     triggerEvent(eventName, value) {
