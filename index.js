@@ -95,7 +95,7 @@ class CthulhuClientHandler {
 
     async _handleMessage(str) {
         const { requestId, responseId, methodName, methodCatagory, payload} = JSONparseSafe(str, {})
-        // const {ackId, reqRefId, resourceType, action, resourceName, value} = JSONparseSafe(str, {})
+        // const {ackId, requestId, resourceType, action, resourceName, value} = JSONparseSafe(str, {})
         if (methodName === 'response') {
             this._internalEvents.emit(`response:${responseId}`, payload)
         } else {
@@ -173,7 +173,7 @@ class Minion {
         this.events = new MinionEvents(this)
         this.tasks = new MinionTasks(this)
 
-        this._nextReqRefId = 0
+        this._nextRequestId = 0
 
         this._isStarting = false
         this._isClosed = false
@@ -190,6 +190,15 @@ class Minion {
         this._lifecycle()
     }
 
+    close() {
+        if (this._isClosed) return
+        await this.promiseToStart
+
+        this._isClosed = true
+        this._internalEvents.emit('close')
+        this._ws.close()
+    }
+
     async _lifecycle() {
         if (this._isClosed) return
         this._ws = new WebSocket(`ws://${url}/stream`);
@@ -200,15 +209,6 @@ class Minion {
         await new PromiseToEmit(this._ws, 'close')
         this.promiseToStart = new PromiseToEmit(this._internalEvents, 'ready')
         this._lifecycle()
-    }
-
-    close() {
-        if (this._isClosed) return
-        await this.promiseToStart
-
-        this._isClosed = true
-        this._internalEvents.emit('close')
-        this._ws.close()
     }
 
     // Events
@@ -268,15 +268,15 @@ class Minion {
 
     async _request(resourceType, action, resourceName, value) {
         await this.promiseToStart()
-        const reqRefId = this._nextReqRefId ++
-        this._ws.send(JSON.stringify({ reqRefId, resourceType, action, resourceName, value}))
-        return await new Promise((resolve) => { this._internalEvents.once(reqRefId, resolve) })
+        const requestId = this._nextRequestId ++
+        this._ws.send(JSON.stringify({ requestId, resourceType, action, resourceName, value}))
+        return await new Promise((resolve) => { this._internalEvents.once(requestId, resolve) })
     }
 
     async _listen(resourceType, action, resourceName, value, callback) {
         await this._request(resourceType, action, resourceName, value) 
         const resRefId = value
-        this._internalEvents.on(reqRefId, function({ackId, value}) {
+        this._internalEvents.on(requestId, function({ackId, value}) {
             this._ack(ackId, value)
             callback(value)
         })
@@ -285,8 +285,8 @@ class Minion {
 
     _handleMessage(str) {
         const message = JSONparseSafe(str, {})
-        const {reqRefId, ackId, value} = message
-        this._internalEvents.emit(reqRefId, {ackId, value})
+        const {requestId, ackId, value} = message
+        this._internalEvents.emit(requestId, {ackId, value})
     }
 
     ready() {}
