@@ -43,18 +43,11 @@ class CthulhuServer {
         this._internalEvents.emit('close')
     }
 }
+
 class Cthulhu {
     constructor() {
         this._taskManager = new TaskManager()
         this._eventManager = new EventManager()
-    }
-
-    start(callback) {
-        this.express.listen(process.env.PORT || 8888, callback)
-    }
-        
-    close() {
-        this._internalEvents.emit('close')
     }
 
     // Events
