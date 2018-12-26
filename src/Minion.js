@@ -111,6 +111,7 @@ module.exports = class Minion {
       
       if (!fetchHandler) return process.close()
       this._internalEvents.on(`response:${requestId}`, subscriptionHandler, subscriptionContext)
+
       await new PromiseToEmit(this._internalEvents, `close`)
       this._internalEvents.off(`response:${requestId}`, subscriptionHandler, subscriptionContext)
       process.close()
