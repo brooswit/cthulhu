@@ -6,15 +6,15 @@ const enableWs = require('express-ws')
 
 module.exports = class Cthulhu extends CthulhuCore {
   constructor() {
-      super()
-      this._internalEvents = new EventEmitter()
+    super()
+    this._internalEvents = new EventEmitter()
 
-      this.express = express()
-      enableWs(this.express)
-      this.express.use(bodyParser.json())
-          .ws('/stream', (ws) => { new CthulhuClientHandler(this, ws) })
+    this.express = express()
+    enableWs(this.express)
+    this.express.use(bodyParser.json())
+      .ws('/stream', (ws) => { new CthulhuClientHandler(this, ws) })
 
-      this.promiseToStart = new PromiseToEmit(this._internalEvents, 'started')
+    this.promiseToStart = new PromiseToEmit(this._internalEvents, 'started')
   }
 
   start(callback) {
