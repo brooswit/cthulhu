@@ -22,7 +22,7 @@ class EventManager {
 
     }
 }
-class CthulhuServer {
+class Cthulhu extends CthulhuCore {
     constructor() {
         super()
         this._internalEvents = new EventEmitter()
@@ -44,7 +44,7 @@ class CthulhuServer {
     }
 }
 
-class Cthulhu {
+class CthulhuCore {
     constructor() {
         this._taskManager = new TaskManager()
         this._eventManager = new EventManager()
