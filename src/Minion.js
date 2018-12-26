@@ -115,6 +115,5 @@ module.exports = class Minion {
       await new PromiseToEmit(this._internalEvents, `close`)
       process.close()
     })
-    return this._fetch(methodName, methodCatagory, {}, subscriptionHandler, subscriptionContext)
   }
 }
