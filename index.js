@@ -107,7 +107,7 @@ class CthulhuClientHandler {
                 this._cthulhu.triggerEvent(methodCatagory, payload)
             } else if (methodName === 'hookEvent') {
                 let hookProcess = await this._cthulhu.hookEvent(eventName, (payload) => {
-                    this._ws.send({requestId, payload})
+                    this._send({requestId, payload})
                 })
 
                 this._ws.on('close', ()=>{
@@ -117,12 +117,14 @@ class CthulhuClientHandler {
                 this._cthulhu.feedTask(methodCatagory, payload)
             } else if (methodName === 'requestTask') {
                 let requestProcess = this._cthulhu.requestTask(taskName, payload, (payload) => {
-                    this._ws.send({responseId, requestId, payload})
+                    this._request({responseId, requestId, payload})
                 })
 
                 this._ws.on('close', ()=>{
                     requestProcess.close()
                 })
+
+                let responsePayload = await new PromiseToEmit(this._internalEvents, `response:${responseId}`)
 
             } else if (methodName === 'consumeTask') {
 
