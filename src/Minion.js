@@ -76,14 +76,14 @@ module.exports = class Minion {
     return this._fetch(methodName, methodCatagory, data)
   }
 
-  _fetch(methodName, methodCatagory, data, callback, context) {
+  _fetch(methodName, methodCatagory, data, fetchHandler, fetchContext) {
     return new Process(async (process) => {
       await this.promiseToStart
       if (this._isClosed) return process.close()
       
       const requestId = this._nextRequestId ++
       this._ws.send(JSON.stringify({}, data, { requestId, methodName, methodCatagory}))
-      this._internalEvents.on(`response:${requestId}`, callback, context)
+      this._internalEvents.on(`response:${requestId}`, fetchHandler, fetchContext)
     })
   }
 
@@ -98,7 +98,7 @@ module.exports = class Minion {
 
   async _subscribe(methodName, methodCatagory, subscriptionHandler, context) {
     return new Process(async (process) => {
-      this._fetch(methodName, methodCatagory, data, callback, context)
+      this._fetch(methodName, methodCatagory, data, subscriptionHandler, context)
       // TODO: REFACTOR TO NEW PATTERNS
       // let {requestId, responseId, payload} = await this._fetch(methodName, methodCatagory)
       // this._internalEvents.on(`response:${requestId}`, subscriptionHandler, context)
