@@ -85,10 +85,10 @@ module.exports = class Minion {
       this._ws.send(JSON.stringify({}, data, { requestId, methodName, methodCatagory}))
       
       if (!fetchHandler) return process.close()
-      let response = new PromiseToEmit(this._internalEvents, `response:${requestId}`)
-      fetchHandler.call(fetchContext, 
+      let response = await new PromiseToEmit(this._internalEvents, `response:${requestId}`)
+      fetchHandler.call(fetchContext, response)
+
       process.close()
-      this._internalEvents.on(`response:${requestId}`, fetchHandler, fetchContext)
     })
   }
 
