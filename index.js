@@ -240,8 +240,8 @@ class Minion {
         return this._subscribe('subscribeTask', taskName, callback, context)
     }
 
-    async _send(methodName, methodCatagory, payload) {
-        this._fetch(methodName, methodCatagory, payload)
+    _send(methodName, methodCatagory, payload) {
+        return this._fetch(methodName, methodCatagory, payload)
     }
 
     _fetch(methodName, methodCatagory, payload, callback, context) {
