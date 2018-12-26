@@ -247,7 +247,7 @@ class Minion {
         
             const requestId = this._nextRequestId ++
             this._ws.send(JSON.stringify({ requestId, methodName, methodCatagory, payload}))
-            return await new PromiseToEmit(this._internalEvents, `response:${requestId}`)
+            callback(await new PromiseToEmit(this._internalEvents, `response:${requestId}`)
         })
 
     }
