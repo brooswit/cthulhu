@@ -97,10 +97,4 @@ module.exports = class Minion {
       // this._internalEvents.on(`response:${requestId}`, subscriptionHandler, context)
     })
   }
-
-  _handleMessage(str) {
-    const message = JSONparseSafe(str, {})
-    const {requestId, ackId, value} = message
-    this._internalEvents.emit(requestId, {ackId, value})
-  }
 }
