@@ -257,19 +257,25 @@ class Minion {
     }
 
     async _request(methodName, methodCatagory, requestHandler, context) {
-        let {responseId, payload} = await this._fetch(methodName, methodCatagory)
-        payload = await requestHandler.call(context, payload)
-        this._send('respond', '', {responseId, payload})
-        return resRefId
+        return new Process(async (process) => {
+            let {responseId, payload} = await this._fetch(methodName, methodCatagory)
+            payload = await requestHandler.call(context, payload)
+            this._send('respond', '', {responseId, payload})
+            return resRefId
+        })
     }
 
     async _subscribe(methodName, methodCatagory, subscriptionHandler, context) {
-        let {requestId, responseId, payload} = await this._fetch(methodName, methodCatagory)
-        this._internalEvents.on(`response:${requestId}`, subscriptionHandler, context)
+        return new Process(async (process) => {
+            let {requestId, responseId, payload} = await this._fetch(methodName, methodCatagory)
+            this._internalEvents.on(`response:${requestId}`, subscriptionHandler, context)
+        })
     }
 
     _ack(ackId, value) {
-        this._ws.send(JSON.stringify({ ackId, action: 'ack', value}))
+        return new Process(async (process) => {
+            this._ws.send(JSON.stringify({ ackId, action: 'ack', value}))
+        })
     }
 
     async _request(resourceType, action, resourceName, value) {
