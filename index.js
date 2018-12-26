@@ -237,7 +237,7 @@ class Minion {
     }
 
     _fetch(methodName, methodCatagory, payload) {
-        if (this._isClosed) return
+        if (this._isClosed) return new Process.Closed()
         await this.promiseToStart
         
         const requestId = this._nextRequestId ++
