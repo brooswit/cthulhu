@@ -98,7 +98,7 @@ module.exports = class Minion {
 
   async _subscribe(methodName, methodCatagory, subscriptionHandler, context) {
     return new Process(async (process) => {
-      this._fetch
+      this._fetch(methodName, methodCatagory, data, callback, context)
       // TODO: REFACTOR TO NEW PATTERNS
       // let {requestId, responseId, payload} = await this._fetch(methodName, methodCatagory)
       // this._internalEvents.on(`response:${requestId}`, subscriptionHandler, context)
