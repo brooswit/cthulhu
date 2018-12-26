@@ -85,10 +85,8 @@ class CthulhuClientHandler {
 
         this._internalEvents = new EventEmitter()
         this._nextResponseId = 0
-        
-        this._boundClose = this.close.bind(this)
 
-        this._cthulhu._internalEvents.once('close', this._boundClose)
+        this._cthulhu._internalEvents.once('close', close, this)
         this._ws.once('close', this._boundClose)
 
         this._ws.on('message', this._handleMessage.bind(this))
@@ -141,7 +139,7 @@ class CthulhuClientHandler {
     }
 
     close() {
-        this._cthulhu._internalEvents.off('close', this._boundClose)        
+        this._cthulhu._internalEvents.off('close', this.close, this)        
         this._ws.close()
     }
 
@@ -157,7 +155,7 @@ class CthulhuClientHandler {
 
         let result = await new Promise((resolve, reject) => {
             this._internalEvents.on(`response:${responseId}`, resolution = resolve)
-            this._ws.on('close', rejection = reject)
+            this._ws.once('close', rejection = reject)
         })
 
         this._internalEvents.off(`response:${responseId}`, resolution)
