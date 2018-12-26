@@ -140,31 +140,6 @@ class CthulhuClientHandler {
                     subscriptionProcess.close()
                 })
             }
-            let result = null
-
-            if (resourceType === 'events') {
-                if (action === 'trigger') {
-                    result = await this._cthulhu.events.trigger(resourceName, value)
-                }
-                if (action === 'hook') {
-                    let hookId = await this._cthulhu.events.hook(resourceName, this._request);
-                    this._ws.on('close', ()=>{
-                        this._cthulhu.events.stop(hookId)
-                    })
-                }
-            }
-            if (resourceType === 'tasks') {
-                if (action === 'add') {
-                    result = await this._cthulhu.tasks.add(resourceName, value); break
-                }
-                if (action === 'subscribe') {
-                    let subId = await this._cthulhu.tasks.subscribe(resourceName, this._request); break
-                    this._ws.on('close', ()=>{
-                        this._cthulhu.tasks.unsubscribe(subId)
-                    })
-                }
-            }
-            this._respond(reqRefId, result)
         }
     }
 
