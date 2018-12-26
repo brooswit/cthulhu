@@ -170,8 +170,6 @@ class CthulhuClientHandler {
 class Minion {
     constructor (url) {
         this._internalEvents = new EventEmitter()
-        this.events = new MinionEvents(this)
-        this.tasks = new MinionTasks(this)
 
         this._nextRequestId = 0
 
@@ -290,30 +288,6 @@ class Minion {
     }
 
     ready() {}
-}
-
-class MinionEvents {
-    constructor(minion) {
-        this._minion = minion
-    }
-    async trigger(eventName, value) {
-        return await this._minion._request('events', 'trigger', eventName, value, callback)
-    }
-    async hook(eventName, callback) {
-        return await this._minion._listen('events', 'hook', eventName, null, callback)
-    }
-}
-
-class MinionTasks {
-    constructor(minion) {
-        this._minion = minion
-    }
-    async add(taskName, value) {
-        return await this._minion._request('tasks', 'add', taskName, value, callback)
-    }
-    async consume(taskName, callback) {
-        return await this._minion._listen('tasks', 'consume', taskName, null, callback)
-    }
 }
 
 Cthulhu.Minion = Minion
