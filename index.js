@@ -237,8 +237,10 @@ class Minion {
     }
 
     _fetch(methodName, methodCatagory, payload) {
-        if (this._isClosed) return new Process.Closed()
-        await this.promiseToStart
+        if (this._isClosed) return new Process(async ()=>{
+            await this.promiseToStart
+
+        })
         
         const requestId = this._nextRequestId ++
         this._ws.send(JSON.stringify({ requestId, methodName, methodCatagory, payload}))
