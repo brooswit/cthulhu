@@ -55,28 +55,23 @@ class Cthulhu {
     }
 
     hookEvent(eventName, eventHandler, context) {
-        await this.promiseToStart
         return this._eventManager.hook(eventName, eventHandler, context)
     }
 
     // Tasks
     feedTask(taskName, payload) {
-        await this.promiseToStart
         this._taskManager.feed(taskName, payload)
     }
 
     requestTask(taskName, payload, responseHandler, context) {
-        await this.promiseToStart
-        this._taskManager.request(taskName, payload, responseHandler, context)
+        return this._taskManager.request(taskName, payload, responseHandler, context)
     }
 
     consumeTask(taskName, taskHandler, context) {
-        await this.promiseToStart
-        this._taskManager.consume(taskName, taskHandler, context)
+        return this._taskManager.consume(taskName, taskHandler, context)
     }
 
     subscribeTask(taskName, subscriptionHandler, context) {
-        await this.promiseToStart
         return this._taskManager.subscribe(taskName, subscriptionHandler, context)
     }
 }
