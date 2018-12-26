@@ -42,42 +42,42 @@ module.exports = class Minion {
 
   // Events
   triggerEvent(eventName, value) {
-      return this._send('triggerEvent', eventName, value)
+    return this._send('triggerEvent', eventName, value)
   }
 
   hookEvent(eventName, callback, context) {
-      return this._subscribe('hookEvent', eventName, callback, context)
+    return this._subscribe('hookEvent', eventName, callback, context)
   }
 
   // Tasks
   feedTask(taskName, payload) {
-      return this._send('feedTask', taskName, payload)
+    return this._send('feedTask', taskName, payload)
   }
 
   requestTask(taskName, payload, responseHandler, context) {
-      return this._fetch('requestTask', taskName, payload, responseHandler, context)
+    return this._fetch('requestTask', taskName, payload, responseHandler, context)
   }
 
   consumeTask(taskName, taskHandler, context) {
-      return this._request('consumeTask', taskName, taskHandler, context)
+    return this._request('consumeTask', taskName, taskHandler, context)
   }
 
   subscribeTask(taskName, subscriptionHandler, context) {
-      return this._subscribe('subscribeTask', taskName, subscriptionHandler, context)
+    return this._subscribe('subscribeTask', taskName, subscriptionHandler, context)
   }
 
   _send(methodName, methodCatagory, payload) {
-      return this._fetch(methodName, methodCatagory, payload)
+    return this._fetch(methodName, methodCatagory, payload)
   }
 
   _fetch(methodName, methodCatagory, payload, callback, context) {
-      return new Process(async (process) => {
-        await this.promiseToStart
-        if (this._isClosed) return process.close()
+    return new Process(async (process) => {
+      await this.promiseToStart
+      if (this._isClosed) return process.close()
       
-        const requestId = this._nextRequestId ++
-        this._ws.send(JSON.stringify({ requestId, methodName, methodCatagory, payload}))
-        this._internalEvents.once(callback, context)
+      const requestId = this._nextRequestId ++
+      this._ws.send(JSON.stringify({ requestId, methodName, methodCatagory, payload}))
+      this._internalEvents.once(callback, context)
     })
   }
 
