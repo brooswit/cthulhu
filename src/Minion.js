@@ -51,11 +51,11 @@ module.exports = class Minion {
 
   // Tasks
   feedTask(taskName, payload) {
-    return this._send('feedTask', taskName, payload)
+    return this._send('feedTask', taskName, {payload})
   }
 
   requestTask(taskName, payload, responseHandler, context) {
-    return this._fetch('requestTask', taskName, payload, responseHandler, context)
+    return this._fetch('requestTask', taskName, {payload}, responseHandler, context)
   }
 
   consumeTask(taskName, taskHandler, context) {
@@ -67,7 +67,7 @@ module.exports = class Minion {
   }
 
   _send(methodName, methodCatagory, payload) {
-    return this._fetch(methodName, methodCatagory, payload)
+    return this._fetch(methodName, methodCatagory, {payload})
   }
 
   _fetch(methodName, methodCatagory, payload, callback, context) {
