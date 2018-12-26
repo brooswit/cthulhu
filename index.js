@@ -107,7 +107,7 @@ class CthulhuClientHandler {
                 this._cthulhu.triggerEvent(methodCatagory, payload)
             } else if (methodName === 'hookEvent') {
                 let hookProcess = await this._cthulhu.hookEvent(eventName, (payload) => {
-                    this._send({requestId, payload})
+                    this._respond({requestId, payload})
                 })
 
                 this._ws.on('close', ()=>{
