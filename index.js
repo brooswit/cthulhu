@@ -39,9 +39,9 @@ class Cthulhu {
         this.promiseToStart = new PromiseToEmit(this._internalEvents, 'started')
     }
 
-    async start() {
+    start(callback) {
         return await new Promise((resolve) => {
-            this.express.listen(process.env.PORT || 8888, resolve)
+            this.express.listen(process.env.PORT || 8888, callback)
         })
     }
         
