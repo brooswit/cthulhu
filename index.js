@@ -107,7 +107,7 @@ class CthulhuClientHandler {
                 this._cthulhu.triggerEvent(methodCatagory, payload)
             } else if (methodName === 'hookEvent') {
                 let hookProcess = await this._cthulhu.hookEvent(eventName, (payload) => {
-                    this._respond({requestId, payload})
+                    this._respond(requestId, payload)
                 })
 
                 this._ws.on('close', ()=>{
@@ -117,7 +117,7 @@ class CthulhuClientHandler {
                 this._cthulhu.feedTask(methodCatagory, payload)
             } else if (methodName === 'requestTask') {
                 let requestProcess = this._cthulhu.requestTask(taskName, payload, (payload) => {
-                    return await this._request({requestId, payload})
+                    return await this._request(requestId, payload)
                 })
 
                 this._ws.on('close', () => {
@@ -125,7 +125,7 @@ class CthulhuClientHandler {
                 })
             } else if (methodName === 'consumeTask') {
                 let consumeProcess = this._cthulhu.consumeTask(taskName, (payload) => {
-                    return await this._request({requestId, payload})
+                    return await this._request(requestId, payload)
                 })
 
                 this._ws.on('close', () => {
@@ -133,7 +133,7 @@ class CthulhuClientHandler {
                 })
             } else if (methodName === 'subscribeTask') {
                 let subscriptionProcess = this._cthulhu.subscribeTask(taskName, (payload) => {
-                    return await this._request({requestId, payload})
+                    return await this._request(requestId, payload)
                 })
 
                 this._ws.on('close', () => {
