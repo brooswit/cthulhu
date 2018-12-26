@@ -117,15 +117,12 @@ class CthulhuClientHandler {
                 this._cthulhu.feedTask(methodCatagory, payload)
             } else if (methodName === 'requestTask') {
                 let requestProcess = this._cthulhu.requestTask(taskName, payload, (payload) => {
-                    response = await this._request({requestId, payload})
+                    return await this._request({requestId, payload})
                 })
 
                 this._ws.on('close', ()=>{
                     requestProcess.close()
                 })
-
-                let responsePayload = await new PromiseToEmit(this._internalEvents, `response:${responseId}`)
-
             } else if (methodName === 'consumeTask') {
 
             } else if (methodName === 'subscribeTask') {
