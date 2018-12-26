@@ -169,10 +169,10 @@ class CthulhuClientHandler {
 
 class Minion {
     constructor (url) {
+        this._internalEvents = new EventEmitter()
         this.events = new MinionEvents(this)
         this.tasks = new MinionTasks(this)
 
-        this._internalEvents = new EventEmitter()
         this._nextReqRefId = 0
 
         this._isStarting = false
