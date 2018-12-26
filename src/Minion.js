@@ -77,7 +77,7 @@ module.exports = class Minion {
       
       const requestId = this._nextRequestId ++
       this._ws.send(JSON.stringify({}, data, { requestId, methodName, methodCatagory}))
-      this._internalEvents.once(callback, context)
+      this._internalEvents.once(`response:${requestId}`, context)
     })
   }
 
