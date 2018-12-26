@@ -57,7 +57,7 @@ class Cthulhu {
 
     async hookEvent(eventName, eventHandler, context) {
         await this.promiseToStart
-        this._eventManager.hook(eventName, eventHandler, context)
+        return this._eventManager.hook(eventName, eventHandler, context)
     }
 
     // Tasks
