@@ -240,6 +240,10 @@ class Minion {
         return this._subscribe('subscribeTask', taskName, callback, context)
     }
 
+    async _send(methodName, methodCatagory, payload) {
+        this._fetch(methodName, methodCatagory, payload)
+    }
+
     _fetch(methodName, methodCatagory, payload, callback, context) {
         return new Process(async (process) => {
             await this.promiseToStart
@@ -250,10 +254,6 @@ class Minion {
             this._internalEvents.once(callback, context)
         })
 
-    }
-
-    async _send(methodName, methodCatagory, payload) {
-        this._fetch(methodName, methodCatagory, payload)
     }
 
     async _request(methodName, methodCatagory, requestHandler, context) {
