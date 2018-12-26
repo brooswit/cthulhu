@@ -86,9 +86,15 @@ class CthulhuClientHandler {
 
         this._nextResponseId = 0
 
+        this.initialize
         this._cthulhu._internalEvents.once('close', close, this)
         this._ws.once('close', this._boundClose)
         this._ws.on('message', this._handleMessage.bind(this))
+    }
+
+    close() {
+        this._cthulhu._internalEvents.off('close', this.close, this)        
+        this._ws.close()
     }
 
     async _handleMessage(str) {
@@ -135,11 +141,6 @@ class CthulhuClientHandler {
                 })
             }
         }
-    }
-
-    close() {
-        this._cthulhu._internalEvents.off('close', this.close, this)        
-        this._ws.close()
     }
 
     async _respond (requestId, payload) {
