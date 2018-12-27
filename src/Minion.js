@@ -109,7 +109,6 @@ module.exports = class Minion {
     return new Process(async (process) => {
       await this.promiseToStart
       if (process.closed) return
-      if (this._isClosed) return process.close()
       
       const requestId = this._nextRequestId ++
       this._ws.send(JSON.stringify({}, data, { requestId, methodName, methodCatagory}))
