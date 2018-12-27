@@ -2,6 +2,8 @@ const WebSocket = require('ws')
 
 module.exports = class Minion {
   constructor (url) {
+    this._url = url
+
     this._internalEvents = new EventEmitter()
     this._nextRequestId = 0
     this._isStarting = false
