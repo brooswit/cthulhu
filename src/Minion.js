@@ -18,19 +18,17 @@ module.exports = class Minion {
     if (this._isClosed) return
     this._isStarting = true
     console.warn('Starting Minion...')
-    this._lifecycle()
-  }
-
-  async _lifecycle() {
-    if (this._isClosed) return
-    this._ws = new WebSocket(`ws://${url}/stream`);
-    await new PromiseToEmit(this._ws, 'open')
-    this._ws.on('message', this._handleMessage.bind(this))
-    console.warn('... Minion is ready ...')
-    this._internalEvents.emit('started')
-    await new PromiseToEmit(this._ws, 'close')
-    this.promiseToStart = new PromiseToEmit(this._internalEvents, 'ready')
-    this._lifecycle()
+    new Process(async (process)=>{
+      while (process.active) {
+        this._ws = new WebSocket(`ws://${url}/stream`);
+        await new PromiseToEmit(this._ws, 'open')
+        this._ws.on('message', this._handleMessage.bind(this))
+        console.warn('... Minion is ready ...')
+        this._internalEvents.emit('ready')
+        await new PromiseToEmit(this._ws, 'close')
+        this.promiseToStart = new PromiseToEmit(this._internalEvents, 'ready')
+      }
+    })
   }
 
   _handleMessage(str) {
