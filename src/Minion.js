@@ -81,7 +81,7 @@ module.exports = class Minion {
   _fetch(methodName, methodCatagory, data, fetchHandler, fetchContext) {
     return new Process(async (process) => {
       await this.promiseToStart
-      if (this._isClosed) return process.close()
+      if (process.closed) return
       
       const requestId = this._nextRequestId ++
       this._ws.send(JSON.stringify({}, data, { requestId, methodName, methodCatagory}))
@@ -91,7 +91,7 @@ module.exports = class Minion {
       fetchHandler.call(fetchContext, response)
 
       process.close()
-    })
+    }, this._internalEvents)
   }
 
   async _request(methodName, methodCatagory, requestHandler, context) {
@@ -100,7 +100,7 @@ module.exports = class Minion {
         payload = await requestHandler.call(context, payload)
         this._send('respond', '', {responseId, payload})
       })
-    })
+    }, this._internalEvents)
   }
 
   async _subscribe(methodName, methodCatagory, subscriptionHandler, subscriptionContext) {
@@ -117,6 +117,6 @@ module.exports = class Minion {
       await new PromiseToEmit(this._internalEvents, `close`)
       this._internalEvents.off(`response:${requestId}`, subscriptionHandler, subscriptionContext)
       process.close()
-    })
+    }, this._internalEvents)
   }
 }
