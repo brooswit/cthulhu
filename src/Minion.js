@@ -93,7 +93,7 @@ module.exports = class Minion {
       if (process.closed) return
       fetchHandler.call(fetchContext, response)
       process.close()
-    }, this._internalEvents)
+    }, this._process)
   }
 
   async _request(methodName, methodCatagory, requestHandler, context) {
@@ -102,7 +102,7 @@ module.exports = class Minion {
         payload = await requestHandler.call(context, payload)
         this._send('respond', '', {responseId, payload})
       })
-    }, this._internalEvents)
+    }, this._process)
   }
 
   async _subscribe(methodName, methodCatagory, subscriptionHandler, subscriptionContext) {
@@ -120,6 +120,6 @@ module.exports = class Minion {
       await new PromiseToEmit(process, `close`)
       this._internalEvents.off(`response:${requestId}`, subscriptionHandler, subscriptionContext)
       process.close()
-    }, this._internalEvents)
+    }, this._process)
   }
 }
