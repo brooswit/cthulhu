@@ -9,7 +9,6 @@ module.exports = class Minion {
     this._isStarting = false
 
     this.promiseToReady = new PromiseToEmit(this._process, 'ready')
-    this.promiseToClose = new PromiseToEmit(this._process, 'close')
 
     this._process = new Process(async (process)=>{
       await new PromiseToEmit(this._process, 'start')
