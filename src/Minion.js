@@ -31,14 +31,14 @@ module.exports = class Minion {
     this._process.emit('start')
   }
 
+  close() {
+    this._close()
+  }
+
   _handleMessage(str) {
     const message = JSONparseSafe(str, {})
     const {requestId, responseId, payload} = message
     this._internalEvents.emit(`response:${requestId}`, {responseId, payload})
-  }
-
-  close() {
-    this._close()
   }
 
   async _close() {
