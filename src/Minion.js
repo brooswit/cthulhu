@@ -23,7 +23,7 @@ module.exports = class Minion {
         this._process.emit('start')
 
         await new PromiseToEmit(this._ws, 'close')
-        this.promiseToReady = new PromiseToEmit(this._process, 'start')
+        this.promiseToReady = new PromiseToEmit(this._process, 'ready')
       }
     })
   }
