@@ -44,7 +44,7 @@ module.exports = class Minion {
     await this.promiseToReady
 
     this._isClosed = true
-    this._internalEvents.emit('close')
+    this._process.close()
     this._ws.close()
   }
 
