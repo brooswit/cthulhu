@@ -1,9 +1,8 @@
 const {JSONparseSafe} = require('brooswit-common')
 // TODO: REFACTOR TO NEW PATTERNS
-module.exports = class WebhookIngester {
+module.exports = class TaskIngester {
     constructor(cthulhu, express, path) {
         let eventName = path.replace('/',':')
-        console.debug(`new WebhookIngester ${path}`)
         express.post(`/${path}`, async (req, res) => {
             let operationData = req.body || {};
             let result = await handler(operationData)
