@@ -6,9 +6,9 @@ module.exports = class ClubhouseEventIngester {
       for (let actionIndex in payload.actions) {
         let action = payload.actions[actionIndex]
 
-        cthulhu.events.emit(`clubhouse_event/${appName}`, action)
-        cthulhu.events.emit(`clubhouse_event/${appName}/${action['entity_type']}`, action)
-        cthulhu.events.emit(`clubhouse_event/${appName}/${action['entity_type']}/${action['action']}`, action)
+        cthulhu.events.emit(`clubhouse/${appName}`, action)
+        cthulhu.events.emit(`clubhouse/${appName}/${action['entity_type']}`, action)
+        cthulhu.events.emit(`clubhouse/${appName}/${action['entity_type']}/${action['action']}`, action)
       }
     })
     new TaskIngester(cthulhu,  taskName)
