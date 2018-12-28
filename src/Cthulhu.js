@@ -143,5 +143,4 @@ class CthulhuClientHandler {
 
       return result
   }
-
 }
