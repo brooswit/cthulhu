@@ -133,7 +133,7 @@ module.exports = class Cthulhu extends CthulhuHeart {
       .ws('/stream', (ws) => { new CthulhuClientHandler(this, ws) })
 
     console.log('?????????????')
-    this.promiseToStart = new PromiseToEmit(this._internalEvents, 'started')
+    this.promiseToStart = new PromiseToEmit(this._internalEvents, 'started', null, 'Cthulhu.')
     console.log('!!!!!!!!!!!!!')
 }
 
