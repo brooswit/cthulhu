@@ -3,7 +3,7 @@ const TaskIngester = require('./TaskIngester')
 module.exports = class ClubhouseEventIngester {
   constructor(cthulhu, clubhouseSecret, clubhouseAppName) {
     let taskName = `ingest_clubhouse_event/${clubhouseAppName}` // TODO: change to `ingest/clubhouse/${appName}`
-    cthulhu.subscribeTask(taskName, this._injestClubhouseTask)
+    cthulhu.subscribeTask(taskName, this._injestClubhouseTask, this)
     new TaskIngester(cthulhu,  taskName)
   }
 
