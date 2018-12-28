@@ -1,5 +1,4 @@
-const Ingester = require('./Ingester')
-// TODO/ REFACTOR TO NEW PATTERNS
+const Ingester = require('./TaskIngester')
 module.exports = class ClubhouseEventIngester extends TaskIngester {
   constructor(cthulhu, secret, appName) {
     let taskName = `ingest_clubhouse_event/${appName}`
