@@ -2,7 +2,6 @@ const Ingester = require('./TaskIngester')
 module.exports = class ClubhouseEventIngester extends  {
   constructor(cthulhu, secret, appName) {
     let taskName = `ingest_clubhouse_event/${appName}`
-    new TaskIngester(cthulhu,  taskName)
     cthulhu.subscribeTask(taskName, (payload) => {
       for (let actionIndex in payload.actions) {
         let action = payload.actions[actionIndex]
@@ -12,5 +11,6 @@ module.exports = class ClubhouseEventIngester extends  {
         cthulhu.events.emit(`clubhouse_event/${appName}/${action['entity_type']}/${action['action']}`, action)
       }
     })
+    new TaskIngester(cthulhu,  taskName)
   }
 }
