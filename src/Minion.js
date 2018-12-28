@@ -40,7 +40,7 @@ module.exports = class Minion {
   }
 
   close() {
-    if (this._isClosed) return
+    if (this._process.closed) return
     await this.promiseToReady
 
     this._isClosed = true
