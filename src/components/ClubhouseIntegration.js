@@ -1,7 +1,7 @@
 const WebhookIngester = require('./WebhookIngester')
 // TODO: REFACTOR TO NEW PATTERNS
 module.exports = class ClubhouseIngester extends Ingester {
-    constructor(cthulhu, appName) {
+    constructor(cthulhu, secret, appName) {
         super(cthulhu.express,  `/ingest_clubhouse_event/${appName}`,  (payload) => {
             for (let actionIndex in payload.actions) {
                 let action = payload.actions[actionIndex]
