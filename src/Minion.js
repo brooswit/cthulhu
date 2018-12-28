@@ -7,7 +7,6 @@ module.exports = class Minion {
     this._internalEvents = new EventEmitter()
     this._nextRequestId = 0
     this._isStarting = false
-    this._isClosed = false
 
     this.promiseToReady = new PromiseToEmit(this._process, 'ready')
     this.promiseToClose = new PromiseToEmit(this._process, 'close')
@@ -43,7 +42,6 @@ module.exports = class Minion {
     if (this._process.closed) return
     await this.promiseToReady
 
-    this._isClosed = true
     this._process.close()
     this._ws.close()
   }
