@@ -4,30 +4,6 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const enableWs = require('express-ws')
 
-module.exports = class Cthulhu extends CthulhuCore {
-  constructor() {
-    super()
-    this._internalEvents = new EventEmitter()
-
-    this.express = express()
-    enableWs(this.express)
-    this.express.use(bodyParser.json())
-      .ws('/stream', (ws) => { new CthulhuClientHandler(this, ws) })
-
-    this.promiseToStart = new PromiseToEmit(this._internalEvents, 'started')
-  }
-
-  start(callback) {
-    if (this._isStarting) return
-    this._isStarting = true
-    this.express.listen(process.env.PORT || 8888, callback)
-  }
-      
-  close() {
-      this._internalEvents.emit('close')
-  }
-}
-
 class CthulhuCore {
   constructor() {
       this._eventManager = new EventManager()
@@ -142,5 +118,29 @@ class CthulhuClientHandler {
       this._ws.off('close', rejection)
 
       return result
+  }
+}
+
+module.exports = class Cthulhu extends CthulhuCore {
+  constructor() {
+    super()
+    this._internalEvents = new EventEmitter()
+
+    this.express = express()
+    enableWs(this.express)
+    this.express.use(bodyParser.json())
+      .ws('/stream', (ws) => { new CthulhuClientHandler(this, ws) })
+
+    this.promiseToStart = new PromiseToEmit(this._internalEvents, 'started')
+  }
+
+  start(callback) {
+    if (this._isStarting) return
+    this._isStarting = true
+    this.express.listen(process.env.PORT || 8888, callback)
+  }
+      
+  close() {
+      this._internalEvents.emit('close')
   }
 }
