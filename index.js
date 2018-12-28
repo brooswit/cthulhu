@@ -1,9 +1,9 @@
 Cthulhu = require('./src/Cthulhu')
 Cthulhu.Minion = require('./src/Minion')
-Cthulhu.WebhookIngester = require('./src/components/WebhookIngester')
+Cthulhu.TaskIngester = require('./src/components/TaskIngester')
 Cthulhu.SlackIntegration = require('./src/components/SlackIntegration')
 Cthulhu.SalesforceIntegration = require('./src/components/SalesforceIntegration')
-Cthulhu.ClubhouseIntegration = require('./src/components/ClubhouseIntegration')
+Cthulhu.ClubhouseEventIngester = require('./src/components/ClubhouseEventIngester')
 Cthulhu.ZendeskIntegration = require('./src/components/ZendeskIntegration')
 
 module.exports = Cthulhu
