@@ -17,14 +17,20 @@ module.exports = class Minion {
       console.warn('Starting Minion...')
       while (process.active) {
         this._ws = new WebSocket(`ws://${url}/stream`);
+
         await new PromiseToEmit(this._ws, 'open')
         this._ws.on('message', this._handleMessage.bind(this))
         console.warn('... Minion is ready ...')
         this._process.emit('start')
+
         await new PromiseToEmit(this._ws, 'close')
         this.promiseToReady = new PromiseToEmit(this._process, 'start')
       }
     })
+  }
+
+  start() {
+    this._process.emit('start')
   }
 
   _handleMessage(str) {
