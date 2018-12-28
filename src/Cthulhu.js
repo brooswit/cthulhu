@@ -1,5 +1,6 @@
 const {JSONparseSafe, EventManager, TaskManager} = require('brooswit-common')
 
+const EventEmitter = require('events')
 const express = require('express')
 const bodyParser = require('body-parser')
 const enableWs = require('express-ws')
