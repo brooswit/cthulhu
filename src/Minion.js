@@ -9,7 +9,7 @@ module.exports = class Minion {
     this._isStarting = false
     this._isClosed = false
 
-    this.promiseToStart = new PromiseToEmit(this._process, 'ready')
+    this.promiseToStart = new PromiseToEmit(this._process, 'start')
     this.promiseToClose = new PromiseToEmit(this._process, 'close')
 
     console.warn('Starting Minion...')
@@ -19,9 +19,9 @@ module.exports = class Minion {
         await new PromiseToEmit(this._ws, 'open')
         this._ws.on('message', this._handleMessage.bind(this))
         console.warn('... Minion is ready ...')
-        this._process.emit('ready')
+        this._process.emit('start')
         await new PromiseToEmit(this._ws, 'close')
-        this.promiseToStart = new PromiseToEmit(this._process, 'ready')
+        this.promiseToStart = new PromiseToEmit(this._process, 'start')
       }
     })
   }
