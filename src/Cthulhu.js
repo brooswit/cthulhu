@@ -4,7 +4,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const enableWs = require('express-ws')
 
-class CthulhuCore {
+class CthulhuHeartß {
   constructor() {
       this._eventManager = new EventManager()
       this._taskManager = new TaskManager()
@@ -121,7 +121,7 @@ class CthulhuClientHandler {
   }
 }
 
-module.exports = class Cthulhu extends CthulhuCore {
+module.exports = class Cthulhu extends CthulhuHeartß {
   constructor() {
     super()
     this._internalEvents = new EventEmitter()
