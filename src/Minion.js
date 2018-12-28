@@ -9,11 +9,12 @@ module.exports = class Minion {
     this._isStarting = false
     this._isClosed = false
 
-    this.promiseToStart = new PromiseToEmit(this._process, 'start')
+    this.promiseToReady = new PromiseToEmit(this._process, 'ready')
     this.promiseToClose = new PromiseToEmit(this._process, 'close')
 
-    console.warn('Starting Minion...')
     this._process = new Process(async (process)=>{
+      await new PromiseToEmit(this._process, 'start')
+      console.warn('Starting Minion...')
       while (process.active) {
         this._ws = new WebSocket(`ws://${url}/stream`);
         await new PromiseToEmit(this._ws, 'open')
@@ -21,7 +22,7 @@ module.exports = class Minion {
         console.warn('... Minion is ready ...')
         this._process.emit('start')
         await new PromiseToEmit(this._ws, 'close')
-        this.promiseToStart = new PromiseToEmit(this._process, 'start')
+        this.promiseToReady = new PromiseToEmit(this._process, 'start')
       }
     })
   }
@@ -34,7 +35,7 @@ module.exports = class Minion {
 
   close() {
     if (this._isClosed) return
-    await this.promiseToStart
+    await this.promiseToReady
 
     this._isClosed = true
     this._internalEvents.emit('close')
@@ -73,7 +74,7 @@ module.exports = class Minion {
 
   _fetch(methodName, methodCatagory, data, fetchHandler, fetchContext) {
     return new Process(async (process) => {
-      await this.promiseToStart
+      await this.promiseToReady
 
       if (process.closed) return
       const requestId = this._nextRequestId ++
@@ -100,7 +101,7 @@ module.exports = class Minion {
 
   async _subscribe(methodName, methodCatagory, subscriptionHandler, subscriptionContext) {
     return new Process(async (process) => {
-      await this.promiseToStart
+      await this.promiseToReady
       if (process.closed) return
       
       const requestId = this._nextRequestId ++
