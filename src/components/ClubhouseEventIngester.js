@@ -6,10 +6,10 @@ module.exports = class ClubhouseEventIngester {
     cthulhu.subscribeTask(taskName, (payload) => {
       for (let actionIndex in payload.actions) {
         let actionData = payload.actions[actionIndex]
-        let {entity_type, }
+        let {entity_type, action} = actionData
         cthulhu.events.emit(`clubhouse/${appName}`, actionData)
-        cthulhu.events.emit(`clubhouse/${appName}/${actionData['entity_type']}`, actionData)
-        cthulhu.events.emit(`clubhouse/${appName}/${actionData['entity_type']}/${actionData['action']}`, action)
+        cthulhu.events.emit(`clubhouse/${appName}/${entity_type}`, actionData)
+        cthulhu.events.emit(`clubhouse/${appName}/${entity_type}/${action}`, action)
       }
     })
     new TaskIngester(cthulhu,  taskName)
