@@ -132,9 +132,7 @@ module.exports = class Cthulhu extends CthulhuHeart {
     this.express.use(bodyParser.json())
       .ws('/stream', (ws) => { new CthulhuClientHandler(this, ws) })
 
-    console.log('?????????????')
     this.promiseToStart = new PromiseToEmit(this._internalEvents, 'started', null, 'Cthulhu.constructor')
-    console.log('!!!!!!!!!!!!!')
 }
 
   start(callback) {
