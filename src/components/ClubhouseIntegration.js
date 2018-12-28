@@ -1,5 +1,5 @@
 const Ingester = require('./TaskIngester')
-module.exports = class ClubhouseEventIngester extends  {
+module.exports = class ClubhouseEventIngester {
   constructor(cthulhu, secret, appName) {
     let taskName = `ingest_clubhouse_event/${appName}`
     cthulhu.subscribeTask(taskName, (payload) => {
