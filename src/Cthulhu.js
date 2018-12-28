@@ -1,11 +1,11 @@
-const {PromiseToEmit, JSONparseSafe, EventManager, TaskManager} = require('brooswit-common')
+const {JSONparseSafe, EventManager, TaskManager} = require('brooswit-common')
 
-const EventEmitter = require('events')
+const EventEmitter = require()
 const express = require('express')
 const bodyParser = require('body-parser')
 const enableWs = require('express-ws')
 
-class CthulhuHeart {
+class CthulhuHeartß {
   constructor() {
       this._eventManager = new EventManager()
       this._taskManager = new TaskManager()
@@ -131,7 +131,7 @@ module.exports = class Cthulhu extends CthulhuHeartß {
     enableWs(this.express)
     this.express.use(bodyParser.json())
       .ws('/stream', (ws) => { new CthulhuClientHandler(this, ws) })
-PromiseToEmit
+
     this.promiseToStart = new PromiseToEmit(this._internalEvents, 'started')
   }
 
