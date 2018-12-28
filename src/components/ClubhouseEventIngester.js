@@ -1,4 +1,4 @@
-const Ingester = require('./TaskIngester')
+const TaskIngester = require('./TaskIngester')
 module.exports = class ClubhouseEventIngester {
   constructor(cthulhu, secret, appName) {
     let taskName = `ingest_clubhouse_event/${appName}` // TODO: change to `ingest_clubhouse_task/${appName}`
