@@ -2,6 +2,7 @@ const {JSONparseSafe} = require('brooswit-common')
 // TODO: REFACTOR TO NEW PATTERNS
 module.exports = class WebhookIngester {
     constructor(express, path, handler) {
+        let eventName = path.replace('/',':')
         console.debug(`new WebhookIngester ${path}`)
         express.post(`/${path}`, async (req, res) => {
             let operationData = req.body || {};
