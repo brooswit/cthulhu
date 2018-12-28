@@ -2,8 +2,9 @@ const Ingester = require('./Ingester')
 // TODO/ REFACTOR TO NEW PATTERNS
 module.exports = class ClubhouseEventIngester extends TaskIngester {
   constructor(cthulhu, secret, appName) {
-    super(cthulhu,  `ingest_clubhouse_event/${appName}`)
-    cthulhu.subscribeTask(`ingest_clubhouse_event/${appName}`), (payload) => {
+    let taskName = `ingest_clubhouse_event/${appName}`
+    super(cthulhu,  taskName)
+    cthulhu.subscribeTask(taskName), (payload) => {
       for (let actionIndex in payload.actions) {
         let action = payload.actions[actionIndex]
 
