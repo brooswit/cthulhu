@@ -1,4 +1,4 @@
-const WebhookIngester = require('./WebhookIngester')
+const Ingester = require('./Ingester')
 // TODO: REFACTOR TO NEW PATTERNS
 module.exports = class ClubhouseIngester extends Ingester {
     constructor(cthulhu, secret, appName) {
