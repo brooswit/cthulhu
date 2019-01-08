@@ -10,8 +10,6 @@ module.exports = class Minion {
     this._nextRequestId = 0
     this._isStarting = false
 
-    this.promiseToReady = promiseToEmit(this._process, 'ready')
-
     this._process = new Process(async (process)=>{
       await promiseToEmit(this._process, 'start')
       console.warn('Starting Minion...')
@@ -27,6 +25,8 @@ module.exports = class Minion {
         this.promiseToReady = promiseToEmit(this._process, 'ready')
       }
     })
+
+    this.promiseToReady = promiseToEmit(this._process, 'ready')
   }
 
   start() {
