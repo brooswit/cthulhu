@@ -90,6 +90,7 @@ module.exports = class Minion {
       this._ws.send(JSON.stringify(Object.assign({}, data, {
         requestId, methodName, methodCatagory
       })))
+      console.log("WEB SOCKET SEND")
 
       if (process.closed) return
       if (!fetchHandler) return process.close()
@@ -108,6 +109,7 @@ module.exports = class Minion {
       this._fetch(methodName, methodCatagory, async ({responseId, payload}) => {
         payload = await requestHandler.call(context, payload)
         this._send('respond', '', {responseId, payload})
+        console.log("WEB SOCKET SEND")
       })
     }, this._process)
   }
