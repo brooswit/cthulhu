@@ -37,8 +37,8 @@ module.exports = class Minion {
     this._close()
   }
 
-  _handleMessage(str) {
-    const {requestId, responseId, payload} = JSONparseSafe(str, {})
+  _handleMessage(message) {
+    const {requestId, responseId, payload} = JSONparseSafe(message, {})
     console.log({requestId, responseId, payload})
     this._internalEvents.emit(`response:${requestId}`, {responseId, payload})
   }
@@ -78,14 +78,11 @@ module.exports = class Minion {
   }
 
   _send(methodName, methodCatagory, data) {
-    console.warn('_send', {methodName})
-    
     return this._fetch(methodName, methodCatagory, data)
   }
 
   _fetch(methodName, methodCatagory, data = {}, fetchHandler, fetchContext) {
     return new Process(async (process) => {
-      console.warn('waiting for ready')
       await this.promiseToReady
       if (process.closed) return
 
@@ -93,14 +90,11 @@ module.exports = class Minion {
       this._ws.send(JSON.stringify(Object.assign({}, data, {
         requestId, methodName, methodCatagory
       })))
-      console.warn('done fetched it')
 
       if (process.closed) return
       if (!fetchHandler) return process.close()
-      console.warn('aight lets do this')
 
       let response = await promiseToEmit(this._internalEvents, `response:${requestId}`)
-      console.warn('RESPONSE!')
       if (process.closed) return
 
       fetchHandler.call(fetchContext, response)
