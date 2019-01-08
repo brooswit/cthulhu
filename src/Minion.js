@@ -117,7 +117,7 @@ module.exports = class Minion {
       if (process.closed) return
       
       const requestId = this._nextRequestId ++
-      this._ws.send(JSON.stringify({}, data, { requestId, methodName, methodCatagory}))
+      this._ws.send(JSON.stringify(Object.assign({}, data, { requestId, methodName, methodCatagory})))
       if (process.closed) return
       if (!fetchHandler) return process.close()
 
