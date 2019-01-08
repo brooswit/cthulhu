@@ -81,7 +81,7 @@ module.exports = class Minion {
     return this._fetch(methodName, methodCatagory, data)
   }
 
-  _fetch(methodName, methodCatagory, data, fetchHandler, fetchContext) {
+  _fetch(methodName, methodCatagory, data = {}, fetchHandler, fetchContext) {
     return new Process(async (process) => {
       await this.promiseToReady
       if (process.closed) return
