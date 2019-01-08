@@ -142,7 +142,7 @@ module.exports = class Cthulhu extends CthulhuHeart {
     this._isStarting = true
     this.express.listen(process.env.PORT || 8888, () => {
         console.warn('... Cthulu is ready...')
-        callback()
+        callback && callback()
     })
   }
       
