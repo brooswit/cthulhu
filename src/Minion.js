@@ -1,3 +1,4 @@
+const {promiseToEmit} = require('brooswit-common')
 const EventEmitter = require('events')
 const WebSocket = require('ws')
 
