@@ -73,7 +73,7 @@ class CthulhuClientHandler {
           } else if (methodName === 'feedTask') {
               this._cthulhu.feedTask(methodCatagory, payload)
           } else if (methodName === 'requestTask') {
-              let requestProcess = this._cthulhu.requestTask(taskName, payload, async (payload) => {
+              let requestProcess = this._cthulhu.requestTask(taskName, {payload}, async (payload) => {
                   return await this._request(requestId, payload)
               })
 
