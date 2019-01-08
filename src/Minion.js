@@ -78,13 +78,14 @@ module.exports = class Minion {
   }
 
   _send(methodName, methodCatagory, data) {
-    console.log({methodName})
+    console.warn('_send', {methodName})
+    
     return this._fetch(methodName, methodCatagory, data)
   }
 
   _fetch(methodName, methodCatagory, data = {}, fetchHandler, fetchContext) {
     return new Process(async (process) => {
-      console.warn('waitin for ready')
+      console.warn('waiting for ready')
       await this.promiseToReady
       if (process.closed) return
 
@@ -108,6 +109,7 @@ module.exports = class Minion {
   }
 
   async _request(methodName, methodCatagory, requestHandler, context) {
+    console.warn('_request', {methodName})
     return new Process(async (process) => {
       this._fetch(methodName, methodCatagory, async ({responseId, payload}) => {
         payload = await requestHandler.call(context, payload)
