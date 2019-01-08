@@ -1,3 +1,4 @@
+const EventEmitter = require('events')
 const WebSocket = require('ws')
 
 module.exports = class Minion {
