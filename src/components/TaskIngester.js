@@ -4,7 +4,7 @@ module.exports = class TaskIngester {
     constructor(cthulhu, path) {
         let taskName = path.replace('/', ':')
         cthulhu.express.post(`/${path}`, async (req, res) => {
-            cthulhu.requestTask(taskName, req.body || {}, res.send, res)
+            cthulhu.requestTask(taskName, req.body, res.send, res)
         })
     }
 }
