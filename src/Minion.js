@@ -83,7 +83,7 @@ module.exports = class Minion {
 
   _fetch(methodName, methodCatagory, data = {}, fetchHandler, fetchContext) {
     return new Process(async (process) => {
-      console.log('waitin for ready')
+      console.warn('waitin for ready')
       await this.promiseToReady
       if (process.closed) return
 
@@ -91,7 +91,7 @@ module.exports = class Minion {
       this._ws.send(JSON.stringify(Object.assign({}, data, {
         requestId, methodName, methodCatagory
       })))
-      console.log('done fetched it')
+      console.warn('done fetched it')
 
       if (process.closed) return
       if (!fetchHandler) return process.close()
