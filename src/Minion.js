@@ -8,21 +8,21 @@ module.exports = class Minion {
     this._nextRequestId = 0
     this._isStarting = false
 
-    this.promiseToReady = new PromiseToEmit(this._process, 'ready')
+    this.promiseToReady = promiseToEmit(this._process, 'ready')
 
     this._process = new Process(async (process)=>{
-      await new PromiseToEmit(this._process, 'start')
+      await promiseToEmit(this._process, 'start')
       console.warn('Starting Minion...')
       while (process.active) {
         this._ws = new WebSocket(`ws://${url}/stream`);
 
-        await new PromiseToEmit(this._ws, 'open')
+        await promiseToEmit(this._ws, 'open')
         this._ws.on('message', this._handleMessage.bind(this))
         console.warn('... Minion is ready ...')
         this._process.emit('start')
 
-        await new PromiseToEmit(this._ws, 'close')
-        this.promiseToReady = new PromiseToEmit(this._process, 'ready')
+        await promiseToEmit(this._ws, 'close')
+        this.promiseToReady = promiseToEmit(this._process, 'ready')
       }
     })
   }
@@ -31,13 +31,17 @@ module.exports = class Minion {
     this._process.emit('start')
   }
 
+  close() {
+    this._close()
+  }
+
   _handleMessage(str) {
     const message = JSONparseSafe(str, {})
     const {requestId, responseId, payload} = message
     this._internalEvents.emit(`response:${requestId}`, {responseId, payload})
   }
 
-  close() {
+  async _close() {
     if (this._process.closed) return
     await this.promiseToReady
 
@@ -85,7 +89,7 @@ module.exports = class Minion {
       if (process.closed) return
       if (!fetchHandler) return process.close()
 
-      let response = await new PromiseToEmit(this._internalEvents, `response:${requestId}`)
+      let response = await promiseToEmit(this._internalEvents, `response:${requestId}`)
       if (process.closed) return
 
       fetchHandler.call(fetchContext, response)
@@ -95,7 +99,7 @@ module.exports = class Minion {
 
   async _request(methodName, methodCatagory, requestHandler, context) {
     return new Process(async (process) => {
-      this._fetch(methodName, methodCatagory, ({responseId, payload})=>{
+      this._fetch(methodName, methodCatagory, async ({responseId, payload}) => {
         payload = await requestHandler.call(context, payload)
         this._send('respond', '', {responseId, payload})
       })
@@ -113,7 +117,7 @@ module.exports = class Minion {
       if (!fetchHandler) return process.close()
 
       this._internalEvents.on(`response:${requestId}`, subscriptionHandler, subscriptionContext)
-      await new PromiseToEmit(process, `close`)
+      await promiseToEmit(process, `close`)
       this._internalEvents.off(`response:${requestId}`, subscriptionHandler, subscriptionContext)
       process.close()
     }, this._process)

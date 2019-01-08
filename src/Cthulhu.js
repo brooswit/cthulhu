@@ -1,34 +1,11 @@
 const {JSONparseSafe, EventManager, TaskManager} = require('brooswit-common')
 
+const EventEmitter = require('events')
 const express = require('express')
 const bodyParser = require('body-parser')
 const enableWs = require('express-ws')
 
-module.exports = class Cthulhu extends CthulhuCore {
-  constructor() {
-    super()
-    this._internalEvents = new EventEmitter()
-
-    this.express = express()
-    enableWs(this.express)
-    this.express.use(bodyParser.json())
-      .ws('/stream', (ws) => { new CthulhuClientHandler(this, ws) })
-
-    this.promiseToStart = new PromiseToEmit(this._internalEvents, 'started')
-  }
-
-  start(callback) {
-    if (this._isStarting) return
-    this._isStarting = true
-    this.express.listen(process.env.PORT || 8888, callback)
-  }
-      
-  close() {
-      this._internalEvents.emit('close')
-  }
-}
-
-class CthulhuCore {
+class CthulhuHeart{
   constructor() {
       this._eventManager = new EventManager()
       this._taskManager = new TaskManager()
@@ -86,7 +63,7 @@ class CthulhuClientHandler {
           if (methodName === 'triggerEvent') {
               this._cthulhu.triggerEvent(methodCatagory, payload)
           } else if (methodName === 'hookEvent') {
-              let hookProcess = await this._cthulhu.hookEvent(eventName, (payload) => {
+              let hookProcess = await this._cthulhu.hookEvent(eventName, async (payload) => {
                   this._respond(requestId, payload)
               })
 
@@ -96,7 +73,7 @@ class CthulhuClientHandler {
           } else if (methodName === 'feedTask') {
               this._cthulhu.feedTask(methodCatagory, payload)
           } else if (methodName === 'requestTask') {
-              let requestProcess = this._cthulhu.requestTask(taskName, payload, (payload) => {
+              let requestProcess = this._cthulhu.requestTask(taskName, payload, async (payload) => {
                   return await this._request(requestId, payload)
               })
 
@@ -104,7 +81,7 @@ class CthulhuClientHandler {
                   requestProcess.close()
               })
           } else if (methodName === 'consumeTask') {
-              let consumeProcess = this._cthulhu.consumeTask(taskName, (payload) => {
+              let consumeProcess = this._cthulhu.consumeTask(taskName, async (payload) => {
                   return await this._request(requestId, payload)
               })
 
@@ -112,7 +89,7 @@ class CthulhuClientHandler {
                   consumeProcess.close()
               })
           } else if (methodName === 'subscribeTask') {
-              let subscriptionProcess = this._cthulhu.subscribeTask(taskName, (payload) => {
+              let subscriptionProcess = this._cthulhu.subscribeTask(taskName, async (payload) => {
                   return await this._request(requestId, payload)
               })
 
@@ -142,5 +119,27 @@ class CthulhuClientHandler {
       this._ws.off('close', rejection)
 
       return result
+  }
+}
+
+module.exports = class Cthulhu extends CthulhuHeart {
+  constructor() {
+    super()
+    this._internalEvents = new EventEmitter()
+
+    this.express = express()
+    enableWs(this.express)
+    this.express.use(bodyParser.json())
+      .ws('/stream', (ws) => { new CthulhuClientHandler(this, ws) })
+}
+
+  start(callback) {
+    if (this._isStarting) return
+    this._isStarting = true
+    this.express.listen(process.env.PORT || 8888, callback)
+  }
+      
+  close() {
+      this._internalEvents.emit('close')
   }
 }
