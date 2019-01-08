@@ -19,7 +19,7 @@ module.exports = class Minion {
         await promiseToEmit(this._ws, 'open')
         this._ws.on('message', this._handleMessage.bind(this))
         console.warn('... Minion is ready ...')
-        process.emit('start')
+        process.emit('ready')
 
         await promiseToEmit(this._ws, 'close')
         this.promiseToReady = promiseToEmit(process, 'ready')
