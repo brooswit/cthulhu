@@ -90,6 +90,7 @@ module.exports = class Minion {
       this._ws.send(JSON.stringify(Object.assign({}, data, {
         requestId, methodName, methodCatagory
       })))
+      console.log('done fetched it')
 
       if (process.closed) return
       if (!fetchHandler) return process.close()
