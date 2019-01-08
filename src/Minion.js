@@ -78,6 +78,7 @@ module.exports = class Minion {
   }
 
   _send(methodName, methodCatagory, data) {
+    console.log({methodName})
     return this._fetch(methodName, methodCatagory, data)
   }
 
