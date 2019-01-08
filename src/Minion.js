@@ -117,6 +117,7 @@ module.exports = class Minion {
   async _subscribe(methodName, methodCatagory, subscriptionHandler, subscriptionContext) {
     return new Process(async (process) => {
       await this.promiseToReady
+      console.log('subscribe ready')
       if (process.closed) return
       
       const requestId = this._nextRequestId ++
