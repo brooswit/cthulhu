@@ -22,6 +22,7 @@ module.exports = class Minion {
         process.emit('ready')
 
         await promiseToEmit(this._ws, 'close')
+        this.emit('restart')
         this.promiseToReady = promiseToEmit(process, 'ready')
       }
     })
@@ -126,7 +127,7 @@ module.exports = class Minion {
       if (!fetchHandler) return process.close()
 
       this._internalEvents.on(`response:${requestId}`, subscriptionHandler, subscriptionContext)
-      await promiseToEmit(process, `close`)
+      await promiseToEmit(this._process, `restart`)
       this._internalEvents.off(`response:${requestId}`, subscriptionHandler, subscriptionContext)
       process.close()
     }, this._process)
