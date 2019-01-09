@@ -96,11 +96,12 @@ class CthulhuClientHandler {
                   consumeProcess.close()
               })
           } else if (methodName === 'subscribeTask') {
-              console.log('subscribeTask!!')
+              console.log('subscribeTask: ', methodCatagory)
               let subscriptionProcess = this._cthulhu.subscribeTask(methodCatagory, async (payload) => {
                   console.log('DOIN IT!')
                   return await this._request(requestId, payload)
               })
+              console.log('yaas')
 
               this._ws.once('close', () => {
                   subscriptionProcess.close()
