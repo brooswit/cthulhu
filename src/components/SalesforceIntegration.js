@@ -2,7 +2,6 @@ const WebhookIngester = require('./WebhookIngester')
 // TODO: REFACTOR TO NEW PATTERNS
 module.exports = class SalesforceIntegration {
     constructor(cthulhu, token, accountName) {
-        console.debug(`new SalesforceIntegration ${accountName}`)
         const webhookIngester = new WebhookIngester(
             cthulhu.express,  `/ingest_salesforce_event/${accountName}/enterprise_deal_close`, 
             (payload) => {
