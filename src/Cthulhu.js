@@ -40,15 +40,20 @@ class CthulhuHeart{
 
 class CthulhuClientHandler {
   constructor(cthulhu, ws) {
+      console.warn('YO')
       this._cthulhu = cthulhu
       this._ws = ws
       this._internalEvents = new EventEmitter()
       this._nextResponseId = 0
 
+      console.warn('WUDDUP')
       this._cthulhu._internalEvents.once('close', close, this)
+      console.warn('ITS')
       this._ws.once('close', this._boundClose)
+      console.warn('YA')
       this._ws.on('message', function(message) { console.log(message) })
-    //   this._ws.on('message', (message) => {
+      console.warn('BOI')
+      //   this._ws.on('message', (message) => {
     //       console.log(message)
     //   })
       this._ws.send({hi:'hi'})
