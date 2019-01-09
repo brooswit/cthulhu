@@ -34,7 +34,6 @@ class CthulhuHeart{
   }
 
   subscribeTask(taskName, subscriptionHandler, context) {
-      console.log('CthulhuHeart subscribeTask: ', taskName)
       return this._taskManager.subscribe(taskName, subscriptionHandler, context)
   }
 }
@@ -57,7 +56,6 @@ class CthulhuClientHandler {
   }
 
   async _handleMessage(message) {
-      console.log({message})
       const { requestId, responseId, methodName, methodCatagory, payload} = JSONparseSafe(message, {})
       if (methodName === 'response') {
           this._internalEvents.emit(`response:${responseId}`, payload)
@@ -137,7 +135,6 @@ module.exports = class Cthulhu extends CthulhuHeart {
     this.express.use(bodyParser.json())
       .ws('/stream', (ws) => {
         console.log('new minion')
-        ws.on('message', console.log)
         new CthulhuClientHandler(this, ws)
     })
 }
