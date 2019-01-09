@@ -61,6 +61,7 @@ class CthulhuClientHandler {
           this._internalEvents.emit(`response:${responseId}`, payload)
       } else {
           if (methodName === 'triggerEvent') {
+              console.log('triggerin dat event boi')
               this._cthulhu.triggerEvent(methodCatagory, payload)
           } else if (methodName === 'hookEvent') {
               let hookProcess = await this._cthulhu.hookEvent(methodCatagory, async (payload) => {
