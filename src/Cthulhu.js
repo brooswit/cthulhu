@@ -49,15 +49,10 @@ class CthulhuClientHandler {
       console.warn('WUDDUP')
       this._cthulhu._internalEvents.once('close', this.close, this)
       console.warn('ITS')
-      this._ws.once('close', this._boundClose)
+      this._ws.once('close', this.close.bind(this))
       console.warn('YA')
-      this._ws.on('message', function(message) { console.log(message) })
+      this._ws.on('message', this._handleMessage.bind(this))
       console.warn('BOI')
-      //   this._ws.on('message', (message) => {
-    //       console.log(message)
-    //   })
-      this._ws.send({hi:'hi'})
-      //this._handleMessage.bind(this))
   }
 
   close() {
