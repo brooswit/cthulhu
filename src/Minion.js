@@ -10,20 +10,20 @@ module.exports = class Minion {
     this._nextRequestId = 0
     this._isStarting = false
 
-    this._process = new Process(async (process)=>{
-      await promiseToEmit(process, 'start')
+    this._process = new Process(async ()=>{
+      await promiseToEmit(this._process, 'start')
       console.warn('Starting Minion...')
-      while (process.active) {
+      while (this._process.active) {
         this._ws = new WebSocket(`ws://${url}/stream`);
 
         await promiseToEmit(this._ws, 'open')
         this._ws.on('message', this._handleMessage.bind(this))
         console.warn('... Minion is ready ...')
-        process.emit('ready')
+        this._process.emit('ready')
 
         await promiseToEmit(this._ws, 'close')
-        this.emit('restart')
-        this.promiseToReady = promiseToEmit(process, 'ready')
+        this._process.emit('restart')
+        this.promiseToReady = promiseToEmit(this._process, 'ready')
       }
     })
 
