@@ -98,6 +98,7 @@ module.exports = class Minion {
       if (!fetchHandler) return process.close()
 
       let response = await promiseToEmit(this._internalEvents, `response:${requestId}`)
+      console.log('look whos back')
       if (process.closed) return
 
       fetchHandler.call(fetchContext, response)
