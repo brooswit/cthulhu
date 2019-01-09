@@ -131,6 +131,10 @@ module.exports = class Minion {
       if (!subscriptionHandler) return process.close()
       if (process.closed) return
 
+      const handleResponse = async (payload) => {
+        payload = await subscriptionHandler.call(subscriptionContext, payload)
+      }
+
       this._internalEvents.on(`response:${requestId}`, subscriptionHandler, subscriptionContext)
       console.warn('_subscribe listening')
       await promiseToEmit(this._process, `close`)
