@@ -58,7 +58,6 @@ class CthulhuClientHandler {
   async _handleMessage(message) {
       const { requestId, responseId, methodName, methodCatagory, payload} = JSONparseSafe(message, {})
       if (methodName === 'response') {
-          console.log('response received: ', responseId)
           this._internalEvents.emit(`response:${responseId}`, payload)
       } else {
           if (methodName === 'triggerEvent') {
@@ -109,16 +108,13 @@ class CthulhuClientHandler {
       const responseId = this._nextResponseId++
       let resolution, rejection
       
-      console.log('requesting: ', responseId)
 
       this._ws.send(JSON.stringify({responseId, requestId, payload}))
-      console.log('requested: ', responseId)
 
       let result = await new Promise((resolve, reject) => {
           this._internalEvents.on(`response:${responseId}`, resolution = resolve)
           this._ws.once('close', rejection = reject)
       })
-      console.log('response: ', responseId)
 
       this._internalEvents.off(`response:${responseId}`, resolution)
       this._ws.off('close', rejection)

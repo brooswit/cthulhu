@@ -17,13 +17,11 @@ module.exports = class ZendeskIntegration {
             remoteUri: `https://${appName}.zendesk.com/api/v2`
         })
         
-        console.debug(`new ZendeskIntegration ${appName}`)
         this._main()
     }
 
     async _main() {
         while(true) {
-            console.warn(`Scraping Zendesk resources`)
             let nextCyclePromise = delay(1000 * 60 * 15)
             let fetchOrgsPromise = new Promise((resolve, reject) => {
                 this.client.organizations.list( (err, req, response) => {
@@ -56,12 +54,6 @@ module.exports = class ZendeskIntegration {
                 })
             })
             let [orgs, sats, tics, usrs, tags] = await Promise.all([fetchOrgsPromise, fetchSatisfactionsPromise, fetchTicketsPromise, fetchUsersPromise, fetchTagsPromise])
-            console.warn(`Found ${orgs.length} Zendesk Organizations`)
-            console.warn(`Found ${sats.length} Zendesk Satisfactions`)
-            console.warn(`Found ${tics.length} Zendesk Tickets`)
-            console.warn(`Found ${usrs.length} Zendesk Users`)
-            console.warn(`Found ${tags.length} Zendesk Tags`)
-            console.warn(`Processing found Zendesk resources`)
             for (let orgIndex in orgs) {
                 let org = orgs[orgIndex]
                 this._cthulhu.events.emit(`zendesk_event:${this._appName}:organization:scraped`, org)
@@ -87,7 +79,6 @@ module.exports = class ZendeskIntegration {
                 this._cthulhu.events.emit(`zendesk_event:${this._appName}:tag:scraped`, tag)
                 await delay(1)
             }
-            console.warn(`Done processing found Zendesk resources`)
             await nextCyclePromise
         }
     }
