@@ -50,6 +50,7 @@ class CthulhuClientHandler {
       this._ws.on('message', (message) => {
           console.log(message)
       })
+      this._ws.send({hi:;'hi'})
       //this._handleMessage.bind(this))
   }
 
