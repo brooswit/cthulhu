@@ -104,18 +104,17 @@ module.exports = class Minion {
     }, this._process)
   }
 
-  async _request(methodName, methodCatagory, requestHandler, context) {
+  _request(methodName, methodCatagory, requestHandler, context) {
     console.warn('_request', {methodName})
     return new Process(async (process) => {
       this._fetch(methodName, methodCatagory, async ({responseId, payload}) => {
         payload = await requestHandler.call(context, payload)
         this._send('respond', '', {responseId, payload})
-        console.log("WEB SOCKET SEND")
       })
     }, this._process)
   }
 
-  async _subscribe(methodName, methodCatagory, subscriptionHandler, subscriptionContext) {
+  _subscribe(methodName, methodCatagory, subscriptionHandler, subscriptionContext) {
     return new Process(async (process) => {
       await this.promiseToReady
       if (process.closed) return
