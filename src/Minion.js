@@ -132,7 +132,7 @@ module.exports = class Minion {
       if (process.closed) return
 
       const handleResponse = async ({responseId, payload}) => {
-        console.log({responseId, payload})
+        console.warn('_subscribe respond', {responseId, payload})
         payload = await subscriptionHandler.call(subscriptionContext, payload)
         this._send('respond', '', {responseId, payload})
       }
