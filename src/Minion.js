@@ -40,7 +40,6 @@ module.exports = class Minion {
 
   _handleMessage(message) {
     const {requestId, responseId, payload} = JSONparseSafe(message, {})
-    console.log({requestId, responseId, payload})
     this._internalEvents.emit(`response:${requestId}`, {responseId, payload})
   }
 
