@@ -94,10 +94,12 @@ module.exports = class Minion {
       })))
       console.log("WEB SOCKET SEND")
 
-      let response = await promiseToEmit(this._internalEvents, `response:${requestId}`)
-      console.log('look whos back')
       if (process.closed) return
       if (!fetchHandler) return process.close()
+      console.log('lets see if it comes back...')
+
+      let response = await promiseToEmit(this._internalEvents, `response:${requestId}`)
+      console.log('look whos back')
 
       if (process.closed) return
 
