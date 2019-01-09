@@ -97,6 +97,7 @@ class CthulhuClientHandler {
           } else if (methodName === 'subscribeTask') {
               console.log('subscribeTask!!')
               let subscriptionProcess = this._cthulhu.subscribeTask(methodCatagory, async (payload) => {
+                  console.log('DOIN IT!')
                   return await this._request(requestId, payload)
               })
 
