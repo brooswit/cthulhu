@@ -52,9 +52,9 @@ module.exports = class Minion {
   }
 
   // Events
-  triggerEvent(eventName, value) {
-    return this._send('triggerEvent', eventName, value)
-  }
+  triggerEvent(eventName, payload) {
+    return this._send('triggerEvent', eventName, {payload})
+  }}
 
   hookEvent(eventName, callback, context) {
     return this._subscribe('hookEvent', eventName, callback, context)
