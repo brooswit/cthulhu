@@ -121,7 +121,7 @@ module.exports = class Minion {
       if (process.closed) return
       
       const requestId = this._nextRequestId ++
-      this._ws.send(JSON.stringify({ requestId, methodName, methodCatagory}))
+      this._ws.send(JSON.stringify({ requestId, methodName, methodCatagory}), console.log)
       console.warn('_subscribe sent')
       if (process.closed) return
       if (!subscriptionHandler) return process.close()
