@@ -135,10 +135,10 @@ module.exports = class Minion {
         payload = await subscriptionHandler.call(subscriptionContext, payload)
       }
 
-      this._internalEvents.on(`response:${requestId}`, subscriptionHandler, subscriptionContext)
+      this._internalEvents.on(`response:${requestId}`, handleResponse)
       console.warn('_subscribe listening')
       await promiseToEmit(this._process, `close`)
-      this._internalEvents.off(`response:${requestId}`, subscriptionHandler, subscriptionContext)
+      this._internalEvents.off(`response:${requestId}`, handleResponse)
       process.close()
     }, this._process)
   }
