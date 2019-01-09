@@ -106,9 +106,10 @@ class CthulhuClientHandler {
   }
 
   async _request (requestId, payload) {
-      console.log('requesting: ', responseId)
       const responseId = this._nextResponseId++
       let resolution, rejection
+      
+      console.log('requesting: ', responseId)
 
       this._ws.send(JSON.stringify({responseId, requestId, payload}))
       console.log('requested: ', responseId)
