@@ -58,6 +58,7 @@ class CthulhuClientHandler {
   async _handleMessage(message) {
       const { requestId, responseId, methodName, methodCatagory, payload} = JSONparseSafe(message, {})
       if (methodName === 'response') {
+          console.log('response received: ', responseId)
           this._internalEvents.emit(`response:${responseId}`, payload)
       } else {
           if (methodName === 'triggerEvent') {
