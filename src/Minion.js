@@ -114,7 +114,7 @@ module.exports = class Minion {
     return new Process(async (process) => {
       this._fetch(methodName, methodCatagory, async ({responseId, payload}) => {
         payload = await requestHandler.call(context, payload)
-        this._send('respond', '', {responseId, payload})
+        this._send('response', '', {responseId, payload})
       })
     }, this._process)
   }
@@ -133,9 +133,9 @@ module.exports = class Minion {
       if (process.closed) return
 
       const handleResponse = async ({responseId, payload}) => {
-        console.warn('_subscribe respond', {responseId, payload})
+        console.warn('_subscribe response', {responseId, payload})
         payload = await subscriptionHandler.call(subscriptionContext, payload)
-        this._send('respond', '', {responseId, payload})
+        this._send('response', '', {responseId, payload})
       }
       this._internalEvents.on(`response:${requestId}`, handleResponse)
       console.warn('_subscribe listening')
