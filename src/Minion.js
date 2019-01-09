@@ -1,4 +1,4 @@
-const {promiseToEmit, Process} = require('brooswit-common')
+const {JSONparseSafe, promiseToEmit, Process} = require('brooswit-common')
 const EventEmitter = require('events')
 const WebSocket = require('ws')
 
