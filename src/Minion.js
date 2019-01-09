@@ -131,8 +131,10 @@ module.exports = class Minion {
       if (!subscriptionHandler) return process.close()
       if (process.closed) return
 
-      const handleResponse = async (payload) => {
+      const handleResponse = async (data) => {
+        let {responseId, payload} = data
         payload = await subscriptionHandler.call(subscriptionContext, payload)
+        this._send('respond', '', {responseId, payload})
       }
 
       this._internalEvents.on(`response:${requestId}`, handleResponse)
