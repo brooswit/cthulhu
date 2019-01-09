@@ -135,7 +135,7 @@ module.exports = class Cthulhu extends CthulhuHeart {
     enableWs(this.express)
     this.express.use(bodyParser.json())
       .ws('/stream', (ws) => {
-        console.log('new minion')
+        console.log('new minion', {ws})
         new CthulhuClientHandler(this, ws)
     })
 }
