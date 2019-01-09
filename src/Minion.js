@@ -116,15 +116,19 @@ module.exports = class Minion {
 
   _subscribe(methodName, methodCatagory, subscriptionHandler, subscriptionContext) {
     return new Process(async (process) => {
+      console.warn('_subscribe')
       await this.promiseToReady
+      console.warn('_subscribe ready')
       if (process.closed) return
       
       const requestId = this._nextRequestId ++
       this._ws.send(JSON.stringify({ requestId, methodName, methodCatagory}))
+      console.warn('_subscribe sent')
       if (process.closed) return
       if (!subscriptionHandler) return process.close()
 
       this._internalEvents.on(`response:${requestId}`, subscriptionHandler, subscriptionContext)
+      console.warn('_subscribe listening')
       await promiseToEmit(this._process, `close`)
       this._internalEvents.off(`response:${requestId}`, subscriptionHandler, subscriptionContext)
       process.close()
