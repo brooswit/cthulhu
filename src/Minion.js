@@ -40,8 +40,6 @@ module.exports = class Minion {
 
   _handleMessage(message) {
     const {requestId, responseId, payload} = JSONparseSafe(message, {})
-    console.log('Message: ', message)
-    console.log({requestId, responseId, payload})
     this._internalEvents.emit(`response:${requestId}`, {responseId, payload})
   }
 
@@ -84,7 +82,6 @@ module.exports = class Minion {
   }
 
   _fetch(methodName, methodCatagory, data = {}, fetchHandler, fetchContext) {
-    console.log('fetch', {methodName, methodCatagory})
     return new Process(async (process) => {
       await this.promiseToReady
       if (process.closed) return
@@ -93,14 +90,11 @@ module.exports = class Minion {
       this._ws.send(JSON.stringify(Object.assign({}, data, {
         requestId, methodName, methodCatagory
       })))
-      console.log("WEB SOCKET SEND")
 
       if (process.closed) return
       if (!fetchHandler) return process.close()
-      console.log('lets see if it comes back...')
 
       let response = await promiseToEmit(this._internalEvents, `response:${requestId}`)
-      console.log('look whos back')
 
       if (process.closed) return
 
@@ -110,7 +104,6 @@ module.exports = class Minion {
   }
 
   _request(methodName, methodCatagory, requestHandler, context) {
-    console.warn('_request', {methodName})
     return new Process(async (process) => {
       this._fetch(methodName, methodCatagory, async ({responseId, payload}) => {
         payload = await requestHandler.call(context, payload)
@@ -121,24 +114,19 @@ module.exports = class Minion {
 
   _subscribe(methodName, methodCatagory, subscriptionHandler, subscriptionContext) {
     return new Process(async (process) => {
-      console.warn('_subscribe')
       await this.promiseToReady
-      console.warn('_subscribe ready')
       if (process.closed) return
       
       const requestId = this._nextRequestId ++
       this._ws.send(JSON.stringify({ requestId, methodName, methodCatagory}))
-      console.warn('_subscribe sent')
       if (!subscriptionHandler) return process.close()
       if (process.closed) return
 
       const handleResponse = async ({responseId, payload}) => {
-        console.warn('_subscribe response', {responseId, payload})
         payload = await subscriptionHandler.call(subscriptionContext, payload)
         this._send('response', '', {responseId, payload})
       }
       this._internalEvents.on(`response:${requestId}`, handleResponse)
-      console.warn('_subscribe listening')
       await promiseToEmit(this._process, `close`)
       this._internalEvents.off(`response:${requestId}`, handleResponse)
       process.close()
