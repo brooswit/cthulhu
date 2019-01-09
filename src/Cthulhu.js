@@ -47,7 +47,10 @@ class CthulhuClientHandler {
 
       this._cthulhu._internalEvents.once('close', close, this)
       this._ws.once('close', this._boundClose)
-      this._ws.on('message', this._handleMessage.bind(this))
+      this._ws.on('message', (message) => {
+          console.log(message)
+      })
+      //this._handleMessage.bind(this))
   }
 
   close() {
