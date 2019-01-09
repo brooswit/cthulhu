@@ -47,7 +47,7 @@ class CthulhuClientHandler {
       this._nextResponseId = 0
 
       console.warn('WUDDUP')
-      this._cthulhu._internalEvents.once('close', close, this)
+      this._cthulhu._internalEvents.once('close', this.close, this)
       console.warn('ITS')
       this._ws.once('close', this._boundClose)
       console.warn('YA')
