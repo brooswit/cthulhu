@@ -59,52 +59,52 @@ class CthulhuClientHandler extends Process {
       }, cthulhu)
   }
 
-  async _handleMessage(message) {
-    const { requestId, responseId, methodName, methodCatagory, payload} = JSONparseSafe(message, {})
-    if (methodName === 'response') {
-        this._internalEvents.emit(`response:${responseId}`, payload)
-    } else {
-        if (methodName === 'triggerEvent') {
-            this._cthulhu.triggerEvent(methodCatagory, payload)
-        } else if (methodName === 'hookEvent') {
-            let hookProcess = await this._cthulhu.hookEvent(methodCatagory, async (payload) => {
-                this._respond(requestId, payload)
-            })
+    async _handleMessage(message) {
+        const { requestId, responseId, methodName, methodCatagory, payload} = JSONparseSafe(message, {})
+        if (methodName === 'response') {
+            this._internalEvents.emit(`response:${responseId}`, payload)
+        } else {
+            if (methodName === 'triggerEvent') {
+                this._cthulhu.triggerEvent(methodCatagory, payload)
+            } else if (methodName === 'hookEvent') {
+                let hookProcess = await this._cthulhu.hookEvent(methodCatagory, async (payload) => {
+                    this._respond(requestId, payload)
+                })
 
-            await this.promiseToClose
-            hookProcess.close()
-        } else if (methodName === 'feedTask') {
-            this._cthulhu.feedTask(methodCatagory, payload)
-        } else if (methodName === 'requestTask') {
-            let requestProcess = this._cthulhu.requestTask(methodCatagory, {payload}, async (payload) => {
-                return await this._request(requestId, payload)
-            })
+                await this.promiseToClose
+                hookProcess.close()
+            } else if (methodName === 'feedTask') {
+                this._cthulhu.feedTask(methodCatagory, payload)
+            } else if (methodName === 'requestTask') {
+                let requestProcess = this._cthulhu.requestTask(methodCatagory, {payload}, async (payload) => {
+                    return await this._request(requestId, payload)
+                })
 
-            await this.promiseToClose
-            requestProcess.close()
-        } else if (methodName === 'consumeTask') {
-            let consumeProcess = this._cthulhu.consumeTask(methodCatagory, async (payload) => {
-                return await this._request(requestId, payload)
-            })
+                await this.promiseToClose
+                requestProcess.close()
+            } else if (methodName === 'consumeTask') {
+                let consumeProcess = this._cthulhu.consumeTask(methodCatagory, async (payload) => {
+                    return await this._request(requestId, payload)
+                })
 
-            await this.promiseToClose
-            consumeProcess.close()
-        } else if (methodName === 'subscribeTask') {
-            let subscriptionProcess = this._cthulhu.subscribeTask(methodCatagory, async (payload) => {
-                return await this._request(requestId, payload)
-            })
+                await this.promiseToClose
+                consumeProcess.close()
+            } else if (methodName === 'subscribeTask') {
+                let subscriptionProcess = this._cthulhu.subscribeTask(methodCatagory, async (payload) => {
+                    return await this._request(requestId, payload)
+                })
 
-            await this.promiseToClose
-            subscriptionProcess.close()
+                await this.promiseToClose
+                subscriptionProcess.close()
+            }
         }
     }
-  }
 
-  async _respond (requestId, payload) {
-      this._ws.send(JSON.stringify({requestId, payload}))
-  }
+    async _respond (requestId, payload) {
+        this._ws.send(JSON.stringify({requestId, payload}))
+    }
 
-  async _request (requestId, payload) {
+    async _request (requestId, payload) {
         const responseId = this._nextResponseId++
         let resolution, rejection
 
