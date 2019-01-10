@@ -22,6 +22,7 @@ module.exports = class Minion {
 
         await promiseToEmit(this._ws, 'close')
         this._internalEvents.emit('restart')
+        console.log('restarting...')
         this.promiseToReady = promiseToEmit(this._internalEvents, 'ready')
       }
     })
