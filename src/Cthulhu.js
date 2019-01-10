@@ -7,34 +7,34 @@ const enableWs = require('express-ws')
 
 class CthulhuHeart{
   constructor() {
-      this._eventManager = new EventManager()
-      this._taskManager = new TaskManager()
+    this._eventManager = new EventManager()
+    this._taskManager = new TaskManager()
   }
 
   // Events
   triggerEvent(eventName, payload) {
-      return this._eventManager.trigger(eventName, payload)
+    return this._eventManager.trigger(eventName, payload)
   }
 
   hookEvent(eventName, eventHandler, context) {
-      return this._eventManager.hook(eventName, eventHandler, context)
+    return this._eventManager.hook(eventName, eventHandler, context)
   }
 
   // Tasks
   feedTask(taskName, payload) {
-      return this._taskManager.feed(taskName, payload)
+    return this._taskManager.feed(taskName, payload)
   }
 
   requestTask(taskName, payload, responseHandler, context) {
-      return this._taskManager.request(taskName, payload, responseHandler, context)
+    return this._taskManager.request(taskName, payload, responseHandler, context)
   }
 
   consumeTask(taskName, taskHandler, context) {
-      return this._taskManager.consume(taskName, taskHandler, context)
+    return this._taskManager.consume(taskName, taskHandler, context)
   }
 
   subscribeTask(taskName, subscriptionHandler, context) {
-      return this._taskManager.subscribe(taskName, subscriptionHandler, context)
+    return this._taskManager.subscribe(taskName, subscriptionHandler, context)
   }
 }
 
