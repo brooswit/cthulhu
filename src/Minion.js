@@ -85,6 +85,7 @@ module.exports = class Minion {
     return new Process(async (process) => {
       await this.promiseToReady
       if (process.closed) return
+      console.log(methodName, methodCatagory)
 
       const requestId = this._nextRequestId ++
       this._ws.send(JSON.stringify(Object.assign({}, data, {
@@ -115,6 +116,7 @@ module.exports = class Minion {
     return new Process(async (process) => {
       await this.promiseToReady
       if (process.closed) return
+      console.log(methodName, methodCatagory)
       
       const requestId = this._nextRequestId ++
       this._ws.send(JSON.stringify({ requestId, methodName, methodCatagory}))
