@@ -1,4 +1,4 @@
-const {Process, EventEmitter, JSONparseSafe, EventManager, TaskManager} = require('brooswit-common')
+const {promiseToEmit, Process, EventEmitter, JSONparseSafe, EventManager, TaskManager} = require('brooswit-common')
 
 const express = require('express')
 const bodyParser = require('body-parser')
