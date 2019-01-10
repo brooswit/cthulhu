@@ -43,7 +43,7 @@ class CthulhuHeart{
   }
 }
 
-class CthulhuClientHandler {
+class CthulhuClientHandler extends Process {
   constructor(cthulhu, ws) {
     this._cthulhu = cthulhu
     this._ws = ws
