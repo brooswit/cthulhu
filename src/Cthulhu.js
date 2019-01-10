@@ -105,21 +105,16 @@ class CthulhuClientHandler extends Process {
   }
 
   async _request (requestId, payload) {
-      const responseId = this._nextResponseId++
-      let resolution, rejection
+        const responseId = this._nextResponseId++
+        let resolution, rejection
 
-      this._ws.send(JSON.stringify({responseId, requestId, payload}))
+        this._ws.send(JSON.stringify({responseId, requestId, payload}))
 
-      let result = await new Promise((resolve, reject) => {
-          this._internalEvents.on(`response:${responseId}`, resolution = resolve)
-        //   this._ws.once('close', rejection = reject)
-      })
-
-      this._internalEvents.off(`response:${responseId}`, resolution)
-    //   this._ws.off('close', rejection)
-
-      return result
-  }
+        return await Promise.race([
+            this.promiseToClose,
+            promiseToEmit(this._internalEvents, `response:${responseId}`)
+        ])
+    }
 }
 
 module.exports = class Cthulhu extends CthulhuHeart {
