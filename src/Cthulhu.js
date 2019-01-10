@@ -58,7 +58,7 @@ class CthulhuClientHandler extends Process {
       
           this._ws.on('close', ()=>{ this._internalEvents.emit('close') })
           this._ws.on('message', ()=>{ this._internalEvents.emit('message') })
-      })
+      }, cthulhu)
   }
 
   close() {
