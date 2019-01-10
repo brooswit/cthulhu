@@ -1,18 +1,12 @@
 const {EventEmitter, JSONparseSafe, promiseToEmit, Process} = require('brooswit-common')
 const WebSocket = require('ws')
 
-module.exports = class Minion {
+module.exports = class Minion extends process{
   constructor (url) {
-    this._url = url
-
-    this._internalEvents = new EventEmitter()
-    this._nextRequestId = 0
-    this._isStarting = false
-
-    this._process = new Process(async ()=>{
+    super(async () => {
       await promiseToEmit(this._internalEvents, 'start')
       console.warn('Starting Minion...')
-      while (this._process.active) {
+      while (this.active) {
         this._ws = new WebSocket(`ws://${url}/stream`);
 
         await promiseToEmit(this._ws, 'open')
@@ -24,6 +18,14 @@ module.exports = class Minion {
         this._internalEvents.emit('restart')
         console.log('restarting...')
         this.promiseToReady = promiseToEmit(this._internalEvents, 'ready')
+    })
+    this._url = url
+
+    this._internalEvents = new EventEmitter()
+    this._nextRequestId = 0
+    this._isStarting = false
+
+    this._process = new Process(async ()=>{
       }
     })
 
