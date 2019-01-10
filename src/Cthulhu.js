@@ -1,6 +1,5 @@
-const {JSONparseSafe, EventManager, TaskManager} = require('brooswit-common')
+const {EventEmitter, JSONparseSafe, EventManager, TaskManager} = require('brooswit-common')
 
-const EventEmitter = require('events')
 const express = require('express')
 const bodyParser = require('body-parser')
 const enableWs = require('express-ws')
@@ -49,7 +48,6 @@ class CthulhuClientHandler {
     this._cthulhu = cthulhu
     this._ws = ws
     this._internalEvents = new EventEmitter()
-    this._internalEvents.setMaxListeners(65535)
     this._nextResponseId = 0
 
     this._cthulhu._internalEvents.once('close', this.close, this)
