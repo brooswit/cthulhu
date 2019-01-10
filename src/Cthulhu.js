@@ -126,7 +126,7 @@ module.exports = class Cthulhu extends CthulhuHeart {
   constructor() {
     super()
     this._internalEvents = new EventEmitter()
-
+    this.promiseToClose = new Promise(()=>{})
     this.express = express()
     enableWs(this.express)
     this.express.use(bodyParser.json())
