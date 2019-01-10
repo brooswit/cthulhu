@@ -59,11 +59,6 @@ class CthulhuClientHandler extends Process {
       }, cthulhu)
   }
 
-  close() {
-    this._cthulhu._internalEvents.off('close', this.close, this)        
-    this._ws.close()
-  }
-
   async _handleMessage(message) {
     const { requestId, responseId, methodName, methodCatagory, payload} = JSONparseSafe(message, {})
     if (methodName === 'response') {
@@ -76,9 +71,8 @@ class CthulhuClientHandler extends Process {
                 this._respond(requestId, payload)
             })
 
-            this._internalEvents.once('close', ()=>{
-                hookProcess.close()
-            })
+            await this.promiseToClose
+            hookProcess.close()
         } else if (methodName === 'feedTask') {
             this._cthulhu.feedTask(methodCatagory, payload)
         } else if (methodName === 'requestTask') {
@@ -86,25 +80,22 @@ class CthulhuClientHandler extends Process {
                 return await this._request(requestId, payload)
             })
 
-            this._internalEvents.once('close', () => {
-                requestProcess.close()
-            })
+            await this.promiseToClose
+            requestProcess.close()
         } else if (methodName === 'consumeTask') {
             let consumeProcess = this._cthulhu.consumeTask(methodCatagory, async (payload) => {
                 return await this._request(requestId, payload)
             })
 
-            this._internalEvents.once('close', () => {
-                consumeProcess.close()
-            })
+            await this.promiseToClose
+            consumeProcess.close()
         } else if (methodName === 'subscribeTask') {
             let subscriptionProcess = this._cthulhu.subscribeTask(methodCatagory, async (payload) => {
                 return await this._request(requestId, payload)
             })
 
-            this._internalEvents.once('close', () => {
-                subscriptionProcess.close()
-            })
+            await this.promiseToClose
+            subscriptionProcess.close()
         }
     }
   }
