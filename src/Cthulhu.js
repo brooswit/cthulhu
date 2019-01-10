@@ -76,7 +76,7 @@ class CthulhuClientHandler {
                 this._respond(requestId, payload)
             })
 
-            this._ws.once('close', ()=>{
+            this._internalEvents.once('close', ()=>{
                 hookProcess.close()
             })
         } else if (methodName === 'feedTask') {
@@ -86,7 +86,7 @@ class CthulhuClientHandler {
                 return await this._request(requestId, payload)
             })
 
-            this._ws.once('close', () => {
+            this._internalEvents.once('close', () => {
                 requestProcess.close()
             })
         } else if (methodName === 'consumeTask') {
@@ -94,7 +94,7 @@ class CthulhuClientHandler {
                 return await this._request(requestId, payload)
             })
 
-            this._ws.once('close', () => {
+            this._internalEvents.once('close', () => {
                 consumeProcess.close()
             })
         } else if (methodName === 'subscribeTask') {
@@ -102,7 +102,7 @@ class CthulhuClientHandler {
                 return await this._request(requestId, payload)
             })
 
-            this._ws.once('close', () => {
+            this._internalEvents.once('close', () => {
                 subscriptionProcess.close()
             })
         }
@@ -116,13 +116,12 @@ class CthulhuClientHandler {
   async _request (requestId, payload) {
       const responseId = this._nextResponseId++
       let resolution, rejection
-      
 
       this._ws.send(JSON.stringify({responseId, requestId, payload}))
 
       let result = await new Promise((resolve, reject) => {
           this._internalEvents.on(`response:${responseId}`, resolution = resolve)
-          this._ws.once('close', rejection = reject)
+          this._internalEvents.once('close', rejection = reject)
       })
 
       this._internalEvents.off(`response:${responseId}`, resolution)
