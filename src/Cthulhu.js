@@ -12,12 +12,12 @@ class CthulhuHeart{
 
   // Events
   triggerEvent(eventName, payload) {
-      console.warn(`triggerEvent ${eventName}`)
+    //   console.warn(`triggerEvent ${eventName}`)
     return this._eventManager.trigger(eventName, payload)
   }
 
   hookEvent(eventName, eventHandler, context) {
-      console.warn(`hookEvent ${eventName}`)
+    //   console.warn(`hookEvent ${eventName}`)
       return this._eventManager.hook(eventName, eventHandler, context)
   }
 
