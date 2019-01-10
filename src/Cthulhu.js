@@ -43,6 +43,7 @@ class CthulhuClientHandler {
       this._cthulhu = cthulhu
       this._ws = ws
       this._internalEvents = new EventEmitter()
+      this._internalEvents.setMaxListeners(65535)
       this._nextResponseId = 0
 
       this._cthulhu._internalEvents.once('close', this.close, this)
