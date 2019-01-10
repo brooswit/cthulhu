@@ -21,6 +21,10 @@ module.exports = class Minion extends process{
       }
     })
 
+    this.promiseToClose.then(()=>{
+      this._ws && this._ws.close
+    })
+
     this._url = url
 
     this._internalEvents = new EventEmitter()
@@ -32,10 +36,6 @@ module.exports = class Minion extends process{
 
   start() {
     this._internalEvents.emit('start')
-  }
-
-  close() {
-    this._close()
   }
 
   _handleMessage(message) {
