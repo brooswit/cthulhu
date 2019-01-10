@@ -7,6 +7,7 @@ module.exports = class Minion {
     this._url = url
 
     this._internalEvents = new EventEmitter()
+    this._internalEvents.setMaxListeners(65535)
     this._nextRequestId = 0
     this._isStarting = false
 
