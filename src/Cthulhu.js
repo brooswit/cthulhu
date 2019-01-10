@@ -61,6 +61,7 @@ class CthulhuClientHandler extends Process {
 
     async _handleMessage(message) {
         const { requestId, responseId, methodName, methodCatagory, payload} = JSONparseSafe(message, {})
+        console.log({requestId, responseId, methodName, methodCatagory})
         if (methodName === 'response') {
             this._internalEvents.emit(`response:${responseId}`, payload)
         } else {
