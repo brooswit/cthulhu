@@ -50,16 +50,13 @@ class CthulhuClientHandler {
     this._internalEvents = new EventEmitter()
     this._nextResponseId = 0
 
-    this._cthulhu._internalEvents.once('close', this.close, this)
-    this._ws.on('close', ()=>{
-        this._internalEvents.emit('close')
-    })
-    this._ws.on('message', ()=>{
-        this._internalEvents.emit('message')
-    })
-
     this._internalEvents.once('close', this.close, this)
     this._internalEvents.on('message', this._handleMessage, this)
+
+    this._cthulhu._internalEvents.once('close', this.close, this)
+
+    this._ws.on('close', ()=>{ this._internalEvents.emit('close') })
+    this._ws.on('message', ()=>{ this._internalEvents.emit('message') })
   }
 
   close() {
