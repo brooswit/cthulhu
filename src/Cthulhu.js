@@ -112,11 +112,11 @@ class CthulhuClientHandler extends Process {
 
       let result = await new Promise((resolve, reject) => {
           this._internalEvents.on(`response:${responseId}`, resolution = resolve)
-          this._ws.once('close', rejection = reject)
+        //   this._ws.once('close', rejection = reject)
       })
 
       this._internalEvents.off(`response:${responseId}`, resolution)
-      this._ws.off('close', rejection)
+    //   this._ws.off('close', rejection)
 
       return result
   }
