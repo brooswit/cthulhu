@@ -1,7 +1,7 @@
 const {EventEmitter, JSONparseSafe, promiseToEmit, Process} = require('brooswit-common')
 const WebSocket = require('ws')
 
-module.exports = class Minion extends process{
+module.exports = class Minion extends Process{
   constructor (url) {
     super(async () => {
       await promiseToEmit(this._internalEvents, 'start')
