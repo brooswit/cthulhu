@@ -1,5 +1,4 @@
-const {JSONparseSafe, promiseToEmit, Process} = require('brooswit-common')
-const EventEmitter = require('events')
+const {EventEmitter, JSONparseSafe, promiseToEmit, Process} = require('brooswit-common')
 const WebSocket = require('ws')
 
 module.exports = class Minion {
@@ -7,12 +6,11 @@ module.exports = class Minion {
     this._url = url
 
     this._internalEvents = new EventEmitter()
-    this._internalEvents.setMaxListeners(65535)
     this._nextRequestId = 0
     this._isStarting = false
 
     this._process = new Process(async ()=>{
-      await promiseToEmit(this._process, 'start')
+      await promiseToEmit(this._internalEvents, 'start')
       console.warn('Starting Minion...')
       while (this._process.active) {
         this._ws = new WebSocket(`ws://${url}/stream`);
@@ -20,19 +18,19 @@ module.exports = class Minion {
         await promiseToEmit(this._ws, 'open')
         this._ws.on('message', this._handleMessage.bind(this))
         console.warn('... Minion is ready ...')
-        this._process.emit('ready')
+        this._internalEvents.emit('ready')
 
         await promiseToEmit(this._ws, 'close')
-        this._process.emit('restart')
-        this.promiseToReady = promiseToEmit(this._process, 'ready')
+        this._internalEvents.emit('restart')
+        this.promiseToReady = promiseToEmit(this._internalEvents, 'ready')
       }
     })
 
-    this.promiseToReady = promiseToEmit(this._process, 'ready')
+    this.promiseToReady = promiseToEmit(this._internalEvents, 'ready')
   }
 
   start() {
-    this._process.emit('start')
+    this._internalEvents.emit('start')
   }
 
   close() {
@@ -127,7 +125,7 @@ module.exports = class Minion {
         this._send('response', '', {responseId, payload})
       }
       this._internalEvents.on(`response:${requestId}`, handleResponse)
-      await promiseToEmit(this._process, `close`)
+      await this._process.promiseToClose
       this._internalEvents.off(`response:${requestId}`, handleResponse)
       process.close()
     }, this._process)
