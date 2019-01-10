@@ -44,13 +44,6 @@ module.exports = class Minion extends process{
     this._internalEvents.emit(`response:${requestId}`, {responseId, payload})
   }
 
-  async _close() {
-    if (this._process.closed) return
-    await this.promiseToReady
-
-    this._process.close()
-    this._ws.close()
-  }
 
   // Events
   triggerEvent(eventName, payload) {
@@ -102,7 +95,7 @@ module.exports = class Minion extends process{
 
       fetchHandler.call(fetchContext, payload, responseId)
       process.close()
-    }, this._process)
+    }, this)
   }
 
   _request(methodName, methodCatagory, requestHandler, context) {
@@ -111,7 +104,7 @@ module.exports = class Minion extends process{
         payload = await requestHandler.call(context, payload)
         this._send('response', '', {responseId, payload})
       })
-    }, this._process)
+    }, this)
   }
 
   _subscribe(methodName, methodCatagory, subscriptionHandler, subscriptionContext) {
@@ -132,9 +125,9 @@ module.exports = class Minion extends process{
         this._send('response', methodCatagory, {responseId, payload})
       }
       this._internalEvents.on(`response:${requestId}`, handleResponse)
-      await this._process.promiseToClose
+      await this.promiseToClose
       this._internalEvents.off(`response:${requestId}`, handleResponse)
       process.close()
-    }, this._process)
+    }, this)
   }
 }
