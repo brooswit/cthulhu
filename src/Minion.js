@@ -89,6 +89,7 @@ module.exports = class Minion {
       console.log(methodName, methodCatagory)
 
       const requestId = this._nextRequestId ++
+      console.log('sending: ', { requestId, methodName, methodCatagory})
       this._ws.send(JSON.stringify(Object.assign({}, data, {
         requestId, methodName, methodCatagory
       })))
@@ -120,6 +121,7 @@ module.exports = class Minion {
       console.log(methodName, methodCatagory)
       
       const requestId = this._nextRequestId ++
+      console.log('sending: ', { requestId, methodName, methodCatagory})
       this._ws.send(JSON.stringify({ requestId, methodName, methodCatagory}))
       if (!subscriptionHandler) return process.close()
       if (process.closed) return
