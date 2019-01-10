@@ -18,16 +18,14 @@ module.exports = class Minion extends process{
         this._internalEvents.emit('restart')
         console.log('restarting...')
         this.promiseToReady = promiseToEmit(this._internalEvents, 'ready')
+      }
     })
+
     this._url = url
 
     this._internalEvents = new EventEmitter()
     this._nextRequestId = 0
     this._isStarting = false
-
-    this._process = new Process(async ()=>{
-      }
-    })
 
     this.promiseToReady = promiseToEmit(this._internalEvents, 'ready')
   }
