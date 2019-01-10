@@ -126,8 +126,7 @@ module.exports = class Minion {
       const handleResponse = async ({responseId, payload}) => {
         console.log('taskRequested', methodCatagory)
         payload = await subscriptionHandler.call(subscriptionContext, payload)
-        console.log('taskComplete', methodCatagory)
-        this._send('response', '', {responseId, payload})
+        this._send('response', methodCatagory, {responseId, payload})
       }
       this._internalEvents.on(`response:${requestId}`, handleResponse)
       await this._process.promiseToClose
