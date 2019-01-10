@@ -50,9 +50,12 @@ class CthulhuClientHandler extends Process {
           this._ws = ws
           this._internalEvents = new EventEmitter()
           this._nextResponseId = 0
-      
+
           this._ws.on('close', this.close.bind(this))
           this._ws.on('message', this._handleMessage.bind(this))
+          await this.promiseToClose
+
+          this._ws.close()
       }, cthulhu)
   }
 
