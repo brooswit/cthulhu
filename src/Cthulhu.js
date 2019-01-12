@@ -5,37 +5,43 @@ const bodyParser = require('body-parser')
 const enableWs = require('express-ws')
 
 class CthulhuHeart{
-  constructor() {
-    this._eventManager = new EventManager()
-    this._taskManager = new TaskManager()
+    constructor() {
+      this._eventManager = new EventManager()
+      this._taskManager = new TaskManager()
+    }
+  
+    // Events
+    triggerEvent(eventName, payload) {
+      //   console.warn(`triggerEvent ${eventName}`)
+      return this._eventManager.trigger(eventName, payload)
+    }
+  
+    hookEvent(eventName, eventHandler, context) {
+      //   console.warn(`hookEvent ${eventName}`)
+        return this._eventManager.hook(eventName, eventHandler, context)
+    }
+  
+    // Tasks
+    feedTask(taskName, payload) {
+        console.warn(`feedTask ${taskName}`)
+        return this._taskManager.feed(taskName, payload)
+    }
+  
+    requestTask(taskName, payload, responseHandler, context) {
+        console.warn(`requestTask ${taskName}`)
+        return this._taskManager.request(taskName, payload, responseHandler, context)
+    }
+  
+    consumeTask(taskName, taskHandler, context) {
+        console.warn(`consumeTask ${taskName}`)
+        return this._taskManager.consume(taskName, taskHandler, context)
+    }
+  
+    subscribeTask(taskName, subscriptionHandler, context) {
+        console.warn(`subscribeTask ${taskName} ${subscriptionHandler}`)
+        return this._taskManager.subscribe(taskName, subscriptionHandler, context)
+    }
   }
-
-  // Events
-  triggerEvent(eventName, payload) {
-    return this._eventManager.trigger(eventName, payload)
-  }
-
-  hookEvent(eventName, eventHandler, context) {
-      return this._eventManager.hook(eventName, eventHandler, context)
-  }
-
-  // Tasks
-  feedTask(taskName, payload) {
-      return this._taskManager.feed(taskName, payload)
-  }
-
-  requestTask(taskName, payload, responseHandler, context) {
-      return this._taskManager.request(taskName, payload, responseHandler, context)
-  }
-
-  consumeTask(taskName, taskHandler, context) {
-      return this._taskManager.consume(taskName, taskHandler, context)
-  }
-
-  subscribeTask(taskName, subscriptionHandler, context) {
-      return this._taskManager.subscribe(taskName, subscriptionHandler, context)
-  }
-}
 
 class CthulhuClientHandler extends Process {
   constructor(cthulhu, ws) {

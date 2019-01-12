@@ -16,7 +16,6 @@ module.exports = class Minion extends Process{
 
         await promiseToEmit(this._ws, 'close')
         this._internalEvents.emit('restart')
-        console.log('restarting...')
         this.promiseToReady = promiseToEmit(this._internalEvents, 'ready')
       }
     })
@@ -40,7 +39,6 @@ module.exports = class Minion extends Process{
 
   _handleMessage(message) {
     const {requestId, responseId, payload} = JSONparseSafe(message, {})
-    console.log("receive :", {requestId, responseId, payload})
     this._internalEvents.emit(`response:${requestId}`, {responseId, payload})
   }
 
@@ -79,10 +77,8 @@ module.exports = class Minion extends Process{
     return new Process(async (process) => {
       await this.promiseToReady
       if (process.closed) return
-      console.log(methodName, methodCatagory)
 
       const requestId = this._nextRequestId ++
-      console.log('sending: ', { requestId, methodName, methodCatagory})
       this._ws.send(JSON.stringify(Object.assign({}, data, {
         requestId, methodName, methodCatagory
       })))
@@ -111,16 +107,13 @@ module.exports = class Minion extends Process{
     return new Process(async (process) => {
       await this.promiseToReady
       if (process.closed) return
-      console.log(methodName, methodCatagory)
       
       const requestId = this._nextRequestId ++
-      console.log('sending: ', { requestId, methodName, methodCatagory})
       this._ws.send(JSON.stringify({ requestId, methodName, methodCatagory}))
       if (!subscriptionHandler) return process.close()
       if (process.closed) return
 
       const handleResponse = async ({responseId, payload}) => {
-        console.log('handlingTask', methodCatagory)
         payload = await subscriptionHandler.call(subscriptionContext, payload)
         this._send('response', methodCatagory, {responseId, payload})
       }
