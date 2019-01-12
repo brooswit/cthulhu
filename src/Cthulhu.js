@@ -38,7 +38,7 @@ class CthulhuHeart{
   }
 
   subscribeTask(taskName, subscriptionHandler, context) {
-      console.warn(`subscribeTask ${taskName}`)
+      console.warn(`subscribeTask ${taskName} ${subscriptionHandler}`)
       return this._taskManager.subscribe(taskName, subscriptionHandler, context)
   }
 }
