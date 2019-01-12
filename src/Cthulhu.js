@@ -54,7 +54,7 @@ class CthulhuClientHandler extends Process {
           this._ws.on('close', this.close.bind(this))
           this._ws.on('message', this._handleMessage.bind(this))
           await this.promiseToClose
-
+          console.log('client gone!')
           this._ws.close()
       }, cthulhu)
   }
