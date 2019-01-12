@@ -12,33 +12,27 @@ class CthulhuHeart{
 
   // Events
   triggerEvent(eventName, payload) {
-    //   console.warn(`triggerEvent ${eventName}`)
     return this._eventManager.trigger(eventName, payload)
   }
 
   hookEvent(eventName, eventHandler, context) {
-    //   console.warn(`hookEvent ${eventName}`)
       return this._eventManager.hook(eventName, eventHandler, context)
   }
 
   // Tasks
   feedTask(taskName, payload) {
-      console.warn(`feedTask ${taskName}`)
       return this._taskManager.feed(taskName, payload)
   }
 
   requestTask(taskName, payload, responseHandler, context) {
-      console.warn(`requestTask ${taskName}`)
       return this._taskManager.request(taskName, payload, responseHandler, context)
   }
 
   consumeTask(taskName, taskHandler, context) {
-      console.warn(`consumeTask ${taskName}`)
       return this._taskManager.consume(taskName, taskHandler, context)
   }
 
   subscribeTask(taskName, subscriptionHandler, context) {
-      console.warn(`subscribeTask ${taskName} ${subscriptionHandler}`)
       return this._taskManager.subscribe(taskName, subscriptionHandler, context)
   }
 }
@@ -61,9 +55,7 @@ class CthulhuClientHandler extends Process {
 
     async _handleMessage(message) {
         const { requestId, responseId, methodName, methodCatagory, payload} = JSONparseSafe(message, {})
-        console.log({requestId, responseId, methodName, methodCatagory})
         if (methodName === 'response') {
-            console.warn(`response ${methodCatagory}`)
             this._internalEvents.emit(`response:${responseId}`, payload)
         } else {
             if (methodName === 'triggerEvent') {
@@ -134,10 +126,8 @@ module.exports = class Cthulhu extends CthulhuHeart {
 
   start(callback) {
     if (this._isStarting) return
-    console.warn('Starting Cthulu...')
     this._isStarting = true
     this.express.listen(process.env.PORT || 8888, () => {
-        console.warn('... Cthulu is ready...')
         callback && callback()
     })
   }
