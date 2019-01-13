@@ -9,8 +9,8 @@ class CthulhuHeart extends Process {
         super(async ()=>{
             await this.promiseToClose
         })
-      this._eventManager = new EventManager()
-      this._taskManager = new TaskManager()
+        this._eventManager = new EventManager()
+        this._taskManager = new TaskManager()
     }
   
     // Events
@@ -20,7 +20,7 @@ class CthulhuHeart extends Process {
     }
   
     hookEvent(eventName, eventHandler, context, parentProcess) {
-      //   console.warn(`hookEvent ${eventName}`)
+        // console.warn(`hookEvent ${eventName}`)
         return this._eventManager.hook(eventName, eventHandler, context, parentProcess)
     }
   
