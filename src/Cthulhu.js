@@ -19,9 +19,9 @@ class CthulhuHeart extends Process {
       return this._eventManager.trigger(eventName, payload)
     }
   
-    hookEvent(eventName, eventHandler, context) {
+    hookEvent(eventName, eventHandler, context, parentProcess) {
       //   console.warn(`hookEvent ${eventName}`)
-        return this._eventManager.hook(eventName, eventHandler, context)
+        return this._eventManager.hook(eventName, eventHandler, context, parentProcess)
     }
   
     // Tasks
@@ -71,7 +71,7 @@ class CthulhuClientHandler extends Process {
             } else if (methodName === 'hookEvent') {
                 this._cthulhu.hookEvent(methodCatagory, async (payload) => {
                     this._respond(requestId, payload)
-                })
+                }, this)
             } else if (methodName === 'feedTask') {
                 this._cthulhu.feedTask(methodCatagory, payload, this)
             } else if (methodName === 'requestTask') {
