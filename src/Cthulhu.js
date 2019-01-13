@@ -126,8 +126,4 @@ module.exports = class Cthulhu extends CthulhuHeart {
         callback && callback()
     })
   }
-      
-  close() {
-      this._internalEvents.emit('close')
-  }
 }
