@@ -66,21 +66,21 @@ class CthulhuClientHandler extends Process {
             if (methodName === 'triggerEvent') {
                 this._cthulhu.triggerEvent(methodCatagory, payload)
             } else if (methodName === 'hookEvent') {
-                let hookProcess = await this._cthulhu.hookEvent(methodCatagory, async (payload) => {
+                this._cthulhu.hookEvent(methodCatagory, async (payload) => {
                     this._respond(requestId, payload)
                 }, this)
             } else if (methodName === 'feedTask') {
                 this._cthulhu.feedTask(methodCatagory, payload)
             } else if (methodName === 'requestTask') {
-                let requestProcess = this._cthulhu.requestTask(methodCatagory, {payload}, async (payload) => {
+                this._cthulhu.requestTask(methodCatagory, {payload}, async (payload) => {
                     return await this._request(requestId, payload)
                 }, this)
             } else if (methodName === 'consumeTask') {
-                let consumeProcess = this._cthulhu.consumeTask(methodCatagory, async (payload) => {
+                this._cthulhu.consumeTask(methodCatagory, async (payload) => {
                     return await this._request(requestId, payload)
                 }, this)
             } else if (methodName === 'subscribeTask') {
-                let subscriptionProcess = this._cthulhu.subscribeTask(methodCatagory, async (payload) => {
+                this._cthulhu.subscribeTask(methodCatagory, async (payload) => {
                     return await this._request(requestId, payload)
                 }, this)
             }
