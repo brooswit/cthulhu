@@ -6,7 +6,7 @@ const enableWs = require('express-ws')
 
 class CthulhuHeart extends Process {
     constructor() {
-        super(()=>{
+        super(async ()=>{
             await this.promiseToClose
         })
       this._eventManager = new EventManager()
@@ -109,7 +109,7 @@ class CthulhuClientHandler extends Process {
 
 module.exports = class Cthulhu extends CthulhuHeart {
     constructor() {
-        super(()=>{
+        super(async ()=>{
             await this.promiseToClose
         })
         this._internalEvents = new EventEmitter()
