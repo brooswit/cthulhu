@@ -4,7 +4,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const enableWs = require('express-ws')
 
-class CthulhuHeart{
+class CthulhuHeart extends Process {
     constructor() {
       this._eventManager = new EventManager()
       this._taskManager = new TaskManager()
@@ -12,7 +12,7 @@ class CthulhuHeart{
   
     // Events
     triggerEvent(eventName, payload) {
-      //   console.warn(`triggerEvent ${eventName}`)
+        // console.warn(`triggerEvent ${eventName}`)
       return this._eventManager.trigger(eventName, payload)
     }
   
