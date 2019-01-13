@@ -15,12 +15,12 @@ class CthulhuHeart extends Process {
   
     // Events
     triggerEvent(eventName, payload) {
-        // console.warn(`triggerEvent ${eventName}`)
-      return this._eventManager.trigger(eventName, payload)
+        console.warn(`triggerEvent ${eventName}`)
+        return this._eventManager.trigger(eventName, payload)
     }
   
     hookEvent(eventName, eventHandler, context, parentProcess) {
-        // console.warn(`hookEvent ${eventName}`)
+        console.warn(`hookEvent ${eventName}`)
         return this._eventManager.hook(eventName, eventHandler, context, parentProcess)
     }
   
@@ -44,7 +44,7 @@ class CthulhuHeart extends Process {
         console.warn(`subscribeTask ${taskName}`)
         return this._taskManager.subscribe(taskName, subscriptionHandler, context, this, parentProcess)
     }
-  }
+}
 
 class CthulhuClientHandler extends Process {
     constructor(cthulhu, ws) {
