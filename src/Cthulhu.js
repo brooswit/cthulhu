@@ -47,19 +47,19 @@ class CthulhuHeart extends Process {
   }
 
 class CthulhuClientHandler extends Process {
-  constructor(cthulhu, ws) {
-      super(async () => {
-          this._cthulhu = cthulhu
-          this._ws = ws
-          this._internalEvents = new EventEmitter()
-          this._nextResponseId = 0
+    constructor(cthulhu, ws) {
+        super(async () => {
+            this._cthulhu = cthulhu
+            this._ws = ws
+            this._internalEvents = new EventEmitter()
+            this._nextResponseId = 0
 
-          this._ws.on('close', this.close.bind(this))
-          this._ws.on('message', this._handleMessage.bind(this))
-          await this.promiseToClose
-          this._ws.close()
-      }, cthulhu)
-  }
+            this._ws.on('close', this.close.bind(this))
+            this._ws.on('message', this._handleMessage.bind(this))
+            await this.promiseToClose
+            this._ws.close()
+        }, cthulhu)
+    }
 
     async _handleMessage(message) {
         const { requestId, responseId, methodName, methodCatagory, payload} = JSONparseSafe(message, {})
