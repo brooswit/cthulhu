@@ -25,22 +25,22 @@ class CthulhuHeart extends Process {
     }
   
     // Tasks
-    feedTask(taskName, payload) {
+    feedTask(taskName, payload, parentProcess, parentProcess) {
         console.warn(`feedTask ${taskName}`)
         return this._taskManager.feed(taskName, payload, this)
     }
   
-    requestTask(taskName, payload, responseHandler, context) {
+    requestTask(taskName, payload, responseHandler, context, parentProcess) {
         console.warn(`requestTask ${taskName}`)
         return this._taskManager.request(taskName, payload, responseHandler, context, this)
     }
   
-    consumeTask(taskName, taskHandler, context) {
+    consumeTask(taskName, taskHandler, context, parentProcess) {
         console.warn(`consumeTask ${taskName}`)
         return this._taskManager.consume(taskName, taskHandler, context, this)
     }
   
-    subscribeTask(taskName, subscriptionHandler, context) {
+    subscribeTask(taskName, subscriptionHandler, context, parentProcess) {
         console.warn(`subscribeTask ${taskName}`)
         return this._taskManager.subscribe(taskName, subscriptionHandler, context, this)
     }
