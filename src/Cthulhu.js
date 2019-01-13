@@ -70,7 +70,7 @@ class CthulhuClientHandler extends Process {
                     this._respond(requestId, payload)
                 }, this)
             } else if (methodName === 'feedTask') {
-                this._cthulhu.feedTask(methodCatagory, payload)
+                this._cthulhu.feedTask(methodCatagory, payload, this)
             } else if (methodName === 'requestTask') {
                 this._cthulhu.requestTask(methodCatagory, {payload}, async (payload) => {
                     return await this._request(requestId, payload)
