@@ -6,6 +6,9 @@ const enableWs = require('express-ws')
 
 class CthulhuHeart extends Process {
     constructor() {
+        super(()=>{
+            await this.promiseToClose
+        })
       this._eventManager = new EventManager()
       this._taskManager = new TaskManager()
     }
@@ -105,25 +108,27 @@ class CthulhuClientHandler extends Process {
 }
 
 module.exports = class Cthulhu extends CthulhuHeart {
-  constructor() {
-    super()
-    this._internalEvents = new EventEmitter()
-    this.promiseToClose = new Promise(()=>{})
-    this.express = express()
-    enableWs(this.express)
-    this.express.use(bodyParser.json())
-      .ws('/stream', (ws) => {
-        new CthulhuClientHandler(this, ws)
-    })
-}
+    constructor() {
+        super(()=>{
+            await this.promiseToClose
+        })
+        this._internalEvents = new EventEmitter()
+        this.promiseToClose = new Promise(()=>{})
+        this.express = express()
+        enableWs(this.express)
+        this.express.use(bodyParser.json())
+        .ws('/stream', (ws) => {
+            new CthulhuClientHandler(this, ws)
+        })
+    }
 
-  start(callback) {
-    if (this._isStarting) return
-    console.warn('Starting Cthulu...')
-    this._isStarting = true
-    this.express.listen(process.env.PORT || 8888, () => {
-        console.warn('... Cthulu is ready...')
-        callback && callback()
-    })
-  }
+    start(callback) {
+        if (this._isStarting) return
+        console.warn('Starting Cthulu...')
+        this._isStarting = true
+        this.express.listen(process.env.PORT || 8888, () => {
+            console.warn('... Cthulu is ready...')
+            callback && callback()
+        })
+    }
 }
