@@ -115,7 +115,6 @@ module.exports = class Cthulhu extends CthulhuHeart {
             await this.promiseToClose
         })
         this._internalEvents = new EventEmitter()
-        this.promiseToClose = new Promise(()=>{})
         this.express = express()
         this.redis = redis.createClient({
             host: redisHost
