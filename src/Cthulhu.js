@@ -25,7 +25,7 @@ class CthulhuHeart extends Process {
     }
   
     // Tasks
-    feedTask(taskName, payload, parentProcess, parentProcess) {
+    feedTask(taskName, payload, parentProcess) {
         console.warn(`feedTask ${taskName}`)
         return this._taskManager.feed(taskName, payload, this, parentProcess)
     }
