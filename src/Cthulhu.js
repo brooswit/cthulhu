@@ -110,13 +110,16 @@ class CthulhuClientHandler extends Process {
 }
 
 module.exports = class Cthulhu extends CthulhuHeart {
-    constructor() {
+    constructor({redisHost}) {
         super(async ()=>{
             await this.promiseToClose
         })
         this._internalEvents = new EventEmitter()
         this.promiseToClose = new Promise(()=>{})
         this.express = express()
+        this.redis = redis.createClient({
+            host: redisHost
+        });
         enableWs(this.express)
         this.express.use(bodyParser.json())
         .ws('/stream', (ws) => {
