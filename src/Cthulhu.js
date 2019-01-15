@@ -4,6 +4,8 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const enableWs = require('express-ws')
 
+var redis = require('redis')
+
 class CthulhuHeart extends Process {
     constructor() {
         super(async ()=>{
