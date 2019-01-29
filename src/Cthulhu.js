@@ -1,140 +1,197 @@
-const {promiseToEmit, Process, EventEmitter, JSONparseSafe, EventManager, TaskManager} = require('brooswit-common')
+const {Process, EventManager, TaskManager, VirtualWebSocket} = require('brooswit-common')
 
 const express = require('express')
 const bodyParser = require('body-parser')
 const enableWs = require('express-ws')
 
-var redis = require('redis')
+const redis = require('redis')
 
-class CthulhuHeart extends Process {
-    constructor() {
+const LaunchDarkly = require('ldclient-node');
+
+// LD Helpers
+function createAnonLDUser(custom) {
+    return {key: 'anon', anonymous: true, custom}
+}
+
+async function ldAnonVariation(ldClient, flagKey, custom, fallbackVariation) {
+    return await ldClient.variation(flagKey, createAnonLDUser(custom), fallbackVariation)
+}
+
+module.exports = class Cthulhu extends Process {
+    constructor({
+        useRedis=false, redisHost, redisPort, redisPassword,
+        useLd=false, ldSdkKey, // ldApiKey,
+        useExpress=true, expressPort=process.env.PORT,
+        useStream=true,  streamPath='/stream'
+    }, parentProcess) {
         super(async ()=>{
-            await this.promiseToClose
-        })
-        this._eventManager = new EventManager()
-        this._taskManager = new TaskManager()
+            this._eventManager = new EventManager(this)
+            this._taskManager = new TaskManager(this)
+            this.untilReady = this.promiseTo('ready')
+
+            const redisConfig = {
+                host: redisHost,
+                port: redisPort,
+                password: redisPassword
+            }
+            if (useRedis) { this.redisClient = redis.createClient(redisConfig) }
+
+            const ldConfig = {}
+            if (!useLd) {
+                ldConfig.offline = true
+            } else {
+                if (useRedis) {
+                    ldConfig.useLdd = true
+                    ldConfig.featureStore = LaunchDarkly.RedisFeatureStore(redisConfig)
+                }
+            }
+            this.ldClient = LaunchDarkly.init(ldSdkKey, ldConfig)
+
+            if (useExpress) {
+                this.express = express()
+                this.express.use(bodyParser.json())
+                if (useStream) { 
+                    enableWs(this.express)
+                    this.express.ws(streamPath, (ws) => {
+                        new VirtualWebSocket(ws, (channel) => {
+                            this._handleVirtualWebSocketChannel(channel)
+                        }, this)
+                    })
+                }
+                this.express.listen(expressPort, () => {
+                    console.warn('... Cthulu is ready...')
+                })
+            }
+
+            await this.ldClient.waitForInitialization()
+            this.emit('ready')
+
+            await this.untilEnd
+        }, parentProcess)
     }
-  
+
+    async _handleVirtualWebSocketChannel(channel) {
+        channel.subscribeTo(channel.observe('event/trigger'), (eventName, payload) => {
+            this.triggerEvent(eventName, payload)
+            channel.end()
+        })
+        channel.subscribeTo(channel.observe('event/hook'), (eventName) => {
+            this.hookEvent(eventName, (payload) => {
+                channel.send('event', payload)
+            }, channel)
+        })
+        channel.subscribeTo(channel.observe('task/add'), (taskName, payload) => {
+            this.feedTask(taskName, payload, channel)
+            channel.end()
+        })
+        channel.subscribeTo(channel.observe('task/request'), (taskName, payload) => {
+            this.requestTask(taskName, payload, (taskResult) => {
+                channel.send('task/complete', taskResult)
+                channel.end()
+            }, channel)
+        })
+        channel.subscribeTo(channel.observe('task/consume'), (taskName) => {
+            this.consumeTask(taskName, async (task) => {
+                await this._handleChannelTask(channel, task),
+                channel.end()
+            }, channel)
+        })
+        channel.subscribeTo(channel.observe('task/subscribe'), (taskName) => {
+            this.subscribeTask(taskName, async (task) => {
+                await this._handleChannelTask(channel, task)
+            }, channel)
+        })
+        await channel.untilEnd
+    }
+
+    async _handleChannelTask(channel, task) {
+        channel.send('task', task)
+        const taskResult = await Promise.race([
+            channel.promiseTo(`task/complete`),
+            channel.untilEnd
+        ])
+        task.resolve(taskResult)
+    }
+
     // Events
     triggerEvent(eventName, payload) {
         console.warn(`triggerEvent ${eventName}`)
-        return this._eventManager.trigger(eventName, payload)
+        return new Process(async () => {
+            await this.unitlReady
+            if (await ldAnonVariation(
+                ldClient, `should-trigger-${eventName}`,
+                createAnonLDUser(payload)), true
+            ) {
+                this._eventManager.trigger(eventName, payload)
+            } else {
+                console.warn(`triggerEvent ${eventName}`)
+            }
+        }, this)
     }
   
-    hookEvent(eventName, eventHandler, context, parentProcess) {
+    hookEvent(eventName, eventHandler, parentProcess) {
         console.warn(`hookEvent ${eventName}`)
-        return this._eventManager.hook(eventName, eventHandler, context, parentProcess)
-    }
+        return new Process(async () => {
+            await this.unitlReady
+            if (await ldAnonVariation(
+                ldClient, `should-hook-${eventName}`,
+                createAnonLDUser(payload)), true
+            ) {
+                return this._eventManager.hook(eventName, eventHandler, parentProcess)
+            }
+        }, this)
+}
   
     // Tasks
     feedTask(taskName, payload, parentProcess) {
         console.warn(`feedTask ${taskName}`)
-        return this._taskManager.feed(taskName, payload, this, parentProcess)
-    }
-  
-    requestTask(taskName, payload, responseHandler, context, parentProcess) {
-        console.warn(`requestTask ${taskName}`)
-        return this._taskManager.request(taskName, payload, responseHandler, context, this, parentProcess)
-    }
-  
-    consumeTask(taskName, taskHandler, context, parentProcess) {
-        console.warn(`consumeTask ${taskName}`)
-        return this._taskManager.consume(taskName, taskHandler, context, this, parentProcess)
-    }
-  
-    subscribeTask(taskName, subscriptionHandler, context, parentProcess) {
-        console.warn(`subscribeTask ${taskName}`)
-        return this._taskManager.subscribe(taskName, subscriptionHandler, context, this, parentProcess)
-    }
-}
-
-class CthulhuClientHandler extends Process {
-    constructor(cthulhu, ws) {
-        super(async () => {
-            this._cthulhu = cthulhu
-            this._ws = ws
-            this._internalEvents = new EventEmitter()
-            this._nextResponseId = 0
-
-            this._ws.on('close', this.close.bind(this))
-            this._ws.on('message', this._handleMessage.bind(this))
-            await this.promiseToClose
-            this._ws.close()
-        }, cthulhu)
-    }
-
-    async _handleMessage(message) {
-        const { requestId, responseId, methodName, methodCatagory, payload} = JSONparseSafe(message, {})
-        if (methodName === 'response') {
-            this._internalEvents.emit(`response:${responseId}`, payload)
-        } else {
-            if (methodName === 'triggerEvent') {
-                this._cthulhu.triggerEvent(methodCatagory, payload)
-            } else if (methodName === 'hookEvent') {
-                this._cthulhu.hookEvent(methodCatagory, async (payload) => {
-                    this._respond(requestId, payload)
-                }, this)
-            } else if (methodName === 'feedTask') {
-                this._cthulhu.feedTask(methodCatagory, payload, this)
-            } else if (methodName === 'requestTask') {
-                this._cthulhu.requestTask(methodCatagory, {payload}, async (payload) => {
-                    return await this._request(requestId, payload, this)
-                })
-            } else if (methodName === 'consumeTask') {
-                this._cthulhu.consumeTask(methodCatagory, async (payload) => {
-                    return await this._request(requestId, payload, this)
-                })
-            } else if (methodName === 'subscribeTask') {
-                this._cthulhu.subscribeTask(methodCatagory, async (payload) => {
-                    return await this._request(requestId, payload, this)
-                })
+        return new Process(async () => {
+            await this.unitlReady
+            if (await ldAnonVariation(
+                ldClient, `should-feed-${taskName}`,
+                createAnonLDUser(payload)), true
+            ) {
+                return this._taskManager.feed(taskName, payload, parentProcess)
             }
-        }
+        }, this)
     }
-
-    async _respond (requestId, payload) {
-        this._ws.send(JSON.stringify({requestId, payload}))
+  
+    requestTask(taskName, payload, responseHandler, parentProcess) {
+        console.warn(`requestTask ${taskName}`)
+        return new Process(async () => {
+            await this.unitlReady
+            if (await ldAnonVariation(
+                ldClient, `should-request-${taskName}`,
+                createAnonLDUser(payload)), true
+            ) {
+                return this._taskManager.request(taskName, payload, responseHandler, parentProcess)
+            }
+        }, this)
     }
-
-    async _request (requestId, payload) {
-        const responseId = this._nextResponseId++
-        let resolution, rejection
-
-        this._ws.send(JSON.stringify({responseId, requestId, payload}))
-
-        return await Promise.race([
-            this.promiseToClose,
-            promiseToEmit(this._internalEvents, `response:${responseId}`)
-        ])
+  
+    consumeTask(taskName, taskHandler, parentProcess) {
+        console.warn(`consumeTask ${taskName}`)
+        return new Process(async () => {
+            await this.unitlReady
+            if (await ldAnonVariation(
+                ldClient, `should-consume-${taskName}`,
+                createAnonLDUser(payload)), true
+            ) {
+                return this._taskManager.consume(taskName, taskHandler, parentProcess)
+            }
+        }, this)
     }
-}
-
-module.exports = class Cthulhu extends CthulhuHeart {
-    constructor({redisHost, redisPort, redisPassword}) {
-        super(async ()=>{
-            await this.promiseToClose
-        })
-        this._internalEvents = new EventEmitter()
-        this.redis = redis.createClient({
-            host: redisHost,
-            port: redisPort,
-            password: redisPassword
-        });
-        this.express = express()
-        enableWs(this.express)
-        this.express.use(bodyParser.json())
-        .ws('/stream', (ws) => {
-            new CthulhuClientHandler(this, ws)
-        })
-    }
-
-    start(callback) {
-        if (this._isStarting) return
-        console.warn('Starting Cthulu...')
-        this._isStarting = true
-        this.express.listen(process.env.PORT || 8888, () => {
-            console.warn('... Cthulu is ready...')
-            callback && callback()
-        })
+  
+    subscribeTask(taskName, subscriptionHandler, parentProcess) {
+        console.warn(`subscribeTask ${taskName}`)
+        return new Process(async () => {
+            await this.unitlReady
+            if (await ldAnonVariation(
+                ldClient, `should-subscribe-${taskName}`,
+                createAnonLDUser(payload)), true
+            ) {
+                return this._taskManager.subscribe(taskName, subscriptionHandler, parentProcess)
+            }
+        }, this)
     }
 }

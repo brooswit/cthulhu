@@ -1,6 +1,6 @@
 {
     "name": "Cthulhu",
-    "version": "0.0.521",
+    "version": "0.0.522",
     "description": "",
     "main": "index.js",
     "scripts": {
@@ -26,6 +26,7 @@
         "grunt": "1.0.3",
         "grunt-contrib-watch": "1.1.0",
         "grunt-shell": "2.1.0",
+        "ldclient-node": "5.7.1",
         "node-zendesk": "1.4.0",
         "redis": "2.8.0",
         "ws": "6.1.2"

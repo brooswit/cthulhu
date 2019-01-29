@@ -1,126 +1,81 @@
-const {EventEmitter, JSONparseSafe, promiseToEmit, Process} = require('brooswit-common')
+const {Process, VirtualWebSocket} = require('brooswit-common')
 const WebSocket = require('ws')
 
-module.exports = class Minion extends Process{
-  constructor (url) {
-    super(async () => {
-      await promiseToEmit(this._internalEvents, 'start')
-      console.warn('Starting Minion...')
-      while (this.active) {
-        this._ws = new WebSocket(`ws://${url}/stream`);
+module.exports = class Minion extends Process {
+    constructor(url, parentProcess) {
+        super(async () => {
+            this.untilReady = this.promiseTo(`ready`)
+            this._webSocket = new WebSocket(`ws://${url}/stream`)
+            this._virtualWebSocket = new VirtualWebSocket(ws, undefined, this)
+            await this.untilEnd
+        }, parentProcess)
+    }
 
-        await promiseToEmit(this._ws, 'open')
-        this._ws.on('message', this._handleMessage.bind(this))
-        console.warn('... Minion is ready ...')
-        this._internalEvents.emit('ready')
+    // Events
+    triggerEvent(eventName, payload) {
+        console.warn(`triggerEvent ${eventName}`)
+        return this._virtualWebSocket.open((virtualWebSocketChannel) => {
+            virtualWebSocketChannel.send(`event/trigger`, {eventName, payload})
+            await virtualWebSocketChannel.untilEnd
+        }, this)
+    }
+  
+    hookEvent(eventName, callback) {
+        console.warn(`hookEvent ${eventName}`)
+        return this._virtualWebSocket.open((virtualWebSocketChannel) => {
+            virtualWebSocketChannel.send(`event/hook`, {eventName})
+            virtualWebSocketChannel.subscribe(virtualWebSocketChannel.observe(`event`), (payload) => {
+                callback(payload)
+            }, virtualWebSocketChannel)
+            await virtualWebSocketChannel.untilEnd
+        }, this)
+    }
+  
+    // Tasks
+    feedTask(taskName, payload) {
+        console.warn(`feedTask ${taskName}`)
+        return this._virtualWebSocket.open((virtualWebSocketChannel) => {
+            virtualWebSocketChannel.send(`task/feed`, {taskName, payload})
+            await virtualWebSocketChannel.untilEnd
+        }, this)
+    }
+  
+    requestTask(taskName, payload, responseHandler) {
+        console.warn(`requestTask ${taskName}`)
+        return this._virtualWebSocket.open((virtualWebSocketChannel) => {
+            virtualWebSocketChannel.send(`task/request`, {taskName, payload})
+            const result = await virtualWebSocketChannel.promiseTo(`task/complete`)
+            responseHandler(result)
+            await virtualWebSocketChannel.untilEnd
+        }, this)
+    }
+  
+    consumeTask(taskName, taskHandler) {
+        console.warn(`consumeTask ${taskName}`)
+        return this._virtualWebSocket.open((virtualWebSocketChannel) => {
+            virtualWebSocketChannel.send(`task/consume`, {taskName})
+            const payload = await virtualWebSocketChannel.promiseTo(`task`)
+            this._handleTask(virtualWebSocketChannel, taskHandler, payload)            
+            await virtualWebSocketChannel.untilEnd
+        }, this)
+    }
+  
+    subscribeTask(taskName, subscriptionHandler) {
+        console.warn(`subscribeTask ${taskName}`)
+        return this._virtualWebSocket.open((virtualWebSocketChannel) => {
+            virtualWebSocketChannel.send(`task/subscribe`, {taskName})
+            virtualWebSocketChannel.subscribe(virtualWebSocketChannel.observe(`task`), (payload) => {
+                this._handleTask(virtualWebSocketChannel, subscriptionHandler, payload)
+            }, virtualWebSocketChannel)
+            await virtualWebSocketChannel.untilEnd
+        }, this)
+    }
 
-        await promiseToEmit(this._ws, 'close')
-        this._internalEvents.emit('restart')
-        this.promiseToReady = promiseToEmit(this._internalEvents, 'ready')
-      }
-    })
-
-    this.promiseToClose.then(()=>{
-      this._ws && this._ws.close
-    })
-
-    this._url = url
-
-    this._internalEvents = new EventEmitter()
-    this._nextRequestId = 0
-    this._isStarting = false
-
-    this.promiseToReady = promiseToEmit(this._internalEvents, 'ready')
-  }
-
-  start() {
-    this._internalEvents.emit('start')
-  }
-
-  _handleMessage(message) {
-    const {requestId, responseId, payload} = JSONparseSafe(message, {})
-    this._internalEvents.emit(`response:${requestId}`, {responseId, payload})
-  }
-
-
-  // Events
-  triggerEvent(eventName, payload) {
-    return this._send('triggerEvent', eventName, {payload})
-  }
-
-  hookEvent(eventName, callback, context) {
-    return this._subscribe('hookEvent', eventName, callback, context)
-  }
-
-  // Tasks
-  feedTask(taskName, payload) {
-    return this._send('feedTask', taskName, {payload})
-  }
-
-  requestTask(taskName, payload, responseHandler, context) {
-    return this._fetch('requestTask', taskName, {payload}, responseHandler, context)
-  }
-
-  consumeTask(taskName, taskHandler, context) {
-    return this._request('consumeTask', taskName, taskHandler, context)
-  }
-
-  subscribeTask(taskName, subscriptionHandler, context) {
-    return this._subscribe('subscribeTask', taskName, subscriptionHandler, context)
-  }
-
-  _send(methodName, methodCatagory, data) {
-    return this._fetch(methodName, methodCatagory, data)
-  }
-
-  _fetch(methodName, methodCatagory, data = {}, fetchHandler, fetchContext) {
-    return new Process(async (process) => {
-      await this.promiseToReady
-      if (process.closed) return
-
-      const requestId = this._nextRequestId ++
-      this._ws.send(JSON.stringify(Object.assign({}, data, {
-        requestId, methodName, methodCatagory
-      })))
-
-      if (process.closed) return
-      if (!fetchHandler) return process.close()
-
-      let {responseId, payload} = await promiseToEmit(this._internalEvents, `response:${requestId}`)
-      if (process.closed) return
-
-      fetchHandler.call(fetchContext, payload, responseId)
-      process.close()
-    }, this)
-  }
-
-  _request(methodName, methodCatagory, requestHandler, context) {
-    return new Process(async (process) => {
-      this._fetch(methodName, methodCatagory, async (payload, responseId) => {
-        payload = await requestHandler.call(context, payload)
-        this._send('response', '', {responseId, payload})
-      })
-    }, this)
-  }
-
-  _subscribe(methodName, methodCatagory, subscriptionHandler, subscriptionContext) {
-    return new Process(async (process) => {
-      await this.promiseToReady
-      if (process.closed) return
-      
-      const requestId = this._nextRequestId ++
-      this._ws.send(JSON.stringify({ requestId, methodName, methodCatagory}))
-      if (!subscriptionHandler) return process.close()
-      if (process.closed) return
-
-      const handleResponse = async ({responseId, payload}) => {
-        payload = await subscriptionHandler.call(subscriptionContext, payload)
-        this._send('response', methodCatagory, {responseId, payload})
-      }
-      this._internalEvents.on(`response:${requestId}`, handleResponse)
-      await this.promiseToClose
-      this._internalEvents.off(`response:${requestId}`, handleResponse)
-      process.close()
-    }, this)
-  }
+    _handleTask(virtualWebSocketChannel, taskHandler, taskPayload) {
+        const task = new Resolver()
+        task.payload = taskPayload
+        taskHandler(task)
+        const result = await task
+        virtualWebSocketChannel.send(`task/complete`, result)
+    }
 }
