@@ -24,7 +24,7 @@ module.exports = class Minion extends Process {
         console.warn(`hookEvent ${eventName}`)
         return this._virtualWebSocket.open(async (virtualWebSocketChannel) => {
             virtualWebSocketChannel.send(`event/hook`, {eventName})
-            virtualWebSocketChannel.subscribe(virtualWebSocketChannel.observe(`event`), (payload) => {
+            virtualWebSocketChannel.subscribeTo(virtualWebSocketChannel.observe(`event`), (payload) => {
                 callback(payload)
             }, virtualWebSocketChannel)
             await virtualWebSocketChannel.untilEnd
@@ -64,14 +64,14 @@ module.exports = class Minion extends Process {
         console.warn(`subscribeTask ${taskName}`)
         return this._virtualWebSocket.open(async (virtualWebSocketChannel) => {
             virtualWebSocketChannel.send(`task/subscribe`, {taskName})
-            virtualWebSocketChannel.subscribe(virtualWebSocketChannel.observe(`task`), (payload) => {
-                this._handleTask(virtualWebSocketChannel, subscriptionHandler, payload)
+            virtualWebSocketChannel.subscribeTo(virtualWebSocketChannel.observe(`task`), async (payload) => {
+                await this._handleTask(virtualWebSocketChannel, subscriptionHandler, payload)
             }, virtualWebSocketChannel)
             await virtualWebSocketChannel.untilEnd
         }, this)
     }
 
-    _handleTask(virtualWebSocketChannel, taskHandler, taskPayload) {
+    async _handleTask(virtualWebSocketChannel, taskHandler, taskPayload) {
         const task = new Resolver()
         task.payload = taskPayload
         taskHandler(task)
