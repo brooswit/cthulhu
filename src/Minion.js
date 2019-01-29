@@ -14,7 +14,7 @@ module.exports = class Minion extends Process {
     // Events
     triggerEvent(eventName, payload) {
         console.warn(`triggerEvent ${eventName}`)
-        return this._virtualWebSocket.open((virtualWebSocketChannel) => {
+        return this._virtualWebSocket.open(async (virtualWebSocketChannel) => {
             virtualWebSocketChannel.send(`event/trigger`, {eventName, payload})
             await virtualWebSocketChannel.untilEnd
         }, this)
@@ -22,7 +22,7 @@ module.exports = class Minion extends Process {
   
     hookEvent(eventName, callback) {
         console.warn(`hookEvent ${eventName}`)
-        return this._virtualWebSocket.open((virtualWebSocketChannel) => {
+        return this._virtualWebSocket.open(async (virtualWebSocketChannel) => {
             virtualWebSocketChannel.send(`event/hook`, {eventName})
             virtualWebSocketChannel.subscribe(virtualWebSocketChannel.observe(`event`), (payload) => {
                 callback(payload)
@@ -34,7 +34,7 @@ module.exports = class Minion extends Process {
     // Tasks
     feedTask(taskName, payload) {
         console.warn(`feedTask ${taskName}`)
-        return this._virtualWebSocket.open((virtualWebSocketChannel) => {
+        return this._virtualWebSocket.open(async (virtualWebSocketChannel) => {
             virtualWebSocketChannel.send(`task/feed`, {taskName, payload})
             await virtualWebSocketChannel.untilEnd
         }, this)
@@ -42,7 +42,7 @@ module.exports = class Minion extends Process {
   
     requestTask(taskName, payload, responseHandler) {
         console.warn(`requestTask ${taskName}`)
-        return this._virtualWebSocket.open((virtualWebSocketChannel) => {
+        return this._virtualWebSocket.open(async (virtualWebSocketChannel) => {
             virtualWebSocketChannel.send(`task/request`, {taskName, payload})
             const result = await virtualWebSocketChannel.promiseTo(`task/complete`)
             responseHandler(result)
@@ -52,7 +52,7 @@ module.exports = class Minion extends Process {
   
     consumeTask(taskName, taskHandler) {
         console.warn(`consumeTask ${taskName}`)
-        return this._virtualWebSocket.open((virtualWebSocketChannel) => {
+        return this._virtualWebSocket.open(async (virtualWebSocketChannel) => {
             virtualWebSocketChannel.send(`task/consume`, {taskName})
             const payload = await virtualWebSocketChannel.promiseTo(`task`)
             this._handleTask(virtualWebSocketChannel, taskHandler, payload)            
@@ -62,7 +62,7 @@ module.exports = class Minion extends Process {
   
     subscribeTask(taskName, subscriptionHandler) {
         console.warn(`subscribeTask ${taskName}`)
-        return this._virtualWebSocket.open((virtualWebSocketChannel) => {
+        return this._virtualWebSocket.open(async (virtualWebSocketChannel) => {
             virtualWebSocketChannel.send(`task/subscribe`, {taskName})
             virtualWebSocketChannel.subscribe(virtualWebSocketChannel.observe(`task`), (payload) => {
                 this._handleTask(virtualWebSocketChannel, subscriptionHandler, payload)
