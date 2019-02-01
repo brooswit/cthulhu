@@ -1,5 +1,6 @@
 const {church, Job, EventManager, TaskManager, VirtualWebSocket} = require('brooswit-common')
 const log = church.create('CTHULHU')
+console.log(log.level)
 const express = require('express')
 const bodyParser = require('body-parser')
 const enableWs = require('express-ws')
