@@ -65,12 +65,6 @@ module.exports = class Cthulhu extends Job {
                 console.warn('... Cthulu is ready...')
             })
         }
-        async function main() {
-            await this.ldClient.waitForInitialization()
-            this.emit('ready')
-
-            await this.untilEnd
-        }
     }
 
     async _handleVirtualWebSocketChannel(channel) {
