@@ -1,4 +1,4 @@
-const {Job, EventManager, TaskManager, VirtualWebSocket} = require('brooswit-common')
+const {church, Job, EventManager, TaskManager, VirtualWebSocket} = require('brooswit-common')
 
 const express = require('express')
 const bodyParser = require('body-parser')
