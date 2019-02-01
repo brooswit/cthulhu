@@ -136,7 +136,7 @@ module.exports = class Cthulhu extends Job {
             await this.unitlReady
             if (await ldAnonVariation(
                 this.ldClient, `should-hook-${eventName}`,
-                createAnonLDUser(payload)), true
+                createAnonLDUser()), true
             ) {
                 return this._eventManager.hook(eventName, eventHandler, parentJob)
             }
