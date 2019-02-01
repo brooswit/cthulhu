@@ -1,5 +1,6 @@
-const {Job, VirtualWebSocket} = require('brooswit-common')
 const WebSocket = require('ws')
+
+const {Job, VirtualWebSocket} = require('brooswit-common')
 
 module.exports = class Minion extends Job {
     constructor(url, parentJob) {
