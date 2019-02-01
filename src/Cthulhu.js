@@ -137,7 +137,7 @@ module.exports = class Cthulhu extends Job {
         return new Job(async () => {
             await this.unitlReady
             if (await ldAnonVariation(
-                ldClient, `should-hook-${eventName}`,
+                this.ldClient, `should-hook-${eventName}`,
                 createAnonLDUser(payload)), true
             ) {
                 return this._eventManager.hook(eventName, eventHandler, parentJob)
@@ -151,7 +151,7 @@ module.exports = class Cthulhu extends Job {
         return new Job(async () => {
             await this.unitlReady
             if (await ldAnonVariation(
-                ldClient, `should-feed-${taskName}`,
+                this.ldClient, `should-feed-${taskName}`,
                 createAnonLDUser(payload)), true
             ) {
                 return this._taskManager.feed(taskName, payload, parentJob)
@@ -164,7 +164,7 @@ module.exports = class Cthulhu extends Job {
         return new Job(async () => {
             await this.unitlReady
             if (await ldAnonVariation(
-                ldClient, `should-request-${taskName}`,
+                this.ldClient, `should-request-${taskName}`,
                 createAnonLDUser(payload)), true
             ) {
                 return this._taskManager.request(taskName, payload, responseHandler, parentJob)
@@ -177,7 +177,7 @@ module.exports = class Cthulhu extends Job {
         return new Job(async () => {
             await this.unitlReady
             if (await ldAnonVariation(
-                ldClient, `should-consume-${taskName}`,
+                this.ldClient, `should-consume-${taskName}`,
                 createAnonLDUser(payload)), true
             ) {
                 return this._taskManager.consume(taskName, taskHandler, parentJob)
@@ -190,7 +190,7 @@ module.exports = class Cthulhu extends Job {
         return new Job(async () => {
             await this.unitlReady
             if (await ldAnonVariation(
-                ldClient, `should-subscribe-${taskName}`,
+                this.ldClient, `should-subscribe-${taskName}`,
                 createAnonLDUser(payload)), true
             ) {
                 return this._taskManager.subscribe(taskName, subscriptionHandler, parentJob)
