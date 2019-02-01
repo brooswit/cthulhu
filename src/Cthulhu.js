@@ -40,11 +40,13 @@ module.exports = class Cthulhu extends Job {
             password: redisPassword
         }
         if (useRedis) {
+            this.log('info','USING REDIS')
             this.redisClient = redis.createClient(redisConfig)
         }
 
         const ldConfig = {}
         if (!useLd) {
+            this.log('info','USING LAUNCHDARKLY')
             ldConfig.offline = true
         } else {
             if (useRedis) {
@@ -55,9 +57,11 @@ module.exports = class Cthulhu extends Job {
         this.ldClient = LaunchDarkly.init(ldSdkKey, ldConfig)
 
         if (useExpress) {
+            this.log('info','USING EXPRESS')
             this.express = express()
             this.express.use(bodyParser.json())
-            if (useStream) { 
+            if (useStream) {
+                this.log('info','USING STREAM')
                 enableWs(this.express)
                 this.express.ws(streamPath, (ws) => {
                     new VirtualWebSocket(ws, (channel) => {
@@ -66,6 +70,7 @@ module.exports = class Cthulhu extends Job {
                 })
             }
             this.express.listen(expressPort, () => {
+                this.log('info','READY')
                 console.warn('... Cthulu is ready...')
             })
         }
