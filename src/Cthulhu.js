@@ -176,7 +176,7 @@ module.exports = class Cthulhu extends Job {
             await this.unitlReady
             if (await ldAnonVariation(
                 this.ldClient, `should-consume-${taskName}`,
-                createAnonLDUser(payload)), true
+                createAnonLDUser()), true
             ) {
                 return this._taskManager.consume(taskName, taskHandler, parentJob)
             }
@@ -189,7 +189,7 @@ module.exports = class Cthulhu extends Job {
             await this.unitlReady
             if (await ldAnonVariation(
                 this.ldClient, `should-subscribe-${taskName}`,
-                createAnonLDUser(payload)), true
+                createAnonLDUser()), true
             ) {
                 return this._taskManager.subscribe(taskName, subscriptionHandler, parentJob)
             }
