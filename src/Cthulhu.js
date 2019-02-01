@@ -70,7 +70,7 @@ module.exports = class Cthulhu extends Job {
             this.emit('ready')
 
             await this.untilEnd
-        }, parentJob)
+        }, parentJob, log)
     }
 
     async _handleVirtualWebSocketChannel(channel) {
