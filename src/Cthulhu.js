@@ -25,6 +25,24 @@ module.exports = class Cthulhu extends Job {
     }, parentJob) {
         super(async () => {
             await this.ldClient.waitForInitialization()
+
+            if (useExpress) {
+                this.log('info','USING EXPRESS')
+                this.express = express()
+                this.express.use(bodyParser.json())
+                if (useStream) {
+                    this.log('info','USING STREAM')
+                    enableWs(this.express)
+                    this.express.ws(streamPath, (ws) => {
+                        new VirtualWebSocket(ws, (channel) => {
+                            this._handleVirtualWebSocketChannel(channel)
+                        }, this)
+                    })
+                }
+                this.express.listen(expressPort, () => {
+                    this.log('info','READY')
+                })
+            }
             this.emit('ready')
             await this.untilEnd
         }, parentJob)
@@ -55,25 +73,6 @@ module.exports = class Cthulhu extends Job {
             }
         }
         this.ldClient = LaunchDarkly.init(ldSdkKey, ldConfig)
-
-        if (useExpress) {
-            this.log('info','USING EXPRESS')
-            this.express = express()
-            this.express.use(bodyParser.json())
-            if (useStream) {
-                this.log('info','USING STREAM')
-                enableWs(this.express)
-                this.express.ws(streamPath, (ws) => {
-                    new VirtualWebSocket(ws, (channel) => {
-                        this._handleVirtualWebSocketChannel(channel)
-                    }, this)
-                })
-            }
-            this.express.listen(expressPort, () => {
-                this.log('info','READY')
-                console.warn('... Cthulu is ready...')
-            })
-        }
     }
 
     async _handleVirtualWebSocketChannel(channel) {
