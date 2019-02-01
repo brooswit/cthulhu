@@ -23,7 +23,8 @@ module.exports = class Cthulhu extends Job {
         useExpress=true, expressPort=process.env.PORT,
         useStream=true,  streamPath='/stream'
     }, parentJob) {
-        super(, parentJob)
+        super(main, parentJob)
+        this.log('info','STARTING')
 
         this._eventManager = new EventManager(this)
         this._taskManager = new TaskManager(this)
@@ -64,7 +65,7 @@ module.exports = class Cthulhu extends Job {
                 console.warn('... Cthulu is ready...')
             })
         }
-        async function() {
+        async function main() {
             await this.ldClient.waitForInitialization()
             this.emit('ready')
 
