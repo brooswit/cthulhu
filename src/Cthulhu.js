@@ -1,5 +1,5 @@
 const {church, Job, EventManager, TaskManager, VirtualWebSocket} = require('brooswit-common')
-
+winston = church('CTHULHU')
 const express = require('express')
 const bodyParser = require('body-parser')
 const enableWs = require('express-ws')
@@ -25,6 +25,7 @@ module.exports = class Cthulhu extends Job {
         useStream=true,  streamPath='/stream'
     }, parentJob) {
         super(async ()=>{
+            church.info('STARTING')
             this._eventManager = new EventManager(this)
             this._taskManager = new TaskManager(this)
             this.untilReady = this.promiseTo('ready')
