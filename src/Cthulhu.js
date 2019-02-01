@@ -28,7 +28,7 @@ module.exports = class Cthulhu extends Job {
             if (useExpress) {
                 this.express = await new Promise((resolve)=>{
                     this.log('info','USING EXPRESS')
-                    expressApp = express()
+                    let expressApp = express()
                     expressApp.use(bodyParser.json())
                     if (useStream) {
                         this.log('info','USING STREAM')
@@ -41,7 +41,7 @@ module.exports = class Cthulhu extends Job {
                     }
                     expressApp.listen(expressPort, () => {
                         this.log('info','READY')
-                        resolve()
+                        resolve(expressApp)
                     })
                 })
             }
