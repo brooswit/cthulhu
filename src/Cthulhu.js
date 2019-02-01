@@ -25,7 +25,6 @@ module.exports = class Cthulhu extends Job {
     }, parentJob) {
         super(async () => {
             await this.ldClient.waitForInitialization()
-
             if (useExpress) {
                 this.express = await new Promise((resolve)=>{
                     this.log('info','USING EXPRESS')
@@ -47,6 +46,7 @@ module.exports = class Cthulhu extends Job {
                 })
             }
             this.emit('ready')
+
             await this.untilEnd
         }, parentJob)
         this.log('info','STARTING')
