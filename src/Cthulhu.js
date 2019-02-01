@@ -23,53 +23,53 @@ module.exports = class Cthulhu extends Job {
         useExpress=true, expressPort=process.env.PORT,
         useStream=true,  streamPath='/stream'
     }, parentJob) {
-        super(async ()=>{
-            log.log('info','STARTED')
-            this._eventManager = new EventManager(this)
-            this._taskManager = new TaskManager(this)
-            this.untilReady = this.promiseTo('ready')
+        super(, parentJob)
 
-            const redisConfig = {
-                host: redisHost,
-                port: redisPort,
-                password: redisPassword
-            }
+        this._eventManager = new EventManager(this)
+        this._taskManager = new TaskManager(this)
+        this.untilReady = this.promiseTo('ready')
+
+        const redisConfig = {
+            host: redisHost,
+            port: redisPort,
+            password: redisPassword
+        }
+        if (useRedis) {
+            this.redisClient = redis.createClient(redisConfig)
+        }
+
+        const ldConfig = {}
+        if (!useLd) {
+            ldConfig.offline = true
+        } else {
             if (useRedis) {
-                this.redisClient = redis.createClient(redisConfig)
+                ldConfig.useLdd = true
+                ldConfig.featureStore = LaunchDarkly.RedisFeatureStore(redisConfig)
             }
+        }
+        this.ldClient = LaunchDarkly.init(ldSdkKey, ldConfig)
 
-            const ldConfig = {}
-            if (!useLd) {
-                ldConfig.offline = true
-            } else {
-                if (useRedis) {
-                    ldConfig.useLdd = true
-                    ldConfig.featureStore = LaunchDarkly.RedisFeatureStore(redisConfig)
-                }
-            }
-            this.ldClient = LaunchDarkly.init(ldSdkKey, ldConfig)
-
-            if (useExpress) {
-                this.express = express()
-                this.express.use(bodyParser.json())
-                if (useStream) { 
-                    enableWs(this.express)
-                    this.express.ws(streamPath, (ws) => {
-                        new VirtualWebSocket(ws, (channel) => {
-                            this._handleVirtualWebSocketChannel(channel)
-                        }, this)
-                    })
-                }
-                this.express.listen(expressPort, () => {
-                    console.warn('... Cthulu is ready...')
+        if (useExpress) {
+            this.express = express()
+            this.express.use(bodyParser.json())
+            if (useStream) { 
+                enableWs(this.express)
+                this.express.ws(streamPath, (ws) => {
+                    new VirtualWebSocket(ws, (channel) => {
+                        this._handleVirtualWebSocketChannel(channel)
+                    }, this)
                 })
             }
-
+            this.express.listen(expressPort, () => {
+                console.warn('... Cthulu is ready...')
+            })
+        }
+        async function() {
             await this.ldClient.waitForInitialization()
             this.emit('ready')
 
             await this.untilEnd
-        }, parentJob)
+        }
     }
 
     async _handleVirtualWebSocketChannel(channel) {
