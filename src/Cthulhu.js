@@ -27,20 +27,23 @@ module.exports = class Cthulhu extends Job {
             await this.ldClient.waitForInitialization()
 
             if (useExpress) {
-                this.log('info','USING EXPRESS')
-                this.express = express()
-                this.express.use(bodyParser.json())
-                if (useStream) {
-                    this.log('info','USING STREAM')
-                    enableWs(this.express)
-                    this.express.ws(streamPath, (ws) => {
-                        new VirtualWebSocket(ws, (channel) => {
-                            this._handleVirtualWebSocketChannel(channel)
-                        }, this)
+                this.express = await new Promise((resolve)=>{
+                    this.log('info','USING EXPRESS')
+                    expressApp = express()
+                    expressApp.use(bodyParser.json())
+                    if (useStream) {
+                        this.log('info','USING STREAM')
+                        enableWs(expressApp)
+                        expressApp.ws(streamPath, (ws) => {
+                            new VirtualWebSocket(ws, (channel) => {
+                                this._handleVirtualWebSocketChannel(channel)
+                            }, this)
+                        })
+                    }
+                    expressApp.listen(expressPort, () => {
+                        this.log('info','READY')
+                        resolve()
                     })
-                }
-                this.express.listen(expressPort, () => {
-                    this.log('info','READY')
                 })
             }
             this.emit('ready')
