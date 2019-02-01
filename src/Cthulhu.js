@@ -1,5 +1,4 @@
-const {church, Job, EventManager, TaskManager, VirtualWebSocket} = require('brooswit-common')
-const log = church.create('CTHULHU')
+const {Job, EventManager, TaskManager, VirtualWebSocket} = require('brooswit-common')
 const express = require('express')
 const bodyParser = require('body-parser')
 const enableWs = require('express-ws')
@@ -70,7 +69,7 @@ module.exports = class Cthulhu extends Job {
             this.emit('ready')
 
             await this.untilEnd
-        }, parentJob, log)
+        }, parentJob)
     }
 
     async _handleVirtualWebSocketChannel(channel) {
