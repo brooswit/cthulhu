@@ -67,9 +67,9 @@ module.exports = class Cthulhu extends Job {
 
         const ldConfig = {}
         if (!useLd) {
-            this.log('info','USING LAUNCHDARKLY')
             ldConfig.offline = true
         } else {
+            this.log('info','USING LAUNCHDARKLY')
             if (useRedis) {
                 ldConfig.useLdd = true
                 ldConfig.featureStore = LaunchDarkly.RedisFeatureStore(redisConfig)
