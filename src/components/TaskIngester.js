@@ -1,4 +1,3 @@
-const {JSONparseSafe} = require('brooswit-common')
 // TODO: REFACTOR TO NEW PATTERNS
 module.exports = class TaskIngester {
     constructor(cthulhu, path) {

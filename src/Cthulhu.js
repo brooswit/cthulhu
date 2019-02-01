@@ -1,4 +1,4 @@
-const {Process, EventManager, TaskManager, VirtualWebSocket} = require('brooswit-common')
+const {Job, EventManager, TaskManager, VirtualWebSocket} = require('brooswit-common')
 
 const express = require('express')
 const bodyParser = require('body-parser')
@@ -17,13 +17,13 @@ async function ldAnonVariation(ldClient, flagKey, custom, fallbackVariation) {
     return await ldClient.variation(flagKey, createAnonLDUser(custom), fallbackVariation)
 }
 
-module.exports = class Cthulhu extends Process {
+module.exports = class Cthulhu extends Job {
     constructor({
         useRedis=false, redisHost, redisPort, redisPassword,
         useLd=false, ldSdkKey, // ldApiKey,
         useExpress=true, expressPort=process.env.PORT,
         useStream=true,  streamPath='/stream'
-    }, parentProcess) {
+    }, parentJob) {
         super(async ()=>{
             this._eventManager = new EventManager(this)
             this._taskManager = new TaskManager(this)
@@ -67,7 +67,7 @@ module.exports = class Cthulhu extends Process {
             this.emit('ready')
 
             await this.untilEnd
-        }, parentProcess)
+        }, parentJob)
     }
 
     async _handleVirtualWebSocketChannel(channel) {
@@ -116,7 +116,7 @@ module.exports = class Cthulhu extends Process {
     // Events
     triggerEvent(eventName, payload) {
         console.warn(`triggerEvent ${eventName}`)
-        return new Process(async () => {
+        return new Job(async () => {
             await this.unitlReady
             if (await ldAnonVariation(
                 ldClient, `should-trigger-${eventName}`,
@@ -129,68 +129,68 @@ module.exports = class Cthulhu extends Process {
         }, this)
     }
   
-    hookEvent(eventName, eventHandler, parentProcess) {
+    hookEvent(eventName, eventHandler, parentJob) {
         console.warn(`hookEvent ${eventName}`)
-        return new Process(async () => {
+        return new Job(async () => {
             await this.unitlReady
             if (await ldAnonVariation(
                 ldClient, `should-hook-${eventName}`,
                 createAnonLDUser(payload)), true
             ) {
-                return this._eventManager.hook(eventName, eventHandler, parentProcess)
+                return this._eventManager.hook(eventName, eventHandler, parentJob)
             }
         }, this)
 }
   
     // Tasks
-    feedTask(taskName, payload, parentProcess) {
+    feedTask(taskName, payload, parentJob) {
         console.warn(`feedTask ${taskName}`)
-        return new Process(async () => {
+        return new Job(async () => {
             await this.unitlReady
             if (await ldAnonVariation(
                 ldClient, `should-feed-${taskName}`,
                 createAnonLDUser(payload)), true
             ) {
-                return this._taskManager.feed(taskName, payload, parentProcess)
+                return this._taskManager.feed(taskName, payload, parentJob)
             }
         }, this)
     }
   
-    requestTask(taskName, payload, responseHandler, parentProcess) {
+    requestTask(taskName, payload, responseHandler, parentJob) {
         console.warn(`requestTask ${taskName}`)
-        return new Process(async () => {
+        return new Job(async () => {
             await this.unitlReady
             if (await ldAnonVariation(
                 ldClient, `should-request-${taskName}`,
                 createAnonLDUser(payload)), true
             ) {
-                return this._taskManager.request(taskName, payload, responseHandler, parentProcess)
+                return this._taskManager.request(taskName, payload, responseHandler, parentJob)
             }
         }, this)
     }
   
-    consumeTask(taskName, taskHandler, parentProcess) {
+    consumeTask(taskName, taskHandler, parentJob) {
         console.warn(`consumeTask ${taskName}`)
-        return new Process(async () => {
+        return new Job(async () => {
             await this.unitlReady
             if (await ldAnonVariation(
                 ldClient, `should-consume-${taskName}`,
                 createAnonLDUser(payload)), true
             ) {
-                return this._taskManager.consume(taskName, taskHandler, parentProcess)
+                return this._taskManager.consume(taskName, taskHandler, parentJob)
             }
         }, this)
     }
   
-    subscribeTask(taskName, subscriptionHandler, parentProcess) {
+    subscribeTask(taskName, subscriptionHandler, parentJob) {
         console.warn(`subscribeTask ${taskName}`)
-        return new Process(async () => {
+        return new Job(async () => {
             await this.unitlReady
             if (await ldAnonVariation(
                 ldClient, `should-subscribe-${taskName}`,
                 createAnonLDUser(payload)), true
             ) {
-                return this._taskManager.subscribe(taskName, subscriptionHandler, parentProcess)
+                return this._taskManager.subscribe(taskName, subscriptionHandler, parentJob)
             }
         }, this)
     }
