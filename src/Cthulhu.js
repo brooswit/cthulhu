@@ -122,7 +122,7 @@ module.exports = class Cthulhu extends Job {
         return new Job(async () => {
             await this.unitlReady
             if (await ldAnonVariation(
-                ldClient, `should-trigger-${eventName}`,
+                this.ldClient, `should-trigger-${eventName}`,
                 createAnonLDUser(payload)), true
             ) {
                 this._eventManager.trigger(eventName, payload)
