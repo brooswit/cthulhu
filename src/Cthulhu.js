@@ -34,7 +34,9 @@ module.exports = class Cthulhu extends Job {
                 port: redisPort,
                 password: redisPassword
             }
-            if (useRedis) { this.redisClient = redis.createClient(redisConfig) }
+            if (useRedis) {
+                this.redisClient = redis.createClient(redisConfig)
+            }
 
             const ldConfig = {}
             if (!useLd) {
