@@ -23,7 +23,11 @@ module.exports = class Cthulhu extends Job {
         useExpress=true, expressPort=process.env.PORT,
         useStream=true,  streamPath='/stream'
     }, parentJob) {
-        super(main, parentJob)
+        super(async () => {
+            await this.ldClient.waitForInitialization()
+            this.emit('ready')
+            await this.untilEnd
+        }, parentJob)
         this.log('info','STARTING')
 
         this._eventManager = new EventManager(this)
