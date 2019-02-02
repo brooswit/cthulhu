@@ -1,15 +1,15 @@
 const WebSocket = require('ws')
 
-const {Job, VirtualWebSocket} = require('brooswit-common')
+const {Routine, VirtualWebSocket} = require('brooswit-common')
 
-module.exports = class Minion extends Job {
-    constructor(url, parentJob) {
+module.exports = class Minion extends Routine {
+    constructor(url, parentRoutine) {
         super(async () => {
             this.untilReady = this.promiseTo(`ready`)
             this._webSocket = new WebSocket(`ws://${url}/stream`)
             this._virtualWebSocket = new VirtualWebSocket(ws, undefined, this)
             await this.untilEnd
-        }, parentJob)
+        }, parentRoutine)
     }
 
     // Events
