@@ -27,11 +27,11 @@ module.exports = class Cthulhu extends Routine {
             await this.ldClient.waitForInitialization()
             if (useExpress) {
                 this.express = await new Promise((resolve)=>{
-                    this.log('info','USING EXPRESS')
+                    this.lod.info.('USING EXPRESS')
                     let expressApp = express()
                     expressApp.use(bodyParser.json())
                     if (useStream) {
-                        this.log('info','USING STREAM')
+                        this.lod.info.('USING STREAM')
                         enableWs(expressApp)
                         expressApp.ws(streamPath, (ws) => {
                             new VirtualWebSocket(ws, (channel) => {
@@ -40,7 +40,7 @@ module.exports = class Cthulhu extends Routine {
                         })
                     }
                     expressApp.listen(expressPort, () => {
-                        this.log('info','READY')
+                        this.lod.info.('READY')
                         resolve(expressApp)
                     })
                 })
@@ -49,7 +49,7 @@ module.exports = class Cthulhu extends Routine {
 
             await this.untilEnd
         }, parentRoutine)
-        this.log('info','STARTING')
+        this.lod.info.('STARTING')
 
         this._eventManager = new EventManager(this)
         this._taskManager = new TaskManager(this)
@@ -61,7 +61,7 @@ module.exports = class Cthulhu extends Routine {
             password: redisPassword
         }
         if (useRedis) {
-            this.log('info','USING REDIS')
+            this.lod.info.('USING REDIS')
             this.redisClient = redis.createClient(redisConfig)
         }
 
@@ -69,7 +69,7 @@ module.exports = class Cthulhu extends Routine {
         if (!useLd) {
             ldConfig.offline = true
         } else {
-            this.log('info','USING LAUNCHDARKLY')
+            this.lod.info.('USING LAUNCHDARKLY')
             if (useRedis) {
                 ldConfig.useLdd = true
                 ldConfig.featureStore = LaunchDarkly.RedisFeatureStore(redisConfig)
