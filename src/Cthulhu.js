@@ -123,7 +123,7 @@ module.exports = class Cthulhu extends Routine {
 
     // Events
     triggerEvent(eventName, payload) {
-        console.warn(`triggerEvent ${eventName}`)
+        this.log.info(`triggerEvent ${eventName}`)
         return new Routine(async () => {
             await this.unitlReady
             if (await ldAnonVariation(
@@ -132,13 +132,13 @@ module.exports = class Cthulhu extends Routine {
             ) {
                 this._eventManager.trigger(eventName, payload)
             } else {
-                console.warn(`triggerEvent ${eventName}`)
+                this.log.info(`triggerEvent ${eventName}`)
             }
         }, this)
     }
   
     hookEvent(eventName, eventHandler, parentRoutine) {
-        console.warn(`hookEvent ${eventName}`)
+        this.log.info(`hookEvent ${eventName}`)
         return new Routine(async () => {
             await this.unitlReady
             if (await ldAnonVariation(
@@ -152,7 +152,7 @@ module.exports = class Cthulhu extends Routine {
   
     // Tasks
     feedTask(taskName, payload, parentRoutine) {
-        console.warn(`feedTask ${taskName}`)
+        this.log.info(`feedTask ${taskName}`)
         return new Routine(async () => {
             await this.unitlReady
             if (await ldAnonVariation(
@@ -165,7 +165,7 @@ module.exports = class Cthulhu extends Routine {
     }
   
     requestTask(taskName, payload, responseHandler, parentRoutine) {
-        console.warn(`requestTask ${taskName}`)
+        this.log.info(`requestTask ${taskName}`)
         return new Routine(async () => {
             await this.unitlReady
             if (await ldAnonVariation(
@@ -178,7 +178,7 @@ module.exports = class Cthulhu extends Routine {
     }
   
     consumeTask(taskName, taskHandler, parentRoutine) {
-        console.warn(`consumeTask ${taskName}`)
+        this.log.info(`consumeTask ${taskName}`)
         return new Routine(async () => {
             await this.unitlReady
             if (await ldAnonVariation(
@@ -191,7 +191,7 @@ module.exports = class Cthulhu extends Routine {
     }
   
     subscribeTask(taskName, subscriptionHandler, parentRoutine) {
-        console.warn(`subscribeTask ${taskName}`)
+        this.log.info(`subscribeTask ${taskName}`)
         return new Routine(async () => {
             await this.unitlReady
             if (await ldAnonVariation(
