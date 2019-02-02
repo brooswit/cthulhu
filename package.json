@@ -1,6 +1,6 @@
 {
     "name": "Cthulhu",
-    "version": "0.0.553",
+    "version": "0.0.554",
     "description": "",
     "main": "index.js",
     "scripts": {
@@ -30,6 +30,7 @@
         "ldclient-node": "5.7.1",
         "node-zendesk": "1.4.0",
         "redis": "2.8.0",
+        "winston-namespace": "1.0.0",
         "ws": "6.1.2"
     }
 }
