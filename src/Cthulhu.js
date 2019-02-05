@@ -123,7 +123,6 @@ module.exports = class Cthulhu extends Routine {
 
     // Events
     triggerEvent(eventName, payload) {
-        this.log.info(`triggerEvent ${eventName}`)
         return new Routine(async () => {
             await this.unitlReady
             if (await ldAnonVariation(
@@ -131,14 +130,11 @@ module.exports = class Cthulhu extends Routine {
                 createAnonLDUser(payload)), true
             ) {
                 this._eventManager.trigger(eventName, payload)
-            } else {
-                this.log.info(`triggerEvent ${eventName}`)
             }
         }, this)
     }
   
     hookEvent(eventName, eventHandler, parentRoutine) {
-        this.log.info(`hookEvent ${eventName}`)
         return new Routine(async () => {
             await this.unitlReady
             if (await ldAnonVariation(
@@ -152,7 +148,6 @@ module.exports = class Cthulhu extends Routine {
   
     // Tasks
     feedTask(taskName, payload, parentRoutine) {
-        this.log.info(`feedTask ${taskName}`)
         return new Routine(async () => {
             await this.unitlReady
             if (await ldAnonVariation(
@@ -165,7 +160,6 @@ module.exports = class Cthulhu extends Routine {
     }
   
     requestTask(taskName, payload, responseHandler, parentRoutine) {
-        this.log.info(`requestTask ${taskName}`)
         return new Routine(async () => {
             await this.unitlReady
             if (await ldAnonVariation(
@@ -178,7 +172,6 @@ module.exports = class Cthulhu extends Routine {
     }
   
     consumeTask(taskName, taskHandler, parentRoutine) {
-        this.log.info(`consumeTask ${taskName}`)
         return new Routine(async () => {
             await this.unitlReady
             if (await ldAnonVariation(
@@ -191,7 +184,6 @@ module.exports = class Cthulhu extends Routine {
     }
   
     subscribeTask(taskName, subscriptionHandler, parentRoutine) {
-        this.log.info(`subscribeTask ${taskName}`)
         return new Routine(async () => {
             await this.unitlReady
             if (await ldAnonVariation(
