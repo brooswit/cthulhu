@@ -75,7 +75,7 @@ module.exports = class Cthulhu extends Routine {
                 ldConfig.featureStore = LaunchDarkly.RedisFeatureStore(redisConfig)
             }
         }
-        this.ldClient = LaunchDarkly.init(ldSdkKey, ldConfig)
+        this._ldClient = LaunchDarkly.init(ldSdkKey, ldConfig)
     }
 
     async _handleVirtualWebSocketChannel(channel) {
