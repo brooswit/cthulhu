@@ -19,7 +19,7 @@ async function ldAnonVariation(ldClient, flagKey, custom, fallbackVariation) {
 module.exports = class Cthulhu extends Routine {
     constructor({
         useRedis=false, redisHost, redisPort, redisPassword,
-        useLd=false, ldSdkKey, // ldApiKey,
+        useLd=false, ldUseRedis=false, ldSdkKey, // ldApiKey,
         useExpress=true, expressPort=process.env.PORT,
         useStream=true,  streamPath='/stream'
     }, parentRoutine) {
@@ -70,7 +70,7 @@ module.exports = class Cthulhu extends Routine {
             ldConfig.offline = true
         } else {
             this.log.info('USING LAUNCHDARKLY')
-            if (useRedis) {
+            if (ldUseRedis) {
                 ldConfig.useLdd = true
                 ldConfig.featureStore = LaunchDarkly.RedisFeatureStore(redisConfig)
             }
