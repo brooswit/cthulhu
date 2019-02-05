@@ -128,19 +128,18 @@ module.exports = class Cthulhu extends Routine {
             if (await ldAnonVariation( this.ldClient, `should-trigger-${eventName}`, payload, true)) {
                 this._eventManager.trigger(eventName, payload)
             } else {
-                this.log(`e`)
+                this.log(`suppressed`)
             }
-        }, this, 'triggerEvent')
+        }, this, `triggerEvent:${eventName}`)
     }
   
     hookEvent(eventName, eventHandler, parentRoutine) {
         return new Routine(async () => {
             await this.unitlReady
-            if (await ldAnonVariation(
-                this.ldClient, `should-hook-${eventName}`,
-                createAnonLDUser()), true
-            ) {
+            if (await ldAnonVariation( this.ldClient, `should-hook-${eventName}`, payload, true)) {
                 return this._eventManager.hook(eventName, eventHandler, parentRoutine)
+            } else {
+                this.log(`suppressed`)
             }
         }, this)
 }
