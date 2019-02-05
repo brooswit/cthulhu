@@ -121,6 +121,16 @@ module.exports = class Cthulhu extends Routine {
         task.resolve(taskResult)
     }
 
+    async variation({feature, identity, payload, fallback}) {
+        if (!this._ldClient) return fallback
+        else {
+            return(await this._ldClient.variation(feature, {
+                key: identity,
+                custom: payload
+            }, fallback))
+        }
+    }
+
     // Events
     triggerEvent(eventName, payload) {
         return new Routine(async () => {
