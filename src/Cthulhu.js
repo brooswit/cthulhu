@@ -24,7 +24,7 @@ module.exports = class Cthulhu extends Routine {
         useStream=true,  streamPath='/stream'
     }, parentRoutine) {
         super(async () => {
-            await this.ldClient.waitForInitialization()
+            await this._ldClient.waitForInitialization()
             if (useExpress) {
                 this.express = await new Promise((resolve)=>{
                     this.log.info('USING EXPRESS')
@@ -136,22 +136,14 @@ module.exports = class Cthulhu extends Routine {
     triggerEvent(eventName, payload) {
         return new Routine(async () => {
             await this.unitlReady
-            if (await ldAnonVariation( this.ldClient, `should-trigger-${eventName}`, payload, true)) {
-                this._eventManager.trigger(eventName, payload)
-            } else {
-                this.log(`suppressed`)
-            }
+            this._eventManager.trigger(eventName, payload)
         }, this, `triggerEvent:${eventName}`)
     }
   
     hookEvent(eventName, eventHandler, parentRoutine) {
         return new Routine(async () => {
             await this.unitlReady
-            if (await ldAnonVariation( this.ldClient, `should-hook-${eventName}`, undefined, true)) {
-                return this._eventManager.hook(eventName, eventHandler, parentRoutine)
-            } else {
-                this.log(`suppressed`)
-            }
+            return this._eventManager.hook(eventName, eventHandler, parentRoutine)
         }, this, `hookEvent:${eventName}`)
 }
   
@@ -159,22 +151,14 @@ module.exports = class Cthulhu extends Routine {
     feedTask(taskName, payload, parentRoutine) {
         return new Routine(async () => {
             await this.unitlReady
-            if (await ldAnonVariation( this.ldClient, `should-feed-${taskName}`, payload, true)) {
-                return this._taskManager.feed(taskName, payload, parentRoutine)
-            } else {
-                this.log(`suppressed`)
-            }
+            return this._taskManager.feed(taskName, payload, parentRoutine)
         }, this, `feedTask:${taskName}`)
     }
   
     requestTask(taskName, payload, responseHandler, parentRoutine) {
         return new Routine(async () => {
             await this.unitlReady
-            if (await ldAnonVariation( this.ldClient, `should-request-${taskName}`, payload, true)) {
-                return this._taskManager.request(taskName, payload, responseHandler, parentRoutine)
-            } else {
-                this.log(`suppressed`)
-            }
+            return this._taskManager.request(taskName, payload, responseHandler, parentRoutine)
         }, this, `requestTask:${taskName}`)
     }
   
