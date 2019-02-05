@@ -159,10 +159,7 @@ module.exports = class Cthulhu extends Routine {
     requestTask(taskName, payload, responseHandler, parentRoutine) {
         return new Routine(async () => {
             await this.unitlReady
-            if (await ldAnonVariation(
-                this.ldClient, `should-request-${taskName}`,
-                createAnonLDUser(payload)), true
-            ) {
+            if (await ldAnonVariation( this.ldClient, `should-request-${eventName}`, payload, true)) {
                 return this._taskManager.request(taskName, payload, responseHandler, parentRoutine)
             }
         }, this)
