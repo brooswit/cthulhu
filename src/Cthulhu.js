@@ -122,12 +122,14 @@ module.exports = class Cthulhu extends Routine {
     }
 
     async variation({feature, identity, payload, fallback}) {
+
         if (!this._ldClient) return fallback
         else {
-            return(await this._ldClient.variation(feature, {
-                key: identity,
-                custom: payload
-            }, fallback))
+            let ldUser = {}
+            ldUser.key = identity || 'anonymous'
+            ldUser.anonymous = !!identity
+            ldUser.custom = payload
+            return(await this._ldClient.variation(feature, ldUser, fallback))
         }
     }
 
