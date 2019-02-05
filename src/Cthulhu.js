@@ -132,44 +132,40 @@ module.exports = class Cthulhu extends Routine {
         }
     }
 
+    identify({identity, payload}) {
+        if (!this._ldClient) return fallback
+        else {
+            let ldUser = {}
+            ldUser.key = identity || 'anonymous'
+            ldUser.anonymous = !!identity
+            ldUser.custom = payload
+            this._ldClient.identify(ldUser)
+        }
+    }
+
     // Events
     triggerEvent(eventName, payload) {
         this._eventManager.trigger(eventName, payload)
     }
   
     hookEvent(eventName, eventHandler, parentRoutine) {
-        return new Routine(async () => {
-            await this.unitlReady
-            return this._eventManager.hook(eventName, eventHandler, parentRoutine)
-        }, this, `hookEvent:${eventName}`)
-}
+        return this._eventManager.hook(eventName, eventHandler, parentRoutine)
+    }
   
     // Tasks
     feedTask(taskName, payload, parentRoutine) {
-        return new Routine(async () => {
-            await this.unitlReady
-            return this._taskManager.feed(taskName, payload, parentRoutine)
-        }, this, `feedTask:${taskName}`)
+        return this._taskManager.feed(taskName, payload, parentRoutine)
     }
   
     requestTask(taskName, payload, responseHandler, parentRoutine) {
-        return new Routine(async () => {
-            await this.unitlReady
-            return this._taskManager.request(taskName, payload, responseHandler, parentRoutine)
-        }, this, `requestTask:${taskName}`)
+        return this._taskManager.request(taskName, payload, responseHandler, parentRoutine)
     }
   
     consumeTask(taskName, taskHandler, parentRoutine) {
-        return new Routine(async () => {
-            await this.unitlReady
-            return this._taskManager.consume(taskName, taskHandler, parentRoutine)
-        }, this, `consumeTask:${taskName}`)
+        return this._taskManager.consume(taskName, taskHandler, parentRoutine)
     }
   
     subscribeTask(taskName, subscriptionHandler, parentRoutine) {
-        return new Routine(async () => {
-            await this.unitlReady
-            return this._taskManager.subscribe(taskName, subscriptionHandler, parentRoutine)
-        }, this, `subscribeTask:${taskName}`)
+        return this._taskManager.subscribe(taskName, subscriptionHandler, parentRoutine)
     }
 }
