@@ -165,22 +165,14 @@ module.exports = class Cthulhu extends Routine {
     consumeTask(taskName, taskHandler, parentRoutine) {
         return new Routine(async () => {
             await this.unitlReady
-            if (await ldAnonVariation( this.ldClient, `should-consume-${taskName}`, undefined, true)) {
-                return this._taskManager.consume(taskName, taskHandler, parentRoutine)
-            } else {
-                this.log(`suppressed`)
-            }
+            return this._taskManager.consume(taskName, taskHandler, parentRoutine)
         }, this, `consumeTask:${taskName}`)
     }
   
     subscribeTask(taskName, subscriptionHandler, parentRoutine) {
         return new Routine(async () => {
             await this.unitlReady
-            if (await ldAnonVariation( this.ldClient, `should-subscribe-${taskName}`, undefined, true)) {
-                return this._taskManager.subscribe(taskName, subscriptionHandler, parentRoutine)
-            } else {
-                this.log(`suppressed`)
-            }
+            return this._taskManager.subscribe(taskName, subscriptionHandler, parentRoutine)
         }, this, `subscribeTask:${taskName}`)
     }
 }
