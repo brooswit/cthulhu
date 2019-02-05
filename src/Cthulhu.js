@@ -153,39 +153,39 @@ module.exports = class Cthulhu extends Routine {
             } else {
                 this.log(`suppressed`)
             }
-        }, this, `feedTask:${eventName}`)
+        }, this, `feedTask:${taskName}`)
     }
   
     requestTask(taskName, payload, responseHandler, parentRoutine) {
         return new Routine(async () => {
             await this.unitlReady
-            if (await ldAnonVariation( this.ldClient, `should-request-${eventName}`, payload, true)) {
+            if (await ldAnonVariation( this.ldClient, `should-request-${taskName}`, payload, true)) {
                 return this._taskManager.request(taskName, payload, responseHandler, parentRoutine)
             } else {
                 this.log(`suppressed`)
             }
-        }, this, `requestTask:${eventName}`)
+        }, this, `requestTask:${taskName}`)
     }
   
     consumeTask(taskName, taskHandler, parentRoutine) {
         return new Routine(async () => {
             await this.unitlReady
-            if (await ldAnonVariation( this.ldClient, `should-consume-${eventName}`, payload, true)) {
+            if (await ldAnonVariation( this.ldClient, `should-consume-${taskName}`, payload, true)) {
                 return this._taskManager.consume(taskName, taskHandler, parentRoutine)
             } else {
                 this.log(`suppressed`)
             }
-        }, this, `consumeTask:${eventName}`)
+        }, this, `consumeTask:${taskName}`)
     }
   
     subscribeTask(taskName, subscriptionHandler, parentRoutine) {
         return new Routine(async () => {
             await this.unitlReady
-            if (await ldAnonVariation( this.ldClient, `should-subscribe-${eventName}`, payload, true)) {
+            if (await ldAnonVariation( this.ldClient, `should-subscribe-${taskName}`, payload, true)) {
                 return this._taskManager.subscribe(taskName, subscriptionHandler, parentRoutine)
             } else {
                 this.log(`suppressed`)
             }
-        }, this, `subscribeTask:${eventName}`)
+        }, this, `subscribeTask:${taskName}`)
     }
 }
