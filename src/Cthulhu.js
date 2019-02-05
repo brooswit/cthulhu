@@ -134,10 +134,7 @@ module.exports = class Cthulhu extends Routine {
 
     // Events
     triggerEvent(eventName, payload) {
-        return new Routine(async () => {
-            await this.unitlReady
-            this._eventManager.trigger(eventName, payload)
-        }, this, `triggerEvent:${eventName}`)
+        this._eventManager.trigger(eventName, payload)
     }
   
     hookEvent(eventName, eventHandler, parentRoutine) {
