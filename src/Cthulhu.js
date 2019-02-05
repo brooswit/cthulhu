@@ -148,7 +148,7 @@ module.exports = class Cthulhu extends Routine {
     feedTask(taskName, payload, parentRoutine) {
         return new Routine(async () => {
             await this.unitlReady
-            if (await ldAnonVariation( this.ldClient, `should-feed-${eventName}`, payload, true)) {
+            if (await ldAnonVariation( this.ldClient, `should-feed-${taskName}`, payload, true)) {
                 return this._taskManager.feed(taskName, payload, parentRoutine)
             } else {
                 this.log(`suppressed`)
