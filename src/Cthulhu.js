@@ -161,31 +161,31 @@ module.exports = class Cthulhu extends Routine {
             await this.unitlReady
             if (await ldAnonVariation( this.ldClient, `should-request-${eventName}`, payload, true)) {
                 return this._taskManager.request(taskName, payload, responseHandler, parentRoutine)
+            } else {
+                this.log(`suppressed`)
             }
-        }, this)
+        }, this, `requestTask:${eventName}`)
     }
   
     consumeTask(taskName, taskHandler, parentRoutine) {
         return new Routine(async () => {
             await this.unitlReady
-            if (await ldAnonVariation(
-                this.ldClient, `should-consume-${taskName}`,
-                createAnonLDUser()), true
-            ) {
+            if (await ldAnonVariation( this.ldClient, `should-consume-${eventName}`, payload, true)) {
                 return this._taskManager.consume(taskName, taskHandler, parentRoutine)
+            } else {
+                this.log(`suppressed`)
             }
-        }, this)
+        }, this, `consumeTask:${eventName}`)
     }
   
     subscribeTask(taskName, subscriptionHandler, parentRoutine) {
         return new Routine(async () => {
             await this.unitlReady
-            if (await ldAnonVariation(
-                this.ldClient, `should-subscribe-${taskName}`,
-                createAnonLDUser()), true
-            ) {
+            if (await ldAnonVariation( this.ldClient, `should-subscribe-${eventName}`, payload, true)) {
                 return this._taskManager.subscribe(taskName, subscriptionHandler, parentRoutine)
+            } else {
+                this.log(`suppressed`)
             }
-        }, this)
+        }, this, `subscribeTask:${eventName}`)
     }
 }
