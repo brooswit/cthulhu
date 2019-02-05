@@ -7,15 +7,6 @@ const redis = require('redis')
 
 const LaunchDarkly = require('ldclient-node');
 
-// LD Helpers
-function createAnonLDUser(custom) {
-    return {key: 'anon', anonymous: true, custom}
-}
-
-async function ldAnonVariation(ldClient, flagKey, custom, fallbackVariation) {
-    return await ldClient.variation(flagKey, createAnonLDUser(custom), fallbackVariation)
-}
-
 module.exports = class Cthulhu extends Routine {
     constructor({
         useRedis=false, redisHost, redisPort, redisPassword,
