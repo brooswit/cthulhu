@@ -58,6 +58,7 @@ module.exports = class Cthulhu extends Routine {
 
         const ldConfig = {}
         if (!useLd) {
+            ldConfig.capacity = 100000
             ldConfig.offline = true
         } else {
             this.log.info('USING LAUNCHDARKLY')
