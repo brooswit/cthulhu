@@ -19,12 +19,16 @@
     }
     const redisClient = redis.createClient(redisConfig)
 
+
+    const LaunchDarkly = require('ldclient-node');Cthulhu = require('./src/Cthulhu')
+    const ldConfig = {capacity: 100000}
+    this._ldClient = LaunchDarkly.init(ldSdkKey, ldConfig)
+
     // useRedis=false, redisHost, redisPort, redisPassword,
     // useLd=false, ldUseRedis=false, ldSdkKey, // ldApiKey,
     // useExpress=true, expressPort=process.env.PORT,
     // useStream=true,  streamPath='/stream'
     // }
-    const LaunchDarkly = require('ldclient-node');Cthulhu = require('./src/Cthulhu')
     Cthulhu.Minion = require('./src/Minion')
     Cthulhu.TaskIngester = require('./src/components/TaskIngester')
     Cthulhu.ClubhouseEventIngester = require('./src/components/ClubhouseEventIngester')
