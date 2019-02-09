@@ -2,7 +2,6 @@
     const express = require('express')
     const bodyParser = require('body-parser')
     const enableWs = require('express-ws')
-
     const express = await new Promise((resolve)=>{
         let expressApp = express()
         enableWs(expressApp)
@@ -13,6 +12,11 @@
     })
 
     const redis = require('redis')
+    const redisConfig = {
+        host: redisHost,
+        port: redisPort,
+        password: redisPassword
+    }
     const redisClient = redis.createClient(redisConfig)
 
     // useRedis=false, redisHost, redisPort, redisPassword,
