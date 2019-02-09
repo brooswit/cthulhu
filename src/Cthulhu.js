@@ -4,24 +4,11 @@ module.exports = class Cthulhu extends Routine {
     constructor({ express, launchDarkly, redis }, parentRoutine) {
         super(async () => {
             await this._ldClient.waitForInitialization()
-            if (useExpress) {
-                this.express = await new Promise((resolve)=>{
-                    this.log.info('USING EXPRESS')
-                    let expressApp = express()
-                    expressApp.use(bodyParser.json())
-                    if (useStream) {
-                        this.log.info('USING STREAM')
-                        enableWs(expressApp)
-                        expressApp.ws(streamPath, (ws) => {
-                            new VirtualWebSocket(ws, (channel) => {
-                                this._handleVirtualWebSocketChannel(channel)
-                            }, this)
-                        })
-                    }
-                    expressApp.listen(expressPort, () => {
-                        this.log.info('READY')
-                        resolve(expressApp)
-                    })
+            if (express.ws) {
+                express.ws(streamPath, (ws) => {
+                    new VirtualWebSocket(ws, (channel) => {
+                        this._handleVirtualWebSocketChannel(channel)
+                    }, this)
                 })
             }
             this.emit('ready')
