@@ -13,33 +13,10 @@ module.exports = class Cthulhu extends Routine {
         this._launchDarkly = launchDarkly
         this._redis = redis
 
-        const redisConfig = {
-            host: redisHost,
-            port: redisPort,
-            password: redisPassword
-        }
-
-        if (useRedis) {
-            this.log.info('USING REDIS')
-            this.redisClient = redis.createClient(redisConfig)
-        }
-
-        const ldConfig = {}
-        ldConfig.capacity = 100000
-        if (!useLd) {
-            ldConfig.offline = true
-        } else {
-            this.log.info('USING LAUNCHDARKLY')
-            if (ldUseRedis) {
-                ldConfig.useLdd = true
-                ldConfig.featureStore = LaunchDarkly.RedisFeatureStore(redisConfig)
-            }
-        }
-        this._ldClient = LaunchDarkly.init(ldSdkKey, ldConfig)
         async function handleProcess () {
             await this._ldClient.waitForInitialization()
             if (express.ws) {
-                express.ws(streamPath, (ws) => {
+                express.ws('/stream', (ws) => {
                     new VirtualWebSocket(ws, (channel) => {
                         this._handleVirtualWebSocketChannel(channel)
                     }, this)
