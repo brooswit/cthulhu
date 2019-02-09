@@ -11,7 +11,9 @@
             resolve(expressApp)
         })
     })
+
     const redis = require('redis')
+    const redisClient = redis.createClient(redisConfig)
 
     // useRedis=false, redisHost, redisPort, redisPassword,
     // useLd=false, ldUseRedis=false, ldSdkKey, // ldApiKey,

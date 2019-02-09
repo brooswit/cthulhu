@@ -10,6 +10,8 @@ module.exports = class Cthulhu extends Routine {
         this.untilReady = this.promiseTo('ready')
 
         this._express = express
+        this._launchDarkly = launchDarkly
+        this._redis = redis
 
         const redisConfig = {
             host: redisHost,
