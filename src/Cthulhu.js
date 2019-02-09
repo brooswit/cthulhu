@@ -81,13 +81,23 @@ module.exports = class Cthulhu extends Routine {
             return(await this._ldClient.variation(feature, ldUser, fallback))
         }
     }
-    
+
     async getCache(path) {
         if (!this._redisClient) { return null }
         return await new Promise((resolve, reject)=>{
             this._redisClient.get(path, (error, value) => {
                 if (error) { reject(error) }
                 else { resolve(value) }
+            })
+        })
+    }
+
+    async setCache(path, value) {
+        if (!this._redisClient) { return null }
+        return await new Promise((resolve, reject)=>{
+            this._redisClient.set(path, value, (error) => {
+                if (error) { reject(error) }
+                else { resolve() }
             })
         })
     }
