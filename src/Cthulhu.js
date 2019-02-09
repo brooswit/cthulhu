@@ -18,6 +18,7 @@ module.exports = class Cthulhu extends Routine {
             port: redisPort,
             password: redisPassword
         }
+
         if (useRedis) {
             this.log.info('USING REDIS')
             this.redisClient = redis.createClient(redisConfig)
