@@ -93,7 +93,7 @@ module.exports = class Cthulhu extends Routine {
     }
 
     async setCache(path, value) {
-        if (!this._redisClient) { return null }
+        if (!this._redisClient) { return }
         return await new Promise((resolve, reject)=>{
             this._redisClient.set(path, value, (error) => {
                 if (error) { reject(error) }
