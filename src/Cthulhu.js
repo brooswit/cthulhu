@@ -1,11 +1,4 @@
 const {Routine, EventManager, TaskManager, VirtualWebSocket} = require('brooswit-common')
-const express = require('express')
-const bodyParser = require('body-parser')
-const enableWs = require('express-ws')
-
-const redis = require('redis')
-
-const LaunchDarkly = require('ldclient-node');
 
 module.exports = class Cthulhu extends Routine {
     constructor({
