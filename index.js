@@ -5,8 +5,8 @@
 
     const express = await new Promise((resolve)=>{
         let expressApp = express()
-        expressApp.use(bodyParser.json())
         enableWs(expressApp)
+        expressApp.use(bodyParser.json())
         expressApp.listen(expressPort, () => {
             resolve(expressApp)
         })
