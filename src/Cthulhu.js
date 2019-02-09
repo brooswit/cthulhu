@@ -1,12 +1,7 @@
 const {Routine, EventManager, TaskManager, VirtualWebSocket} = require('brooswit-common')
 
 module.exports = class Cthulhu extends Routine {
-    constructor({
-        useRedis=false, redisHost, redisPort, redisPassword,
-        useLd=false, ldUseRedis=false, ldSdkKey, // ldApiKey,
-        useExpress=true, expressPort=process.env.PORT,
-        useStream=true,  streamPath='/stream'
-    }, parentRoutine) {
+    constructor({ express, launchDarkly, redis }, parentRoutine) {
         super(async () => {
             await this._ldClient.waitForInitialization()
             if (useExpress) {
