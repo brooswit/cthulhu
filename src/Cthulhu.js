@@ -2,12 +2,14 @@ const {Routine, EventManager, TaskManager, VirtualWebSocket} = require('brooswit
 
 module.exports = class Cthulhu extends Routine {
     constructor({ express, launchDarkly, redis }, parentRoutine) {
-        super(handleProcess)
+        super(handleProcess, parentRoutine)
         this.log.info('STARTING')
 
         this._eventManager = new EventManager(this)
         this._taskManager = new TaskManager(this)
         this.untilReady = this.promiseTo('ready')
+
+        this._express = express
 
         const redisConfig = {
             host: redisHost,
