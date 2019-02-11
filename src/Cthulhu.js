@@ -79,7 +79,7 @@ module.exports = class Cthulhu extends Routine {
         let ldUser = { key, anonymous, custom, privateAttributeNames }
 
         this._ldClient.variation(variation, ldUser, fallback, (error, variation) => {
-            this.log.warn(error)
+            if (error) { this.log.warn(error) }
             callback(variation)
         })
     }
