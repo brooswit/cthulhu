@@ -96,7 +96,6 @@ module.exports = class Cthulhu extends Routine {
     }
 
     getCache(path, callback) {
-        console.log(callback)
         if (!this._redisClient) { callback() }
         else {
             this._redisClient.get(path, (error, value) => {
