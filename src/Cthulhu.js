@@ -2,18 +2,7 @@ const {Routine, EventManager, TaskManager, VirtualWebSocket} = require('brooswit
 
 module.exports = class Cthulhu extends Routine {
     constructor({ expressApp, redisClient, ldClient }, parentRoutine) {
-        super(main, parentRoutine)
-        this.log.info('STARTING')
-
-        this._eventManager = new EventManager(this)
-        this._taskManager = new TaskManager(this)
-        this.untilReady = this.promiseTo('ready')
-
-        this._expressApp = expressApp
-        this._ldClient = ldClient
-        this._redisClient = redisClient
-
-        async function main () {
+        super(async () => {
             await this._ldClient.waitForInitialization()
             if (expressApp.ws) {
                 expressApp.ws('/stream', (ws) => {
@@ -24,7 +13,16 @@ module.exports = class Cthulhu extends Routine {
             }
             this.emit('ready')
             await this.untilEnd
-        }
+        }, parentRoutine)
+        this.log.info('STARTING')
+
+        this._eventManager = new EventManager(this)
+        this._taskManager = new TaskManager(this)
+        this.untilReady = this.promiseTo('ready')
+
+        this._expressApp = expressApp
+        this._ldClient = ldClient
+        this._redisClient = redisClient
     }
 
     async _handleVirtualWebSocketChannel(channel) {
