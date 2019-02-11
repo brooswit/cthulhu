@@ -1,6 +1,6 @@
 {
     "name": "Cthulhu",
-    "version": "0.0.602",
+    "version": "0.0.603",
     "description": "",
     "main": "index.js",
     "scripts": {
@@ -18,19 +18,12 @@
     "homepage": "https://github.com/brooswit/cthulhu.js#readme",
     "dependencies": {
         "axios": "0.18.0",
-        "body-parser": "1.18.3",
         "brooswit-common": "git+https://github.com/brooswit/js-common.git",
         "clubhouse-lib": "0.3.1",
-        "debug": "4.1.1",
-        "express": "4.16.4",
-        "express-ws": "4.0.0",
         "grunt": "1.0.3",
         "grunt-contrib-watch": "1.1.0",
         "grunt-shell": "2.1.0",
-        "ldclient-node": "5.7.1",
         "node-zendesk": "1.4.0",
-        "redis": "2.8.0",
-        "winston-namespace": "1.0.0",
-        "ws": "6.1.2"
+        "winston-namespace": "1.0.0"
     }
 }

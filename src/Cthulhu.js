@@ -2,7 +2,7 @@ const {Routine, EventManager, TaskManager, VirtualWebSocket} = require('brooswit
 
 module.exports = class Cthulhu extends Routine {
     constructor({ expressApp, redisClient, ldClient }, parentRoutine) {
-        super(handleProcess, parentRoutine)
+        super(main, parentRoutine)
         this.log.info('STARTING')
 
         this._eventManager = new EventManager(this)
@@ -13,7 +13,7 @@ module.exports = class Cthulhu extends Routine {
         this._ldClient = ldClient
         this._redisClient = redisClient
 
-        async function handleProcess () {
+        async function main () {
             await this._ldClient.waitForInitialization()
             if (expressApp.ws) {
                 expressApp.ws('/stream', (ws) => {
@@ -23,7 +23,6 @@ module.exports = class Cthulhu extends Routine {
                 })
             }
             this.emit('ready')
-
             await this.untilEnd
         }
     }
@@ -71,6 +70,22 @@ module.exports = class Cthulhu extends Routine {
         task.resolve(taskResult)
     }
 
+    getVariation(variation, identity, attributes, fallback, callback) {
+        if (!this._ldClient) return fallback
+
+        const key = identity || 'anonymous'
+        const anonymous = key === 'anonymous'
+        const privateAttributeNames = ['currentTIme']
+        const custom = Object.assign(attributes, { currentTIme: Date.now() })
+
+        let ldUser = { key, anonymous, custom, privateAttributeNames }
+
+        this._ldClient.variation(variation, ldUser, fallback, (error, variation) => {
+            this.log.warn(error)
+            callback(variation)
+        })
+    }
+
     async variation({feature, identity = undefined, attributes = undefined, fallback = undefined}) {
         if (!feature || !this._ldClient) return fallback
         else {
@@ -82,34 +97,23 @@ module.exports = class Cthulhu extends Routine {
         }
     }
 
-    async getCache(path) {
-        if (!this._redisClient) { return null }
-        return await new Promise((resolve, reject)=>{
-            this._redisClient.get(path, (error, value) => {
-                if (error) { reject(error) }
-                else { resolve(value) }
-            })
-        })
-    }
-
-    async setCache(path, value) {
-        if (!this._redisClient) { return }
-        return await new Promise((resolve, reject)=>{
-            this._redisClient.set(path, value, (error) => {
-                if (error) { reject(error) }
-                else { resolve() }
-            })
-        })
-    }
-
-    identify({identity, attributes}) {
-        if (!this._ldClient) return fallback
+    getCache(path, callback) {
+        if (!this._redisClient) { callback() }
         else {
-            let ldUser = {}
-            ldUser.key = identity || 'anonymous'
-            ldUser.anonymous = !!identity
-            ldUser.custom = attributes
-            this._ldClient.identify(ldUser)
+            this._redisClient.get(path, (error, value) => {
+                if (error) { this.log.warn(error) }
+                callback(value)
+            })
+        }
+    }
+
+    setCache(path, value, ms, callback) {
+        if (!this._redisClient) { callback() }
+        else {
+            this._redisClient.set(path, value, 'EX', (ms ? ms / chrono.second : Infinity), (error) => {
+                if (error) { this.log.warn(error) }
+                callback(error)
+            },)
         }
     }
 
