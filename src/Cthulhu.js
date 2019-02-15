@@ -129,8 +129,8 @@ module.exports = class Cthulhu extends Routine {
         return this._taskManager.feed(taskName, payload, parentRoutine)
     }
   
-    requestTask(taskName, payload, responseHandler, parentRoutine) {
-        return this._taskManager.request(taskName, payload, responseHandler, parentRoutine)
+    async requestTask(taskName, payload, parentRoutine) {
+        return this._taskManager.request(taskName, payload, parentRoutine)
     }
   
     consumeTask(taskName, taskHandler, parentRoutine) {
