@@ -6,6 +6,6 @@ module.exports = class RestartScheduler extends Routine {
             this.log.info('started')
             await chrono.delay(1 * chrono.hour)
             process.exit();
-        }, parent)
+        }, parent || cthulhu)
     }
 }
