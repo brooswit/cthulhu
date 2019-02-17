@@ -68,22 +68,6 @@ module.exports = class Cthulhu extends Routine {
         task.resolve(taskResult)
     }
 
-    getVariation(variation, identity, attributes, fallback, callback) {
-        if (!this._ldClient) return fallback
-
-        const key = identity || 'anonymous'
-        const anonymous = key === 'anonymous'
-        const privateAttributeNames = ['currentTIme']
-        const custom = Object.assign(attributes, { currentTime: Date.now() })
-
-        let ldUser = { key, anonymous, custom, privateAttributeNames }
-
-        this._ldClient.variation(variation, ldUser, fallback, (error, variation) => {
-            if (error) { this.log.warn(error) }
-            callback(variation)
-        })
-    }
-
     async variation({feature, identity = undefined, attributes = undefined, fallback = undefined}) {
         if (!feature || !this._ldClient) return fallback
         else {
@@ -95,17 +79,19 @@ module.exports = class Cthulhu extends Routine {
         }
     }
 
-    getCache(path, callback) {
-        if (!this._redisClient) { callback() }
+    async get(path) {
+        if (!this._redisClient) { return false }
         else {
-            this._redisClient.get(path, (error, value) => {
-                if (error) { this.log.warn(error) }
-                callback(value)
+            await new Promise((resolve) => {
+                this._redisClient.get(path, (error, value) => {
+                    if (error) { this.log.warn(error) }
+                    resolve(value)
+                })
             })
         }
     }
 
-    setCache(path, value, ms, callback) {
+    async set(path, value, ms) {
         if (!this._redisClient) { callback() }
         else {
             this._redisClient.set(path, value, 'EX', (ms ? ms / chrono.second : Infinity), (error) => {
