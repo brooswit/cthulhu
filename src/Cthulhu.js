@@ -81,14 +81,12 @@ module.exports = class Cthulhu extends Routine {
 
     async get(path) {
         if (!this._redisClient) { return false }
-        else {
-            await new Promise((resolve) => {
-                this._redisClient.get(path, (error, value) => {
-                    if (error) { this.log.warn(error) }
-                    resolve(value)
-                })
+        return await new Promise((resolve) => {
+            this._redisClient.get(path, (error, value) => {
+                if (error) { this.log.warn(error) }
+                resolve(value)
             })
-        }
+        })
     }
 
     async set(path, value, ms) {
