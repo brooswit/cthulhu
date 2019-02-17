@@ -89,12 +89,12 @@ module.exports = class Cthulhu extends Routine {
 
     async set(path, value, ms) {
         if (!this._redisClient) { callback() }
-        else {
+        return await new Promise((resolve) => {
             this._redisClient.set(path, value, 'EX', (ms ? ms / chrono.second : Infinity), (error) => {
                 if (error) { this.log.warn(error) }
-                callback(error)
+                resolve(error)
             },)
-        }
+        })
     }
 
     // Events
