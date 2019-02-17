@@ -68,7 +68,7 @@ module.exports = class Cthulhu extends Routine {
         task.resolve(taskResult)
     }
 
-    async variation({feature, identity = undefined, attributes = undefined, fallback = undefined}) {
+    async variation(feature, identity = undefined, attributes = undefined, fallback = undefined) {
         if (!feature || !this._ldClient) return fallback
         let ldUser = {}
         ldUser.key = identity || 'anonymous'
