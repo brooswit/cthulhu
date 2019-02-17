@@ -74,7 +74,7 @@ module.exports = class Cthulhu extends Routine {
         const key = identity || 'anonymous'
         const anonymous = key === 'anonymous'
         const privateAttributeNames = ['currentTIme']
-        const custom = Object.assign(attributes, { currentTIme: Date.now() })
+        const custom = Object.assign(attributes, { currentTime: Date.now() })
 
         let ldUser = { key, anonymous, custom, privateAttributeNames }
 
@@ -90,7 +90,7 @@ module.exports = class Cthulhu extends Routine {
             let ldUser = {}
             ldUser.key = identity || 'anonymous'
             ldUser.anonymous = !!identity
-            ldUser.custom = attributes
+            ldUser.custom = Object.assign(attributes, { currentTime: Date.now() })
             return(await this._ldClient.variation(feature, ldUser, fallback))
         }
     }
